@@ -52,10 +52,12 @@ def place_entities(
         y = random.randint(room.y1 + 1, room.y2 - 1)
 
         if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
-            if random.random() < 0.8:
-                entity_factories.orc.spawn(dungeon, x, y)
-            else:
+            if random.random() > 0.9:
+                entity_factories.shambler.spawn(dungeon, x, y)
+            elif random.random() < 0.4:
                 entity_factories.troll.spawn(dungeon, x, y)
+            else:
+                entity_factories.orc.spawn(dungeon, x, y)
 
 
 def tunnel_between(
