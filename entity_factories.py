@@ -25,11 +25,11 @@ troll = Actor(
     fighter=Fighter(hp=16, defense=1, power=4),
 )
 shambler = Actor(
-    char="T",
-    color=(0, 127, 0),
+    char="S",
+    color=(99, 57, 57),
     name="Shambler",
     ai_cls=HostileEnemy,
-    fighter=Fighter(hp=16, defense=1, power=4),
+    fighter=Fighter(hp=20, defense=1, power=6),
 )
 
 
