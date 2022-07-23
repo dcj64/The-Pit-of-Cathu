@@ -1,6 +1,8 @@
 from components.ai import HostileEnemy
+from components.consumable import HealingConsumable
 from components.fighter import Fighter
-from entity import Actor
+from components.inventory import Inventory
+from entity import Actor, Item
 
 player = Actor(
     char="@",
@@ -8,6 +10,7 @@ player = Actor(
     name="Player",
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=30, defense=2, power=5),
+    inventory=Inventory(capacity=26),
 )
 
 orc = Actor(
@@ -16,24 +19,39 @@ orc = Actor(
     name="Orc",
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=10, defense=0, power=3),
+    inventory=Inventory(capacity=0),
 )
+
 troll = Actor(
     char="T",
     color=(0, 127, 0),
     name="Troll",
     ai_cls=HostileEnemy,
-    fighter=Fighter(hp=16, defense=1, power=4),
+    fighter=Fighter(hp=12, defense=1, power=4),
+    inventory=Inventory(capacity=0),
 )
 shambler = Actor(
     char="S",
     color=(99, 57, 57),
     name="Shambler",
     ai_cls=HostileEnemy,
-    fighter=Fighter(hp=20, defense=1, power=6),
+    fighter=Fighter(hp=15, defense=1, power=6),
+    inventory=Inventory(capacity=0),
+)
+cathu = Actor(
+    char="C",
+    color=(245, 50, 0),
+    name="Cathu",
+    ai_cls=HostileEnemy,
+    fighter=Fighter(hp=20, defense=2, power=10),
+    inventory=Inventory(capacity=0),
 )
 
+health_potion = Item(
+    char="!",
+    color=(127, 0, 255),
+    name="Health Potion",
+    consumable=HealingConsumable(amount=4),
+)
 
-#  orc = Entity(char="o", color=(63, 127, 63), name="Orc", blocks_movement=True)
-#  troll = Entity(char="T", color=(0, 127, 0), name="Troll", blocks_movement=True)
-#  shambler = Entity(char="S", color=(145, 45, 38), name="Shambler", blocks_movement=True)
 
