@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import color
+import config
 
 if TYPE_CHECKING:
     from tcod import Console
@@ -26,16 +27,26 @@ def render_bar(
 ) -> None:
     bar_width = int(float(current_value) / maximum_value * total_width)
 
-    console.draw_rect(x=1, y=55, width=total_width, height=1, ch=1, bg=color.bar_empty)
+    console.print(
+        x=1, y=56, string=f"Total Rooms: {config.number_of_rooms}", fg=color.bar_text
+    )
+    console.print(
+        x=1, y=57, string=f"Total monsters: {config.total_monsters}/"
+                          f"{config.total_monsters - config.monsters_killed}", fg=color.bar_text
+    )
+    console.print(
+        x=1, y=58, string=f"Monsters killed: {config.monsters_killed}", fg=(204, 0, 0)
+    )
+
+    console.draw_rect(x=1, y=54, width=total_width, height=1, ch=1, bg=color.bar_empty)
 
     if bar_width > 0:
         console.draw_rect(
-            x=1, y=55, width=bar_width, height=1, ch=1, bg=color.bar_filled
+            x=1, y=54, width=bar_width, height=1, ch=1, bg=color.bar_filled
         )
-
-    console.print(
-        x=2, y=55, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
-    )
+        console.print(
+            x=1, y=54, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
+        )
 
 
 def render_names_at_mouse_location(
