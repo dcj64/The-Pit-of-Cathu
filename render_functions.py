@@ -28,24 +28,41 @@ def render_bar(
     bar_width = int(float(current_value) / maximum_value * total_width)
 
     console.print(
-        x=1, y=56, string=f"Total Rooms: {config.number_of_rooms}", fg=color.bar_text
+        x=1, y=55, string=f"Total Rooms: {config.number_of_rooms}", fg=color.bar_text
     )
     console.print(
         x=1, y=57, string=f"Total monsters: {config.total_monsters}/"
-                          f"{config.total_monsters - config.monsters_killed}", fg=color.bar_text
+        f"{config.total_monsters - config.monsters_killed}", fg=color.bar_text
     )
     console.print(
         x=1, y=58, string=f"Monsters killed: {config.monsters_killed}", fg=(204, 0, 0)
     )
+    console.print(
+        x=65, y=53, string=f"*** To use items Press (i) ***", fg=color.bar_text
+    )
+    console.print(
+        x=80, y=54, string=f"   Inventory/Used", fg=color.bar_text
+    )
+    console.print(
+        x=70, y=55, string=f"Healing Potions  :  {config.health_potion_total} / "
+        f"{config.health_potion_used}", fg=color.bar_text
+    )
+    console.print(
+        x=70, y=56, string=f"Lightning Scrolls:  {config.lightning_scrolls_total} / "
+        f"{config.lightning_scrolls_used}", fg=color.bar_text
+    )
+    console.print(
+        x=65, y=58, string=f"Player moves so far:  {config.moves_used}", fg=color.bar_text
+    )
 
-    console.draw_rect(x=1, y=54, width=total_width, height=1, ch=1, bg=color.bar_empty)
+    console.draw_rect(x=1, y=53, width=total_width, height=1, ch=1, bg=color.bar_empty)
 
     if bar_width > 0:
         console.draw_rect(
-            x=1, y=54, width=bar_width, height=1, ch=1, bg=color.bar_filled
+            x=1, y=53, width=bar_width, height=1, ch=1, bg=color.bar_filled
         )
         console.print(
-            x=1, y=54, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
+            x=1, y=53, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
         )
 
 

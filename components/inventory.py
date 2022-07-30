@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import List, TYPE_CHECKING
 
+import config
 from components.base_component import BaseComponent
 
 if TYPE_CHECKING:
@@ -23,3 +24,7 @@ class Inventory(BaseComponent):
         item.place(self.parent.x, self.parent.y, self.gamemap)
 
         self.engine.message_log.add_message(f"You dropped the {item.name}.")
+        if item.name == "Health Potion":
+            config.health_potion_total = config.health_potion_total - 1
+        if item.name == "Lightning Scroll":
+            config.lightning_scrolls_total = config.lightning_scrolls_total - 1

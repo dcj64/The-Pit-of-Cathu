@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional, Tuple, TYPE_CHECKING
 
 import color
+import config
 import exceptions
 
 if TYPE_CHECKING:
@@ -53,6 +54,11 @@ class PickupAction(Action):
                 inventory.items.append(item)
 
                 self.engine.message_log.add_message(f"You picked up the {item.name}!")
+                print(item.name)
+                if item.name == "Health Potion":
+                    config.health_potion_total = config.health_potion_total + 1
+                if item.name == "Lightning Scroll":
+                    config.lightning_scrolls_total = config.lightning_scrolls_total + 1
                 return
 
         raise exceptions.Impossible("There is nothing here to pick up.")
@@ -163,5 +169,3 @@ class BumpAction(ActionWithDirection):
 
         else:
             return MovementAction(self.entity, self.dx, self.dy).perform()
-
-
