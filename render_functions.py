@@ -44,12 +44,12 @@ def render_bar(
         x=80, y=54, string=f"   Inventory/Used", fg=color.bar_text
     )
     console.print(
-        x=70, y=55, string=f"Healing Potions  :  {config.health_potion_total} / "
+        x=70, y=55, string=f"Healing Potions:  {config.health_potion_total} / "
         f"{config.health_potion_used}", fg=color.bar_text
     )
     console.print(
-        x=70, y=56, string=f"Lightning Scrolls:  {config.lightning_scrolls_total} / "
-        f"{config.lightning_scrolls_used}", fg=color.bar_text
+        x=70, y=56, string=f"Scrolls        :  {config.scrolls_total} / "
+        f"{config.scrolls_used}", fg=color.bar_text
     )
     console.print(
         x=65, y=58, string=f"Player moves so far:  {config.moves_used}", fg=color.bar_text

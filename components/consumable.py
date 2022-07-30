@@ -69,6 +69,8 @@ class ConfusionConsumable(Consumable):
         target.ai = components.ai.ConfusedEnemy(
             entity=target, previous_ai=target.ai, turns_remaining=self.number_of_turns,
         )
+        config.scrolls_used = config.scrolls_used + 1
+        config.scrolls_total = config.scrolls_total - 1
         self.consume()
 
 
@@ -121,6 +123,8 @@ class FireballDamageConsumable(Consumable):
                     f"The {actor.name} is engulfed in a fiery explosion, taking {self.damage} damage!"
                 )
                 actor.fighter.take_damage(self.damage)
+                config.scrolls_used = config.scrolls_used + 1
+                config.scrolls_total = config.scrolls_total - 1
                 targets_hit = True
 
         if not targets_hit:
@@ -151,8 +155,8 @@ class LightningDamageConsumable(Consumable):
                 f"A lighting bolt strikes the {target.name} with a loud thunder, for {self.damage} damage!"
             )
             target.fighter.take_damage(self.damage)
-            config.lightning_scrolls_used = config.lightning_scrolls_used + 1
-            config.lightning_scrolls_total = config.lightning_scrolls_total - 1
+            config.scrolls_used = config.scrolls_used + 1
+            config.scrolls_total = config.scrolls_total - 1
             self.consume()
         else:
             raise Impossible("No enemy is close enough to strike.")

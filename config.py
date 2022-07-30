@@ -6,8 +6,8 @@ monsters_killed = 0
 health_potion_total = 0
 health_potion_used = 0
 
-lightning_scrolls_total = 0
-lightning_scrolls_used = 0
+scrolls_total = 0
+scrolls_used = 0
 
 
 moves_used = 0
