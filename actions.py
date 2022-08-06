@@ -55,10 +55,13 @@ class PickupAction(Action):
 
                 self.engine.message_log.add_message(f"You picked up the {item.name}!")
                 print(item.name)
+                print(config.count)
                 if item.name == "Health Potion":
                     config.health_potion_total = config.health_potion_total + 1
-                if item.name == "Lightning Scroll":
-                    config.lightning_scrolls_total = config.lightning_scrolls_total + 1
+                elif item.name == "Lightning Scroll" or "Confusion Scroll" or " Fireball Scroll":
+                    config.scrolls_total = config.scrolls_total + 1
+                elif item.name == "Lamp of Iris":
+                    pass
                 return
 
         raise exceptions.Impossible("There is nothing here to pick up.")

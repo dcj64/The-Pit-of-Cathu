@@ -68,3 +68,9 @@ lightning_scroll = Item(
     name="Lightning Scroll",
     consumable=consumable.LightningDamageConsumable(damage=20, maximum_range=5),
 )
+lamp_strength = Item(
+    char="l",
+    color=(127, 5, 255),
+    name="Lamp of Iris",
+    consumable=consumable.LampStrength(amount=1),
+)
