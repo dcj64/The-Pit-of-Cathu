@@ -2,6 +2,7 @@ from components.ai import HostileEnemy
 from components import consumable
 from components.fighter import Fighter
 from components.inventory import Inventory
+from components.level import Level
 from entity import Actor, Item
 
 player = Actor(
@@ -11,6 +12,7 @@ player = Actor(
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=30, defense=2, power=5),
     inventory=Inventory(capacity=26),
+    level=Level(level_up_base=200),
 )
 orc = Actor(
     char="o",
@@ -19,6 +21,7 @@ orc = Actor(
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=10, defense=0, power=3),
     inventory=Inventory(capacity=0),
+    level=Level(xp_given=35),
 )
 troll = Actor(
     char="T",
@@ -27,6 +30,7 @@ troll = Actor(
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=12, defense=1, power=4),
     inventory=Inventory(capacity=0),
+    level=Level(xp_given=100),
 )
 shambler = Actor(
     char="S",
@@ -35,6 +39,7 @@ shambler = Actor(
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=15, defense=1, power=6),
     inventory=Inventory(capacity=0),
+    level=Level(xp_given=125),
 )
 cathu = Actor(
     char="C",
@@ -43,6 +48,7 @@ cathu = Actor(
     ai_cls=HostileEnemy,
     fighter=Fighter(hp=20, defense=2, power=10),
     inventory=Inventory(capacity=0),
+    level=Level(xp_given=150),
 )
 confusion_scroll = Item(
     char="~",

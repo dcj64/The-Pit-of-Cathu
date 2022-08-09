@@ -26,5 +26,5 @@ class Inventory(BaseComponent):
         self.engine.message_log.add_message(f"You dropped the {item.name}.")
         if item.name == "Health Potion":
             config.health_potion_total = config.health_potion_total - 1
-        elif item.name == "Lightning Scroll" or "Confusion Scroll" or "Fireball Scroll":
+        elif item.name == "Lightning Scroll" or "Confusion Scroll" or "Fireball Scroll" or "Lamp of Iris":
             config.scrolls_total = config.scrolls_total - 1

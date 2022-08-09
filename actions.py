@@ -58,10 +58,10 @@ class PickupAction(Action):
                 print(config.count)
                 if item.name == "Health Potion":
                     config.health_potion_total = config.health_potion_total + 1
-                elif item.name == "Lightning Scroll" or "Confusion Scroll" or " Fireball Scroll":
+                elif item.name == "Lightning Scroll" or "Confusion Scroll" or " Fireball Scroll" or "Lamp of Iris":
                     config.scrolls_total = config.scrolls_total + 1
-                elif item.name == "Lamp of Iris":
-                    pass
+                #  elif item.name == "Lamp of Iris":
+                    #  pass
                 return
 
         raise exceptions.Impossible("There is nothing here to pick up.")
@@ -69,7 +69,7 @@ class PickupAction(Action):
 
 class ItemAction(Action):
     def __init__(
-        self, entity: Actor, item: Item, target_xy: Optional[Tuple[int, int]] = None
+            self, entity: Actor, item: Item, target_xy: Optional[Tuple[int, int]] = None
     ):
         super().__init__(entity)
         self.item = item
@@ -79,11 +79,11 @@ class ItemAction(Action):
 
     @property
     def target_actor(self) -> Optional[Actor]:
-        """Return the actor at this actions destination."""
+        """Return the actor at this action's destination."""
         return self.engine.game_map.get_actor_at_location(*self.target_xy)
 
     def perform(self) -> None:
-        """Invoke the items ability, this action will be given to provide context."""
+        """Invoke the item's ability, this action will be given to provide context."""
         self.item.consumable.activate(self)
 
 
@@ -95,6 +95,23 @@ class DropItem(ItemAction):
 class WaitAction(Action):
     def perform(self) -> None:
         pass
+
+
+class TakeStairsAction(Action):
+    def perform(self) -> None:
+        """
+        Take the stairs, if any exist at the entity's location.
+        """
+        if (self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location:
+            self.engine.game_world.generate_floor()
+            self.engine.message_log.add_message(
+                "You descend the staircase.", color.descend
+            )
+        #  if ((self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location) \
+                #  and (config.total_monsters != config.monsters_killed):
+            #  raise exceptions.Impossible("The stairs are locked. There are still monsters to kill!")
+        else:
+            raise exceptions.Impossible("There are no stairs here.")
 
 
 class ActionWithDirection(Action):
@@ -111,12 +128,12 @@ class ActionWithDirection(Action):
 
     @property
     def blocking_entity(self) -> Optional[Entity]:
-        """Return the blocking entity at this actions destination.."""
+        """Return the blocking entity at this action's destination.."""
         return self.engine.game_map.get_blocking_entity_at_location(*self.dest_xy)
 
     @property
     def target_actor(self) -> Optional[Actor]:
-        """Return the actor at this actions destination."""
+        """Return the actor at this action's destination."""
         return self.engine.game_map.get_actor_at_location(*self.dest_xy)
 
     def perform(self) -> None:
