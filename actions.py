@@ -84,12 +84,26 @@ class ItemAction(Action):
 
     def perform(self) -> None:
         """Invoke the item's ability, this action will be given to provide context."""
-        self.item.consumable.activate(self)
+        if self.item.consumable:
+            self.item.consumable.activate(self)
 
 
 class DropItem(ItemAction):
     def perform(self) -> None:
+        if self.entity.equipment.item_is_equipped(self.item):
+            self.entity.equipment.toggle_equip(self.item)
+
         self.entity.inventory.drop(self.item)
+
+
+class EquipAction(Action):
+    def __init__(self, entity: Actor, item: Item):
+        super().__init__(entity)
+
+        self.item = item
+
+    def perform(self) -> None:
+        self.entity.equipment.toggle_equip(self.item)
 
 
 class WaitAction(Action):
@@ -108,7 +122,7 @@ class TakeStairsAction(Action):
                 "You descend the staircase.", color.descend
             )
         #  if ((self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location) \
-                #  and (config.total_monsters != config.monsters_killed):
+            #  and (config.total_monsters != config.monsters_killed):
             #  raise exceptions.Impossible("The stairs are locked. There are still monsters to kill!")
         else:
             raise exceptions.Impossible("There are no stairs here.")
