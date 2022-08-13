@@ -59,7 +59,8 @@ class Fighter(BaseComponent):
         else:
             death_message = f"{self.parent.name} is dead!"
             death_message_color = color.enemy_die
-            config.monsters_killed = config.monsters_killed + 1
+            config.monsters_on_level_killed = config.monsters_on_level_killed + 1
+            config.total_monsters_killed = config.total_monsters_killed + 1
 
         self.parent.char = "%"
         self.parent.color = (191, 0, 0)

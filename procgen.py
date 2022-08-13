@@ -31,13 +31,15 @@ item_chances: Dict[int, List[Tuple[Entity, int]]] = {
     2: [(entity_factories.confusion_scroll, 10)],
     4: [(entity_factories.lightning_scroll, 25), (entity_factories.sword, 5)],
     6: [(entity_factories.fireball_scroll, 25), (entity_factories.chain_mail, 15)],
+    8: [(entity_factories.lamp_strength, 30)],
 }
 
 enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
     0: [(entity_factories.orc, 80)],
     3: [(entity_factories.troll, 15)],
-    5: [(entity_factories.troll, 30)],
-    7: [(entity_factories.troll, 60)],
+    5: [(entity_factories.troll, 30), (entity_factories.shambler, 15)],
+    7: [(entity_factories.troll, 60), (entity_factories.shambler, 30)],
+    10: [(entity_factories.cathu, 30)],
 }
 
 
@@ -111,10 +113,11 @@ class RectangularRoom:
         )
 
 
-def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int, ) -> None:
+def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int) -> None:
     number_of_monsters = random.randint(
         0, get_max_value_for_floor(max_monsters_by_floor, floor_number)
     )
+
     number_of_items = random.randint(
         0, get_max_value_for_floor(max_items_by_floor, floor_number)
     )
@@ -122,9 +125,14 @@ def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int, )
     monsters: List[Entity] = get_entities_at_random(
         enemy_chances, number_of_monsters, floor_number
     )
+
     items: List[Entity] = get_entities_at_random(
         item_chances, number_of_items, floor_number
     )
+
+    total_monsters = len(monsters)
+    print(total_monsters)
+    config.total_level_monsters = config.total_level_monsters + len(monsters)
 
     for entity in monsters + items:
         x = random.randint(room.x1 + 1, room.x2 - 1)

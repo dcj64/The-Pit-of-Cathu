@@ -7,6 +7,7 @@ from tcod.console import Console
 
 from entity import Actor, Item
 import tile_types
+import config
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -129,7 +130,6 @@ class GameWorld:
 
     def generate_floor(self) -> None:
         from procgen import generate_dungeon
-
         self.current_floor += 1
 
         self.engine.game_map = generate_dungeon(

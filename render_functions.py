@@ -31,11 +31,11 @@ def render_bar(
         x=1, y=56, string=f"Total Rooms: {config.number_of_rooms}", fg=color.bar_text
     )
     console.print(
-        x=1, y=58, string=f"Total monsters: {config.total_monsters}/"
-        f"{config.total_monsters - config.monsters_killed}", fg=color.bar_text
+        x=1, y=58, string=f"Monsters per level:{config.total_level_monsters}/"
+        f"{config.monsters_on_level_killed}", fg=color.bar_text
     )
     console.print(
-        x=1, y=59, string=f"Monsters killed: {config.monsters_killed}", fg=(204, 0, 0)
+        x=1, y=59, string=f"Total Monsters killed:{config.total_monsters_killed}", fg=(204, 0, 0)
     )
     console.print(
         x=65, y=53, string=f"*** To use items Press (i) ***", fg=color.bar_text
