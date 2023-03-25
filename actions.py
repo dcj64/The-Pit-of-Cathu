@@ -5,6 +5,7 @@ from typing import Optional, Tuple, TYPE_CHECKING
 import color
 import config
 import exceptions
+import time
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -58,7 +59,8 @@ class PickupAction(Action):
                 print(config.count)
                 if item.name == "Health Potion":
                     config.health_potion_total = config.health_potion_total + 1
-                elif item.name == "Lightning Scroll" or "Confusion Scroll" or " Fireball Scroll" or "Lamp of Iris":
+                elif item.name == "Lightning Scroll" or "Confusion Scroll" or "Fireball Scroll" or "Berserker Scroll"\
+                        or "Lamp of Iris":
                     config.scrolls_total = config.scrolls_total + 1
                 #  elif item.name == "Lamp of Iris":
                     #  pass
@@ -119,10 +121,11 @@ class TakeStairsAction(Action):
         if (self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location:
             config.total_level_monsters = 0
             config.monsters_on_level_killed = 0
-            self.engine.game_world.generate_floor()
             self.engine.message_log.add_message(
-                "You descend the staircase.", color.descend
+                "You cautiously descend the staircase.", color.descend
             )
+            self.engine.game_world.generate_floor()
+            time.sleep(1.5)
         #  if ((self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location) \
             #  and (config.total_monsters != config.monsters_killed):
             #  raise exceptions.Impossible("The stairs are locked. There are still monsters to kill!")

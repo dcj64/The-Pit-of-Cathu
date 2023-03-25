@@ -14,7 +14,6 @@ from engine import Engine
 import entity_factories
 from game_map import GameWorld
 import input_handlers
-from procgen import generate_dungeon
 
 
 # Load the background image and remove the alpha channel.
@@ -80,6 +79,9 @@ class MainMenu(input_handlers.BaseEventHandler):
         """Render the main menu on a background image."""
         console.draw_semigraphics(background_image, 0, 0)
 
+        tcod.console.Console.draw_rect(console, 35, 23, 30, 11, 0, (65, 40, 50,), (255, 0, 25), 0)
+        tcod.console.Console.draw_rect(console, 35, 45, 24, 11, 0, (65, 40, 50,), (255, 0, 25), 0)
+
         console.print(
             console.width // 2,
             console.height // 2 - 4,
@@ -89,8 +91,22 @@ class MainMenu(input_handlers.BaseEventHandler):
         )
         console.print(
             console.width // 2,
-            console.height - 2,
+            console.height - 13,
             "By scratchthatpost",
+            fg=color.menu_title,
+            alignment=tcod.CENTER,
+        )
+        console.print(
+            console.width - 50,
+            console.height - 36,
+            "------------------------------",
+            fg=color.menu_title,
+            alignment=tcod.CENTER,
+        )
+        console.print(
+            console.width - 50,
+            console.height - 28,
+            "------------------------------",
             fg=color.menu_title,
             alignment=tcod.CENTER,
         )

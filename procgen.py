@@ -27,7 +27,7 @@ max_monsters_by_floor = [
 ]
 
 item_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(entity_factories.health_potion, 35)],
+    0: [(entity_factories.health_potion, 35), (entity_factories.berserker_scroll, 30)],
     2: [(entity_factories.confusion_scroll, 10)],
     4: [(entity_factories.lightning_scroll, 25), (entity_factories.sword, 5)],
     6: [(entity_factories.fireball_scroll, 25), (entity_factories.chain_mail, 15)],
@@ -156,8 +156,10 @@ def tunnel_between(
         corner_x, corner_y = x1, y2
 
     # Generate the coordinates for this tunnel.
+    # noinspection PyTypeChecker
     for x, y in tcod.los.bresenham((x1, y1), (corner_x, corner_y)).tolist():
         yield x, y
+    # noinspection PyTypeChecker
     for x, y in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
         yield x, y
 
@@ -198,6 +200,7 @@ def generate_dungeon(
 
         if len(rooms) == 0:
             # The first room, where the player starts.
+            # noinspection PyTypeChecker
             player.place(*new_room.center, dungeon)
         else:  # All rooms after the first.
             # Dig out a tunnel between this room and the previous one.
@@ -219,4 +222,3 @@ def generate_dungeon(
         #  print("Number of rooms = ", config.number_of_rooms)
 
     return dungeon
-

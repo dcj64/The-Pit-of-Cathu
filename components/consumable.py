@@ -180,3 +180,19 @@ class LightningDamageConsumable(Consumable):
             self.consume()
         else:
             raise Impossible("No enemy is close enough to strike.")
+
+
+class BerserkerDamageConsumable(Consumable):
+    def __init__(self, damage: int):
+        self.damage = damage
+
+    def activate(self, action: actions.ItemAction) -> None:
+        self.engine.message_log.add_message(
+            f"You consume the {self.parent.name},and become berserk for the next 5 moves!\n"
+            f"You are now a BERSERKER!!!\n"
+            f"Capable of dealing extra damage!", color.berserker,
+        )
+        config.scrolls_used = config.scrolls_used + 1
+        config.scrolls_total = config.scrolls_total - 1
+        self.consume()
+

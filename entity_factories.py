@@ -80,6 +80,12 @@ lightning_scroll = Item(
     name="Lightning Scroll",
     consumable=consumable.LightningDamageConsumable(damage=20, maximum_range=5),
 )
+berserker_scroll = Item(
+    char="~",
+    color=(127, 5, 255),
+    name="Berserker Scroll",
+    consumable=consumable.BerserkerDamageConsumable(damage=30)
+)
 lamp_strength = Item(
     char="l",
     color=(127, 5, 255),
@@ -88,10 +94,16 @@ lamp_strength = Item(
 )
 
 dagger = Item(
-    char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger()
+    char="/",
+    color=(0, 191, 255),
+    name="Dagger",
+    equippable=equippable.Dagger()
 )
 
-sword = Item(char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword())
+sword = Item(char="/",
+             color=(0, 191, 255),
+             name="Sword",
+             equippable=equippable.Sword())
 
 leather_armor = Item(
     char="[",
@@ -101,5 +113,15 @@ leather_armor = Item(
 )
 
 chain_mail = Item(
-    char="[", color=(139, 69, 19), name="Chain Mail", equippable=equippable.ChainMail()
+    char="[",
+    color=(139, 69, 19),
+    name="Chain Mail",
+    equippable=equippable.ChainMail()
+)
+
+plate_mail = Item(
+    char="[",
+    color=(139, 69, 19),
+    name="Plate Mail",
+    equippable=equippable.PlateMail()
 )

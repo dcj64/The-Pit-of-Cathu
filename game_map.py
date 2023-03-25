@@ -7,7 +7,7 @@ from tcod.console import Console
 
 from entity import Actor, Item
 import tile_types
-import config
+
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -39,7 +39,7 @@ class GameMap:
 
     @property
     def actors(self) -> Iterator[Actor]:
-        """Iterate over this maps living actors."""
+        """Iterate over these maps living actors."""
         yield from (
             entity
             for entity in self.entities
@@ -140,5 +140,3 @@ class GameWorld:
             map_height=self.map_height,
             engine=self.engine,
         )
-
-

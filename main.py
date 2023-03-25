@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import traceback
 
 import tcod
@@ -17,11 +18,11 @@ def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
 
 
 def main() -> None:
-    screen_width = 100
-    screen_height = 60
+    screen_width = 100  # 100
+    screen_height = 60 # 60
 
     # map_width = 100
-    #  map_height = 52
+    # map_height = 52
 
     tileset = tcod.tileset.load_tilesheet(
         "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
@@ -35,13 +36,16 @@ def main() -> None:
         tileset=tileset,
         title="The Pit of Cathu",
         vsync=True,
+
     ) as context:
         root_console = tcod.Console(screen_width, screen_height, order="F")
         try:
             while True:
+                context.present(root_console, keep_aspect=True, integer_scaling=True)
+                os.environ["SDL_RENDER_SCALE_QUALITY"] = "best"
+                os.environ["SDL_RENDER_SCALE_QUALITY"] = "linear"
                 root_console.clear()
                 handler.on_render(console=root_console)
-                context.present(root_console)
 
                 try:
                     for event in tcod.event.wait():

@@ -41,7 +41,7 @@ def render_bar(
         x=65, y=53, string=f"*** To use items Press (i) ***", fg=color.bar_text
     )
     console.print(
-        x=80, y=54, string=f"   Inventory/Used", fg=color.bar_text
+        x=78, y=54, string=f"   Inventory/Used", fg=color.bar_text
     )
     console.print(
         x=70, y=55, string=f"Healing Potions:  {config.health_potion_total} / "
