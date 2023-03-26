@@ -100,10 +100,11 @@ dagger = Item(
     equippable=equippable.Dagger()
 )
 
-sword = Item(char="/",
-             color=(0, 191, 255),
-             name="Sword",
-             equippable=equippable.Sword())
+sword = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Sword",
+    equippable=equippable.Sword())
 
 leather_armor = Item(
     char="[",
@@ -125,3 +126,12 @@ plate_mail = Item(
     name="Plate Mail",
     equippable=equippable.PlateMail()
 )
+
+amulet = Item(
+    char="a",
+    color=(0, 191, 255),
+    name="Amulet of Loraine",
+    equippable=equippable.Amulets()
+)
+
+

@@ -196,3 +196,4 @@ class BerserkerDamageConsumable(Consumable):
         config.scrolls_total = config.scrolls_total - 1
         self.consume()
 
+
