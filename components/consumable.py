@@ -90,7 +90,7 @@ class HealingConsumable(Consumable):
         if amount_recovered > 0:
             self.engine.message_log.add_message(
                 f"You consume the {self.parent.name}, and recover {amount_recovered} HP!",
-                color.health_recovered,
+                f"Your wounds start to feel better!", color.health_recovered,
             )
             config.health_potion_used = config.health_potion_used + 1
             config.health_potion_total = config.health_potion_total - 1
@@ -200,5 +200,6 @@ class BerserkerDamageConsumable(Consumable):
         config.scrolls_used = config.scrolls_used + 1
         config.scrolls_total = config.scrolls_total - 1
         self.consume()
+
 
 
