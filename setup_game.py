@@ -79,8 +79,8 @@ class MainMenu(input_handlers.BaseEventHandler):
         """Render the main menu on a background image."""
         console.draw_semigraphics(background_image, 0, 0)
 
-        tcod.console.Console.draw_rect(console, 35, 23, 30, 11, 0, (65, 40, 50,), (255, 0, 25), 0)
-        tcod.console.Console.draw_rect(console, 35, 45, 24, 11, 0, (65, 40, 50,), (255, 0, 25), 0)
+        tcod.console.Console.draw_rect(console, 35, 23, 30, 11, 0, (65, 10, 10,), (255, 0, 25), 0)
+        tcod.console.Console.draw_rect(console, 35, 45, 24, 11, 0, (65, 10, 10,), (255, 0, 25), 0)
 
         console.print(
             console.width // 2,

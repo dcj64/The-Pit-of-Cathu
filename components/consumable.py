@@ -8,6 +8,7 @@ import color
 import components.ai
 import components.inventory
 import config
+import random
 from components.base_component import BaseComponent
 from exceptions import Impossible
 from input_handlers import (
@@ -187,11 +188,15 @@ class BerserkerDamageConsumable(Consumable):
         self.damage = damage
 
     def activate(self, action: actions.ItemAction) -> None:
+        num = random.randint(2, 5)
+        for actor in self.engine.game_map.actors:
+            if actor.fighter.base_power > 1:
+                actor.fighter.base_power = actor.fighter.base_power + num
         self.engine.message_log.add_message(
-            f"You consume the {self.parent.name},and become berserk for the next 5 moves!\n"
-            f"You are now a BERSERKER!!!\n"
-            f"Capable of dealing extra damage!", color.berserker,
-        )
+            f"You consume the {self.parent.name},and become a Berserker for the next 5 moves!\n"
+            f"Capable of dealing extra damage!\n"
+            f"You receive an extra, {num} attack", color.berserker,
+        ) 
         config.scrolls_used = config.scrolls_used + 1
         config.scrolls_total = config.scrolls_total - 1
         self.consume()
