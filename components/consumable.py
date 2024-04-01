@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abc import ABC
+# from abc import ABC
 from typing import Optional, TYPE_CHECKING
 
 import actions
@@ -29,7 +29,7 @@ class Consumable(BaseComponent):
         return actions.ItemAction(consumer, self.parent)
 
     def activate(self, action: actions.ItemAction) -> None:
-        """Invoke this items ability.
+        """Invoke this item's ability.
 
         `action` is the context for this activation.
         """
@@ -74,8 +74,8 @@ class ConfusionConsumable(Consumable):
         target.ai = components.ai.ConfusedEnemy(
             entity=target, previous_ai=target.ai, turns_remaining=self.number_of_turns,
         )
-        config.scrolls_used = config.scrolls_used + 1
-        config.scrolls_total = config.scrolls_total - 1
+        config.confusion_scroll_used = config.confusion_scroll_used + 1
+        config.confusion_scroll_total = config.confusion_scroll_total - 1
         self.consume()
 
 
@@ -89,7 +89,7 @@ class HealingConsumable(Consumable):
 
         if amount_recovered > 0:
             self.engine.message_log.add_message(
-                f"You consume the {self.parent.name}, and recover {amount_recovered} HP!",
+                f"You consume the {self.parent.name} and recover {amount_recovered} HP!",
                 f"Your wounds start to feel better!", color.health_recovered,
             )
             config.health_potion_used = config.health_potion_used + 1
@@ -144,8 +144,8 @@ class FireballDamageConsumable(Consumable):
                     f"The {actor.name} is engulfed in a fiery explosion, taking {self.damage} damage!"
                 )
                 actor.fighter.take_damage(self.damage)
-                config.scrolls_used = config.scrolls_used + 1
-                config.scrolls_total = config.scrolls_total - 1
+                config.fireball_scroll_used = config.fireball_scroll_used + 1
+                config.fireball_scroll_total = config.fireball_scroll_total - 1
                 targets_hit = True
 
         if not targets_hit:
@@ -176,15 +176,51 @@ class LightningDamageConsumable(Consumable):
                 f"A lighting bolt strikes the {target.name} with a loud thunder, for {self.damage} damage!"
             )
             target.fighter.take_damage(self.damage)
-            config.scrolls_used = config.scrolls_used + 1
-            config.scrolls_total = config.scrolls_total - 1
+            config.lightning_scroll_used = config.lightning_scroll_used + 1
+            config.lightning_scroll_total = config.lightning_scroll_total - 1
             self.consume()
         else:
             raise Impossible("No enemy is close enough to strike.")
 
+class GenocideDamageConsumable(Consumable):
+    def __init__(self, damage: int, radius: int):
+        self.damage = damage
+        self.radius = radius
+
+    def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
+        self.engine.message_log.add_message(
+            "Select a target to Genocide!", color.needs_target
+        )
+        return AreaRangedAttackHandler(
+            self.engine,
+            radius=self.radius,
+            callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
+        )
+
+    def activate(self, action: actions.ItemAction) -> None:
+        target_xy = action.target_xy
+
+        if not self.engine.game_map.visible[target_xy]:
+            raise Impossible("You cannot genocide something you cannot see!")
+
+        targets_hit = False
+        for actor in self.engine.game_map.actors:
+            if actor.distance(*target_xy) <= self.radius:
+                self.engine.message_log.add_message(
+                    f"The {actor.name} has been successfully 'genocided', taking {self.damage} damage!"
+                )
+                actor.fighter.take_damage(self.damage)
+                config.genocide_scroll_used = config.genocide_scroll_used + 1
+                config.genocide_scroll_total = config.genocide_scroll_total - 1
+                targets_hit = True
+
+        if not targets_hit:
+            raise Impossible("There are no targets in the radius.")
+        self.consume()
 
 class BerserkerDamageConsumable(Consumable):
-    def __init__(self, damage: int):
+    def __init__(self, number_of_turns: int, damage: int):
+        self.number_of_turns = number_of_turns
         self.damage = damage
 
     def activate(self, action: actions.ItemAction) -> None:
@@ -195,11 +231,8 @@ class BerserkerDamageConsumable(Consumable):
         self.engine.message_log.add_message(
             f"You consume the {self.parent.name},and become a Berserker for the next 5 moves!\n"
             f"Capable of dealing extra damage!\n"
-            f"You receive an extra, {num} attack", color.berserker,
-        ) 
+            f"You receive an extra, {num} attack", color.red,
+        )
         config.scrolls_used = config.scrolls_used + 1
         config.scrolls_total = config.scrolls_total - 1
         self.consume()
-
-
-

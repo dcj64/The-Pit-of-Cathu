@@ -8,6 +8,8 @@ import traceback
 from typing import Optional
 
 import tcod
+from tcod import libtcodpy
+import config
 
 import color
 from engine import Engine
@@ -22,12 +24,12 @@ background_image = tcod.image.load("menu_background.png")[:, :, :3]
 
 def new_game() -> Engine:
     """Return a brand new game session as an Engine instance."""
-    map_width = 100
-    map_height = 52
+    map_width = config.map_width
+    map_height = config.map_height
 
-    room_max_size = 10
-    room_min_size = 6
-    max_rooms = 30
+    room_max_size = config.room_max_size
+    room_min_size = config.room_min_size
+    max_rooms = config.max_rooms
 
     player = copy.deepcopy(entity_factories.player)
 
@@ -79,58 +81,58 @@ class MainMenu(input_handlers.BaseEventHandler):
         """Render the main menu on a background image."""
         console.draw_semigraphics(background_image, 0, 0)
 
-        tcod.console.Console.draw_rect(console, 35, 23, 30, 11, 0, (65, 10, 10,), (255, 0, 25), 0)
-        tcod.console.Console.draw_rect(console, 35, 45, 24, 11, 0, (65, 10, 10,), (255, 0, 25), 0)
+        tcod.console.Console.draw_rect(console, 44, 30, 33, 13, 0, (65, 10, 10,), (255, 0, 25), 0)
+        tcod.console.Console.draw_rect(console, 45, 45, 30, 11, 0, (65, 10, 10,), (255, 0, 25), 0)
 
         console.print(
             console.width // 2,
-            console.height // 2 - 4,
-            "THE PIT OF CATHU ",
+            console.height // 2 - 8,
+            config.title_extended,
             fg=color.menu_title,
-            alignment=tcod.CENTER,
+            alignment=libtcodpy.CENTER,
         )
         console.print(
             console.width // 2,
-            console.height - 13,
-            "By scratchthatpost",
+            console.height - 33,
+            config.author,
             fg=color.menu_title,
-            alignment=tcod.CENTER,
+            alignment=libtcodpy.CENTER,
         )
         console.print(
-            console.width - 50,
-            console.height - 36,
+            console.width - 60,
+            console.height - 35,
             "------------------------------",
             fg=color.menu_title,
-            alignment=tcod.CENTER,
+            alignment=libtcodpy.CENTER,
         )
         console.print(
-            console.width - 50,
-            console.height - 28,
+            console.width - 60,
+            console.height - 30,
             "------------------------------",
             fg=color.menu_title,
-            alignment=tcod.CENTER,
+            alignment=libtcodpy.CENTER,
         )
 
         menu_width = 24
         for i, text in enumerate(
-            ["[N] Play a new game", "[C] Continue last game", "[Q] Quit"]
+            ["[N] Play a new game", "[C] Continue last game", "[M] Menu", "", "[Q] Quit"]
         ):
             console.print(
                 console.width // 2,
-                console.height // 2 - 2 + i,
+                console.height // 2 - 5 + i,
                 text.ljust(menu_width),
                 fg=color.menu_text,
                 bg=color.black,
-                alignment=tcod.CENTER,
-                bg_blend=tcod.BKGND_ALPHA(64),
+                alignment=libtcodpy.CENTER,
+                bg_blend=libtcodpy.BKGND_ALPHA(64),
             )
 
     def ev_keydown(
         self, event: tcod.event.KeyDown
     ) -> Optional[input_handlers.BaseEventHandler]:
-        if event.sym in (tcod.event.K_q, tcod.event.K_ESCAPE):
+        if event.sym in (tcod.event.KeySym.q, tcod.event.KeySym.ESCAPE):
             raise SystemExit()
-        elif event.sym == tcod.event.K_c:
+        elif event.sym == tcod.event.KeySym.c:
             try:
                 return input_handlers.MainGameEventHandler(load_game("savegame.sav"))
             except FileNotFoundError:
@@ -138,7 +140,7 @@ class MainMenu(input_handlers.BaseEventHandler):
             except Exception as exc:
                 traceback.print_exc()  # Print to stderr.
                 return input_handlers.PopupMessage(self, f"Failed to load save:\n{exc}")
-        elif event.sym == tcod.event.K_n:
+        elif event.sym == tcod.event.KeySym.n:
             return input_handlers.MainGameEventHandler(new_game())
 
         return None

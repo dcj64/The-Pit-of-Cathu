@@ -24,43 +24,43 @@ if TYPE_CHECKING:
 
 MOVE_KEYS = {
     # Arrow keys.
-    tcod.event.K_UP: (0, -1),
-    tcod.event.K_DOWN: (0, 1),
-    tcod.event.K_LEFT: (-1, 0),
-    tcod.event.K_RIGHT: (1, 0),
-    tcod.event.K_HOME: (-1, -1),
-    tcod.event.K_END: (-1, 1),
-    tcod.event.K_PAGEUP: (1, -1),
-    tcod.event.K_PAGEDOWN: (1, 1),
+    tcod.event.KeySym.UP: (0, -1),
+    tcod.event.KeySym.DOWN: (0, 1),
+    tcod.event.KeySym.LEFT: (-1, 0),
+    tcod.event.KeySym.RIGHT: (1, 0),
+    tcod.event.KeySym.HOME: (-1, -1),
+    tcod.event.KeySym.END: (-1, 1),
+    tcod.event.KeySym.PAGEUP: (1, -1),
+    tcod.event.KeySym.PAGEDOWN: (1, 1),
     # Numpad keys.
-    tcod.event.K_KP_1: (-1, 1),
-    tcod.event.K_KP_2: (0, 1),
-    tcod.event.K_KP_3: (1, 1),
-    tcod.event.K_KP_4: (-1, 0),
-    tcod.event.K_KP_6: (1, 0),
-    tcod.event.K_KP_7: (-1, -1),
-    tcod.event.K_KP_8: (0, -1),
-    tcod.event.K_KP_9: (1, -1),
+    tcod.event.KeySym.KP_1: (-1, 1),
+    tcod.event.KeySym.KP_2: (0, 1),
+    tcod.event.KeySym.KP_3: (1, 1),
+    tcod.event.KeySym.KP_4: (-1, 0),
+    tcod.event.KeySym.KP_6: (1, 0),
+    tcod.event.KeySym.KP_7: (-1, -1),
+    tcod.event.KeySym.KP_8: (0, -1),
+    tcod.event.KeySym.KP_9: (1, -1),
     # Vi keys.
-    tcod.event.K_h: (-1, 0),
-    tcod.event.K_j: (0, 1),
-    tcod.event.K_k: (0, -1),
-    tcod.event.K_l: (1, 0),
-    tcod.event.K_y: (-1, -1),
-    tcod.event.K_u: (1, -1),
-    tcod.event.K_b: (-1, 1),
-    tcod.event.K_n: (1, 1),
+    tcod.event.KeySym.h: (-1, 0),
+    tcod.event.KeySym.j: (0, 1),
+    tcod.event.KeySym.k: (0, -1),
+    tcod.event.KeySym.l: (1, 0),
+    tcod.event.KeySym.y: (-1, -1),
+    tcod.event.KeySym.u: (1, -1),
+    tcod.event.KeySym.b: (-1, 1),
+    tcod.event.KeySym.n: (1, 1),
 }
 
 WAIT_KEYS = {
-    tcod.event.K_PERIOD,
-    tcod.event.K_KP_5,
-    tcod.event.K_CLEAR,
+    tcod.event.KeySym.PERIOD,
+    tcod.event.KeySym.KP_5,
+    tcod.event.KeySym.CLEAR,
 }
 
 CONFIRM_KEYS = {
-    tcod.event.K_RETURN,
-    tcod.event.K_KP_ENTER,
+    tcod.event.KeySym.RETURN,
+    tcod.event.KeySym.KP_ENTER,
 }
 
 ActionOrHandler = Union[Action, "BaseEventHandler"]
@@ -85,33 +85,6 @@ class BaseEventHandler(tcod.event.EventDispatch[ActionOrHandler]):
 
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         raise SystemExit()
-
-
-class PopupMessage(BaseEventHandler):
-    """Display a popup text window."""
-
-    def __init__(self, parent_handler: BaseEventHandler, text: str):
-        self.parent = parent_handler
-        self.text = text
-
-    def on_render(self, console: tcod.Console) -> None:
-        """Render the parent and dim the result, then print the message on top."""
-        self.parent.on_render(console)
-        console.tiles_rgb["fg"] //= 8
-        console.tiles_rgb["bg"] //= 8
-
-        console.print(
-            console.width // 2,
-            console.height // 2,
-            self.text,
-            fg=color.white,
-            bg=color.black,
-            alignment=tcod.CENTER,
-        )
-
-    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[BaseEventHandler]:
-        """Any key returns to the parent handler."""
-        return self.parent
 
 
 class PopupMessage(BaseEventHandler):
@@ -192,12 +165,12 @@ class AskUserEventHandler(EventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
         """By default any key exits this input handler."""
         if event.sym in {  # Ignore modifier keys.
-            tcod.event.K_LSHIFT,
-            tcod.event.K_RSHIFT,
-            tcod.event.K_LCTRL,
-            tcod.event.K_RCTRL,
-            tcod.event.K_LALT,
-            tcod.event.K_RALT,
+            tcod.event.KeySym.LSHIFT,
+            tcod.event.KeySym.RSHIFT,
+            tcod.event.KeySym.LCTRL,
+            tcod.event.KeySym.RCTRL,
+            tcod.event.KeySym.LALT,
+            tcod.event.KeySym.RALT,
         }:
             return None
         return self.on_exit()
@@ -210,7 +183,7 @@ class AskUserEventHandler(EventHandler):
 
     def on_exit(self) -> Optional[ActionOrHandler]:
         """Called when the user is trying to exit or cancel an action.
-        By default this returns to the main event handler.
+        By default, this returns to the main event handler.
         """
         return MainGameEventHandler(self.engine)
 
@@ -305,7 +278,7 @@ class LevelUpEventHandler(AskUserEventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
         player = self.engine.player
         key = event.sym
-        index = key - tcod.event.K_a
+        index = key - tcod.event.KeySym.a
 
         if 0 <= index <= 2:
             if index == 0:
@@ -387,7 +360,7 @@ class InventoryEventHandler(AskUserEventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
         player = self.engine.player
         key = event.sym
-        index = key - tcod.event.K_a
+        index = key - tcod.event.KeySym.a
 
         if 0 <= index <= 26:
             try:
@@ -548,7 +521,7 @@ class MainGameEventHandler(EventHandler):
 
         player = self.engine.player
 
-        if key == tcod.event.K_PERIOD and modifier & (
+        if key == tcod.event.KeySym.PERIOD and modifier & (
                 tcod.event.KMOD_LSHIFT | tcod.event.KMOD_RSHIFT
         ):
             return actions.TakeStairsAction(player)
@@ -559,21 +532,21 @@ class MainGameEventHandler(EventHandler):
         elif key in WAIT_KEYS:
             action = WaitAction(player)
 
-        elif key == tcod.event.K_ESCAPE:
+        elif key == tcod.event.KeySym.ESCAPE:
             raise SystemExit()
-        elif key == tcod.event.K_v:
+        elif key == tcod.event.KeySym.v:
             return HistoryViewer(self.engine)
 
-        elif key == tcod.event.K_g:
+        elif key == tcod.event.KeySym.g:
             action = PickupAction(player)
 
-        elif key == tcod.event.K_i:
+        elif key == tcod.event.KeySym.i:
             return InventoryActivateHandler(self.engine)
-        elif key == tcod.event.K_d:
+        elif key == tcod.event.KeySym.d:
             return InventoryDropHandler(self.engine)
-        elif key == tcod.event.K_c:
+        elif key == tcod.event.KeySym.c:
             return CharacterScreenEventHandler(self.engine)
-        elif key == tcod.event.K_SLASH:
+        elif key == tcod.event.KeySym.SLASH:
             return LookHandler(self.engine)
         config.moves_used = config.moves_used + 1
         # No valid key was pressed
@@ -591,15 +564,15 @@ class GameOverEventHandler(EventHandler):
         self.on_quit()
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> None:
-        if event.sym == tcod.event.K_ESCAPE:
+        if event.sym == tcod.event.KeySym.ESCAPE:
             self.on_quit()
 
 
 CURSOR_Y_KEYS = {
-    tcod.event.K_UP: -1,
-    tcod.event.K_DOWN: 1,
-    tcod.event.K_PAGEUP: -10,
-    tcod.event.K_PAGEDOWN: 10,
+    tcod.event.KeySym.UP: -1,
+    tcod.event.KeySym.DOWN: 1,
+    tcod.event.KeySym.PAGEUP: -10,
+    tcod.event.KeySym.PAGEDOWN: 10,
 }
 
 
@@ -646,9 +619,9 @@ class HistoryViewer(EventHandler):
             else:
                 # Otherwise move while staying clamped to the bounds of the history log.
                 self.cursor = max(0, min(self.cursor + adjust, self.log_length - 1))
-        elif event.sym == tcod.event.K_HOME:
+        elif event.sym == tcod.event.KeySym.HOME:
             self.cursor = 0  # Move directly to the top message.
-        elif event.sym == tcod.event.K_END:
+        elif event.sym == tcod.event.KeySym.END:
             self.cursor = self.log_length - 1  # Move directly to the last message.
         else:  # Any other key moves back to the main game state.
             return MainGameEventHandler(self.engine)

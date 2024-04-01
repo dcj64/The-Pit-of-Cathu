@@ -4,6 +4,7 @@ from typing import Tuple, TYPE_CHECKING
 
 import color
 import config
+from tcod import libtcodpy
 
 if TYPE_CHECKING:
     from tcod import Console
@@ -27,43 +28,70 @@ def render_bar(
 ) -> None:
     bar_width = int(float(current_value) / maximum_value * total_width)
 
-    console.print(
-        x=1, y=56, string=f"Total Rooms: {config.number_of_rooms}", fg=color.bar_text
-    )
-    console.print(
-        x=1, y=58, string=f"Monsters per level:{config.total_level_monsters}/"
-        f"{config.monsters_on_level_killed}", fg=color.bar_text
-    )
-    console.print(
-        x=1, y=59, string=f"Total Monsters killed:{config.total_monsters_killed}", fg=(204, 0, 0)
-    )
-    console.print(
-        x=65, y=53, string=f"*** To use items Press (i) ***", fg=color.bar_text
-    )
-    console.print(
-        x=78, y=54, string=f"   Inventory/Used", fg=color.bar_text
-    )
-    console.print(
-        x=70, y=55, string=f"Healing Potions:  {config.health_potion_total} / "
-        f"{config.health_potion_used}", fg=color.bar_text
-    )
-    console.print(
-        x=70, y=56, string=f"Scrolls        :  {config.scrolls_total} / "
-        f"{config.scrolls_used}", fg=color.bar_text
-    )
-    console.print(
-        x=65, y=58, string=f"Player moves so far:  {config.moves_used}", fg=color.bar_text
-    )
-
-    console.draw_rect(x=1, y=53, width=total_width, height=1, ch=1, bg=color.bar_empty)
+    console.draw_rect(x=5, y=65, width=20, height=1, ch=1, bg=color.bar_empty)
 
     if bar_width > 0:
         console.draw_rect(
-            x=1, y=53, width=bar_width, height=1, ch=1, bg=color.bar_filled
+            x=5, y=65, width=bar_width, height=1, ch=1, bg=color.bar_filled
         )
         console.print(
-            x=1, y=53, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
+            x=5, y=65, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
         )
+
+    console.draw_frame(x=1, y=58, width=30, height=22)  # draw simple box around player info
+    console.print_box(x=10, y=58, width=13, height=1, string="┤Character(c)├", alignment=libtcodpy.CENTER)
+    console.draw_frame(x=83, y=58, width=35, height=22)
+    console.print_box(x=95, y=58, width=13, height=1, string="┤Inventory(i)├", alignment=libtcodpy.CENTER)
+
+    console.print(
+        x=5, y=70, string=f"Monsters per level:{config.total_level_monsters}/"
+                          f"{config.monsters_on_level_killed}", fg=color.bar_text
+    )
+    console.print(
+        x=5, y=72, string=f"Total Monsters killed:{config.total_monsters_killed}", fg=(204, 0, 0)
+    )
+
+    console.print(
+        x=5, y=76, string=f"Total Rooms: {config.number_of_rooms}", fg=color.bar_text
+    )
+    console.print(
+        x=96, y=61, string=f"   Inventory/Used", fg=color.bar_text
+    )
+    console.print(
+        x=88, y=62, string=f"Healing Potions :  {config.health_potion_total} / "
+                           f"{config.health_potion_used}", fg=color.bar_text
+    )
+    console.print(
+        x=88, y=63, string=f""
+    )
+    console.print(
+        x=88, y=64, string=f" *** Scrolls ***", fg=color.bar_text3  # :  {config.scrolls_total} / "
+                           # f"{config.scrolls_used}", fg=color.bar_text
+    )
+    console.print(
+        x=88, y=65, string=f"Lighting Scroll :  {config.lightning_scroll_total} / "
+                           f"{config.lightning_scroll_used}", fg=color.bar_text
+    )
+    console.print(
+        x=88, y=66, string=f"Confusion Scroll:  {config.confusion_scroll_total} / "
+                           f"{config.confusion_scroll_used}", fg=color.bar_text
+    )
+    console.print(
+        x=88, y=67, string=f"Fireball Scroll :  {config.fireball_scroll_total} / "
+                           f"{config.fireball_scroll_used}", fg=color.bar_text
+    )
+    console.print(
+        x=88, y=68, string=f"Berserker Scroll:  {config.berserker_scroll_total} / "
+                           f"{config.berserker_scroll_used}", fg=color.bar_text
+    )
+    console.print(
+        x=88, y=69, string=f"Genocide Scroll :  {config.genocide_scroll_total} / "
+                           f"{config.genocide_scroll_used}", fg=color.bar_text2
+    )
+
+    console.print(  # testing how to print char to screen
+        x=85, y=72, string=f"Test: {chr(0x263A)}{chr(0xBB)}{chr(0xA0)}{chr(0x263C)}{chr(0x263A)} "
+    )
 
 
 def render_dungeon_level(
@@ -74,7 +102,7 @@ def render_dungeon_level(
     """
     x, y = location
 
-    console.print(x=x, y=y, string=f"Dungeon level: {dungeon_level}")
+    console.print(x=5, y=62, string=f"Dungeon level: {dungeon_level}")
 
 
 def render_names_at_mouse_location(

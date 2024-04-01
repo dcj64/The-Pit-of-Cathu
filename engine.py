@@ -47,7 +47,7 @@ class Engine:
     def render(self, console: Console) -> None:
         self.game_map.render(console)
 
-        self.message_log.render(console=console, x=25, y=52, width=40, height=5)
+        self.message_log.render(console=console, x=40, y=60, width=40, height=5)  # x=25 y=45
 
         render_functions.render_bar(
             console=console,
@@ -59,11 +59,11 @@ class Engine:
         render_functions.render_dungeon_level(
             console=console,
             dungeon_level=self.game_world.current_floor,
-            location=(1, 55),
+            location=(5, 62),
         )
 
         render_functions.render_names_at_mouse_location(
-            console=console, x=21, y=44, engine=self
+            console=console, x=53, y=55, engine=self
         )
 
     def save_as(self, filename: str) -> None:

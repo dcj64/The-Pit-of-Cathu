@@ -54,16 +54,24 @@ class PickupAction(Action):
                 item.parent = self.entity.inventory
                 inventory.items.append(item)
 
-                self.engine.message_log.add_message(f"You picked up the {item.name}!")
-                print(item.name)
-                print(config.count)
+                if item.name != "Genocide Scroll":
+                    self.engine.message_log.add_message(f"You picked up the {item.name}", (255, 255, 0))
+                elif item.name == "Genocide Scroll":
+                    self.engine.message_log.add_message(f"You picked up the {item.name}!", (255, 0, 0))
                 if item.name == "Health Potion":
                     config.health_potion_total = config.health_potion_total + 1
-                elif item.name == "Lightning Scroll" or "Confusion Scroll" or "Fireball Scroll" or "Berserker Scroll"\
-                        or "Lamp of Iris":
-                    config.scrolls_total = config.scrolls_total + 1
-                #  elif item.name == "Lamp of Iris":
-                    #  pass
+                elif item.name == "Lightning Scroll":
+                    config.lightning_scroll_total = config.lightning_scroll_total + 1
+                elif item.name == "Confusion Scroll":
+                    config.confusion_scroll_total = config.confusion_scroll_total + 1
+                elif item.name == "Fireball Scroll":
+                    config.fireball_scroll_total = config.fireball_scroll_total + 1
+                elif item.name == "Berserker Scroll":
+                    config.berserker_scroll_total = config.berserker_scroll_total + 1
+                elif item.name == "Genocide Scroll":
+                    config.genocide_scroll_total = config.genocide_scroll_total + 1
+                elif item.name == "Lamp of Iris":
+                    config.lamp_of_Iris_scroll_total = config.lamp_of_Iris_scroll_total + 1
                 return
 
         raise exceptions.Impossible("There is nothing here to pick up.")
@@ -199,7 +207,7 @@ class MovementAction(ActionWithDirection):
             raise exceptions.Impossible("That way is blocked.")
 
         self.entity.move(self.dx, self.dy)
-
+        config.moves_used = config.moves_used + 1  # count players moves
 
 class BumpAction(ActionWithDirection):
     def perform(self) -> None:

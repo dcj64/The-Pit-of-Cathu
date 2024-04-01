@@ -8,6 +8,7 @@ import color
 import exceptions
 import input_handlers
 import setup_game
+import config
 
 
 def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
@@ -18,14 +19,14 @@ def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
 
 
 def main() -> None:
-    screen_width = 100  # 100
-    screen_height = 60 # 60
+    screen_width = config.screen_width  # 80
+    screen_height = config.screen_height  # 50
 
     # map_width = 100
     # map_height = 52
 
     tileset = tcod.tileset.load_tilesheet(
-        "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
+        "Cheepicus_16x16.png", 16, 16, tcod.tileset.CHARMAP_CP437
     )
 
     handler: input_handlers.BaseEventHandler = setup_game.MainMenu()
@@ -38,7 +39,7 @@ def main() -> None:
         vsync=True,
 
     ) as context:
-        root_console = tcod.Console(screen_width, screen_height, order="F")
+        root_console = tcod.console.Console(screen_width, screen_height, order="F")
         try:
             while True:
                 context.present(root_console, keep_aspect=True, integer_scaling=True)
