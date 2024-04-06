@@ -17,11 +17,13 @@ class Equippable(BaseComponent):
         equipment_type: EquipmentType,
         power_bonus: int = 0,
         defense_bonus: int = 0,
+        light_bonus: int = 0,
     ):
         self.equipment_type = equipment_type
 
         self.power_bonus = power_bonus
         self.defense_bonus = defense_bonus
+        self.light_bonus = light_bonus
 
 
 class Dagger(Equippable):
@@ -51,4 +53,8 @@ class PlateMail(Equippable):
 
 class Amulets(Equippable):
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.AMULET, defense_bonus=4)
+        super().__init__(equipment_type=EquipmentType.AMULET, light_bonus=2)
+
+class Rings(Equippable):
+    def __init__(self) -> None:
+        super().__init__(equipment_type=EquipmentType.RING, defense_bonus=2)

@@ -163,7 +163,7 @@ class AskUserEventHandler(EventHandler):
     """Handles user input for actions which require special input."""
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
-        """By default any key exits this input handler."""
+        """By default, any key exits this input handler."""
         if event.sym in {  # Ignore modifier keys.
             tcod.event.KeySym.LSHIFT,
             tcod.event.KeySym.RSHIFT,
@@ -178,7 +178,7 @@ class AskUserEventHandler(EventHandler):
     def ev_mousebuttondown(
         self, event: tcod.event.MouseButtonDown
     ) -> Optional[ActionOrHandler]:
-        """By default any mouse click exits this input handler."""
+        """By default, any mouse click exits this input handler."""
         return self.on_exit()
 
     def on_exit(self) -> Optional[ActionOrHandler]:
@@ -529,6 +529,7 @@ class MainGameEventHandler(EventHandler):
         if key in MOVE_KEYS:
             dx, dy = MOVE_KEYS[key]
             action = BumpAction(player, dx, dy)
+            config.moves_used = config.moves_used + 1  # count players moves
         elif key in WAIT_KEYS:
             action = WaitAction(player)
 
@@ -548,8 +549,6 @@ class MainGameEventHandler(EventHandler):
             return CharacterScreenEventHandler(self.engine)
         elif key == tcod.event.KeySym.SLASH:
             return LookHandler(self.engine)
-        config.moves_used = config.moves_used + 1
-        # No valid key was pressed
         return action
 
 

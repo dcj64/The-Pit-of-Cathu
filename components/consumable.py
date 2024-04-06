@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-# from abc import ABC
 from typing import Optional, TYPE_CHECKING
 
 import actions
@@ -89,8 +88,8 @@ class HealingConsumable(Consumable):
 
         if amount_recovered > 0:
             self.engine.message_log.add_message(
-                f"You consume the {self.parent.name} and recover {amount_recovered} HP!",
-                f"Your wounds start to feel better!", color.health_recovered,
+                f"You consume the {self.parent.name}, and recover {amount_recovered} HP!",
+                color.health_recovered,
             )
             config.health_potion_used = config.health_potion_used + 1
             config.health_potion_total = config.health_potion_total - 1
@@ -99,21 +98,21 @@ class HealingConsumable(Consumable):
             raise Impossible(f"Your health is already full.")
 
 
-class LampStrength(Consumable):
-    def __init__(self, amount: int):
-        self.amount = amount
-
-    def activate(self, action: actions.ItemAction) -> None:
-        if config.lamp_strength == 5:
-            self.engine.message_log.add_message(
-                f"You are already using the {self.parent.name}!",
-                color.health_recovered,
-            )
-        if config.lamp_strength < 5:
-            config.lamp_strength = 5
-            self.consume()
-        else:
-            raise Impossible(f"Your lamp is already full.")
+# class LampStrength(Consumable):
+#     def __init__(self, amount: int):
+#         self.amount = amount
+#
+#     def activate(self, action: actions.ItemAction) -> None:
+#         if config.lamp_strength == 5:
+#             self.engine.message_log.add_message(
+#                 f"You are already using the {self.parent.name}!",
+#                 color.health_recovered,
+#             )
+#         if config.lamp_strength < 5:
+#             config.lamp_strength = 5
+#             self.consume()
+#         else:
+#             raise Impossible(f"Your lamp is already full.")
 
 
 class FireballDamageConsumable(Consumable):
@@ -224,15 +223,14 @@ class BerserkerDamageConsumable(Consumable):
         self.damage = damage
 
     def activate(self, action: actions.ItemAction) -> None:
-        num = random.randint(2, 5)
         for actor in self.engine.game_map.actors:
             if actor.fighter.base_power > 1:
-                actor.fighter.base_power = actor.fighter.base_power + num
+                actor.fighter.base_power = actor.fighter.base_power + self.damage
         self.engine.message_log.add_message(
             f"You consume the {self.parent.name},and become a Berserker for the next 5 moves!\n"
             f"Capable of dealing extra damage!\n"
-            f"You receive an extra, {num} attack", color.red,
+            f"You receive an extra, {self.damage} attack", color.red,
         )
-        config.scrolls_used = config.scrolls_used + 1
-        config.scrolls_total = config.scrolls_total - 1
+        config.berserker_scroll_used = config.berserker_scroll_used + 1
+        config.berserker_scroll_total = config.berserker_scroll_total - 1
         self.consume()

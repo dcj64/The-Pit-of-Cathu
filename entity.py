@@ -64,7 +64,7 @@ class Entity:
         return clone
 
     def place(self, x: int, y: int, gamemap: Optional[GameMap] = None) -> None:
-        """Place this entitiy at a new location.  Handles moving across GameMaps."""
+        """Place this entity at a new location.  Handles moving across GameMaps."""
         self.x = x
         self.y = y
         if gamemap:
@@ -84,7 +84,6 @@ class Entity:
         # Move the entity by a given amount
         self.x += dx
         self.y += dy
-
 
 class Actor(Entity):
     def __init__(

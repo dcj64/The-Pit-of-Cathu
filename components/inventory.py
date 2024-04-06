@@ -26,6 +26,15 @@ class Inventory(BaseComponent):
         self.engine.message_log.add_message(f"You dropped the {item.name}.")
         if item.name == "Health Potion":
             config.health_potion_total = config.health_potion_total - 1
-        elif item.name == "Lightning Scroll" or "Confusion Scroll" or "Fireball Scroll" or "Berserker Scroll"\
-                or "Lamp of Iris":
-            config.scrolls_total = config.scrolls_total - 1
+        elif item.name == "Lightning Scroll":
+            config.lightning_scroll_total = config.lightning_scroll_total - 1
+        elif item.name == "Confusion Scroll":
+            config.confusion_scroll_total = config.confusion_scroll_total - 1
+        elif item.name == "Fireball Scroll":
+            config.fireball_scroll_total = config.confusion_scroll_total - 1
+        elif item.name == "Berserker Scroll":
+            config.berserker_scroll_total = config.berserker_scroll_total - 1
+        elif item.name == "Genocide Scroll":
+            config.genocide_scroll_total = config.genocide_scroll_total - 1
+        elif item.name == "Lamp of Iris":
+            config.lamp_of_Iris_scroll_total = config.lamp_of_Iris_scroll_total - 1

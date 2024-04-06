@@ -5,3 +5,5 @@ class EquipmentType(Enum):
     WEAPON = auto()
     ARMOR = auto()
     AMULET = auto()
+    RING = auto()
+

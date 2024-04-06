@@ -33,8 +33,12 @@ genocide_scroll_used = 0
 lamp_of_Iris_scroll_total = 0
 lamp_of_Iris_scroll_used = 0
 
+# Rings
+amulets_total = 0
+rings_total = 0
+
 # fov_radius
-lamp_strength = 3
+lamp_strength = 2
 
 moves_used = 0
 count = 0

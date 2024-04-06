@@ -27,11 +27,12 @@ max_monsters_by_floor = [
 ]
 
 item_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(entity_factories.health_potion, 35), (entity_factories.berserker_scroll, 30),],
+    0: [(entity_factories.health_potion, 35), (entity_factories.berserker_scroll, 30),
+        (entity_factories.ring_of_strength, 35), (entity_factories.amulet_of_sol, 35)],
     2: [(entity_factories.confusion_scroll, 10)],
     4: [(entity_factories.lightning_scroll, 25), (entity_factories.sword, 5)],
     6: [(entity_factories.fireball_scroll, 25), (entity_factories.chain_mail, 15)],
-    8: [(entity_factories.lamp_strength, 30)],
+    8: [(entity_factories.amulet_of_sol, 30)],
 }
 
 enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
@@ -188,8 +189,8 @@ def generate_dungeon(
         y = random.randint(0, dungeon.height - room_height - 1)
 
         # "RectangularRoom" class makes rectangles easier to work with
-        new_room = RectangularRoom(x, y, room_width, room_height)
 
+        new_room = RectangularRoom(x, y, room_width, room_height)
         # Run through the other rooms and see if they intersect with this one.
         if any(new_room.intersects(other_room) for other_room in rooms):
             continue  # This room intersects, so go to the next attempt.

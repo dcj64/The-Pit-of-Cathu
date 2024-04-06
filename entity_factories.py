@@ -13,7 +13,7 @@ player = Actor(
     name="Player",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=30, base_defense=1, base_power=2),
+    fighter=Fighter(hp=30, base_defense=1, base_power=2, base_light=2),
     inventory=Inventory(capacity=26),
     level=Level(level_up_base=200),
 )
@@ -24,7 +24,7 @@ orc = Actor(
     name="Orc",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=5, base_defense=2, base_power=3),
+    fighter=Fighter(hp=5, base_defense=2, base_power=3, base_light=0),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=35),
 )
@@ -34,7 +34,7 @@ larva = Actor (
     name="larva",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=1, base_defense=1, base_power=2),
+    fighter=Fighter(hp=1, base_defense=1, base_power=2, base_light=0),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=8),
 )
@@ -44,7 +44,7 @@ troll = Actor(
     name="Troll",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=16, base_defense=1, base_power=4),
+    fighter=Fighter(hp=16, base_defense=1, base_power=4, base_light=0),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=100),
 )
@@ -54,7 +54,7 @@ shambler = Actor(
     name="Shambler",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=15, base_defense=1, base_power=6),
+    fighter=Fighter(hp=15, base_defense=1, base_power=6, base_light=0),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=125),
 )
@@ -64,7 +64,7 @@ cathu = Actor(
     name="Cathu",
     ai_cls=HostileEnemy,
     equipment=Equipment(),
-    fighter=Fighter(hp=20, base_defense=2, base_power=10),
+    fighter=Fighter(hp=20, base_defense=2, base_power=10, base_light=0),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=150),
 )
@@ -85,7 +85,7 @@ berserker_scroll = Item(
     char="~",
     color=(204, 0, 204),
     name="Berserker Scroll",
-    consumable=consumable.BerserkerDamageConsumable(number_of_turns=3, damage=12),
+    consumable=consumable.BerserkerDamageConsumable(number_of_turns=5, damage=12),
 )
 genocide_scroll = Item(
     char="~",
@@ -105,12 +105,19 @@ lightning_scroll = Item(
     name="Lightning Scroll",
     consumable=consumable.LightningDamageConsumable(damage=15, maximum_range=5),
 )
-lamp_strength = Item(
+amulet_of_sol = Item(
     # char="l",'☼'
     char=chr(0x263C),
     color=(127, 5, 255),
-    name="Lamp of Iris",
-    consumable=consumable.LampStrength(amount=1),
+    name="Amulet of Sol",
+    equippable=equippable.Amulets(),
+)
+ring_of_strength = Item(
+    # char="l",'☼'
+    char=chr(0x263C),
+    color=(127, 5, 255),
+    name="Ring of Strength",
+    equippable=equippable.Rings(),
 )
 
 dagger = Item(

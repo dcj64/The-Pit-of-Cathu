@@ -33,9 +33,9 @@ def render_bar(
     if bar_width > 0:
         console.draw_rect(
             x=5, y=65, width=bar_width, height=1, ch=1, bg=color.bar_filled
-        )
+       )
         console.print(
-            x=5, y=65, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
+            x=4, y=65, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
         )
 
     console.draw_frame(x=1, y=58, width=30, height=22)  # draw simple box around player info
@@ -55,7 +55,7 @@ def render_bar(
         x=5, y=76, string=f"Total Rooms: {config.number_of_rooms}", fg=color.bar_text
     )
     console.print(
-        x=96, y=61, string=f"   Inventory/Used", fg=color.bar_text
+        x=96, y=61, string=f"    Inventory/Used", fg=color.bar_text
     )
     console.print(
         x=88, y=62, string=f"Healing Potions :  {config.health_potion_total} / "
@@ -88,9 +88,18 @@ def render_bar(
         x=88, y=69, string=f"Genocide Scroll :  {config.genocide_scroll_total} / "
                            f"{config.genocide_scroll_used}", fg=color.bar_text2
     )
+    console.print(  # testing how to print char to screen
+        x=88, y=71, string=f" ** Equipment ** ", fg=color.bar_text3
+    )
+    console.print(
+        x=88, y=72, string=f"Amulets :  {config.amulets_total} ", fg=color.bar_text
+    )
+    console.print(
+        x=88, y=73, string=f"Rings   :  {config.rings_total} ", fg=color.bar_text
+    )
 
     console.print(  # testing how to print char to screen
-        x=85, y=72, string=f"Test: {chr(0x263A)}{chr(0xBB)}{chr(0xA0)}{chr(0x263C)}{chr(0x263A)} "
+        x=85, y=76, string=f"Player Moves: {config.moves_used} "
     )
 
 

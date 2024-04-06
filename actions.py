@@ -70,8 +70,10 @@ class PickupAction(Action):
                     config.berserker_scroll_total = config.berserker_scroll_total + 1
                 elif item.name == "Genocide Scroll":
                     config.genocide_scroll_total = config.genocide_scroll_total + 1
-                elif item.name == "Lamp of Iris":
-                    config.lamp_of_Iris_scroll_total = config.lamp_of_Iris_scroll_total + 1
+                elif item.name == "Amulet of Sol":
+                    config.amulets_total = config.amulets_total + 1
+                elif item.name == "Ring of Strength":
+                    config.rings_total = config.rings_total + 1
                 return
 
         raise exceptions.Impossible("There is nothing here to pick up.")
@@ -155,7 +157,7 @@ class ActionWithDirection(Action):
 
     @property
     def blocking_entity(self) -> Optional[Entity]:
-        """Return the blocking entity at this action's destination.."""
+        """Return the blocking entity at this action's destination."""
         return self.engine.game_map.get_blocking_entity_at_location(*self.dest_xy)
 
     @property
@@ -207,12 +209,10 @@ class MovementAction(ActionWithDirection):
             raise exceptions.Impossible("That way is blocked.")
 
         self.entity.move(self.dx, self.dy)
-        config.moves_used = config.moves_used + 1  # count players moves
 
 class BumpAction(ActionWithDirection):
     def perform(self) -> None:
         if self.target_actor:
             return MeleeAction(self.entity, self.dx, self.dy).perform()
-
         else:
             return MovementAction(self.entity, self.dx, self.dy).perform()
