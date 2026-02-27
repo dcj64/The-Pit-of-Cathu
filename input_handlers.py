@@ -42,14 +42,14 @@ MOVE_KEYS = {
     tcod.event.KeySym.KP_8: (0, -1),
     tcod.event.KeySym.KP_9: (1, -1),
     # Vi keys.
-    tcod.event.KeySym.h: (-1, 0),
-    tcod.event.KeySym.j: (0, 1),
-    tcod.event.KeySym.k: (0, -1),
-    tcod.event.KeySym.l: (1, 0),
-    tcod.event.KeySym.y: (-1, -1),
-    tcod.event.KeySym.u: (1, -1),
-    tcod.event.KeySym.b: (-1, 1),
-    tcod.event.KeySym.n: (1, 1),
+    tcod.event.KeySym.H: (-1, 0),
+    tcod.event.KeySym.J: (0, 1),
+    tcod.event.KeySym.K: (0, -1),
+    tcod.event.KeySym.L: (1, 0),
+    tcod.event.KeySym.Y: (-1, -1),
+    tcod.event.KeySym.U: (1, -1),
+    tcod.event.KeySym.B: (-1, 1),
+    tcod.event.KeySym.N: (1, 1),
 }
 
 WAIT_KEYS = {
@@ -360,7 +360,7 @@ class InventoryEventHandler(AskUserEventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
         player = self.engine.player
         key = event.sym
-        index = key - tcod.event.KeySym.a
+        index = key - tcod.event.KeySym.A
 
         if 0 <= index <= 26:
             try:
@@ -535,17 +535,17 @@ class MainGameEventHandler(EventHandler):
 
         elif key == tcod.event.KeySym.ESCAPE:
             raise SystemExit()
-        elif key == tcod.event.KeySym.v:
+        elif key == tcod.event.KeySym.V:
             return HistoryViewer(self.engine)
 
-        elif key == tcod.event.KeySym.g:
+        elif key == tcod.event.KeySym.G:
             action = PickupAction(player)
 
-        elif key == tcod.event.KeySym.i:
+        elif key == tcod.event.KeySym.I:
             return InventoryActivateHandler(self.engine)
-        elif key == tcod.event.KeySym.d:
+        elif key == tcod.event.KeySym.D:
             return InventoryDropHandler(self.engine)
-        elif key == tcod.event.KeySym.c:
+        elif key == tcod.event.KeySym.C:
             return CharacterScreenEventHandler(self.engine)
         elif key == tcod.event.KeySym.SLASH:
             return LookHandler(self.engine)
