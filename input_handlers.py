@@ -152,8 +152,8 @@ class EventHandler(BaseEventHandler):
         return True
 
     def ev_mousemotion(self, event: tcod.event.MouseMotion) -> None:
-        if self.engine.game_map.in_bounds(event.tile.x, event.tile.y):
-            self.engine.mouse_location = event.tile.x, event.tile.y
+        if self.engine.game_map.in_bounds(event.tile.x, event.tile.y): # type: ignore
+            self.engine.mouse_location = event.tile.x, event.tile.y # type: ignore
 
     def on_render(self, console: tcod.Console) -> None:
         self.engine.render(console)
@@ -278,7 +278,7 @@ class LevelUpEventHandler(AskUserEventHandler):
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
         player = self.engine.player
         key = event.sym
-        index = key - tcod.event.KeySym.a
+        index = key - tcod.event.KeySym.A
 
         if 0 <= index <= 2:
             if index == 0:
@@ -408,7 +408,7 @@ class SelectIndexHandler(AskUserEventHandler):
         """Sets the cursor to the player when this handler is constructed."""
         super().__init__(engine)
         player = self.engine.player
-        engine.mouse_location = player.x, player.y
+        engine.mouse_location = player.x, player.y # type: ignore
 
     def on_render(self, console: tcod.Console) -> None:
         """Highlight the tile under the cursor."""
@@ -436,7 +436,7 @@ class SelectIndexHandler(AskUserEventHandler):
             # Clamp the cursor index to the map size.
             x = max(0, min(x, self.engine.game_map.width - 1))
             y = max(0, min(y, self.engine.game_map.height - 1))
-            self.engine.mouse_location = x, y
+            self.engine.mouse_location = x, y # type: ignore
             return None
         elif key in CONFIRM_KEYS:
             return self.on_index_selected(*self.engine.mouse_location)
@@ -446,9 +446,9 @@ class SelectIndexHandler(AskUserEventHandler):
         self, event: tcod.event.MouseButtonDown
     ) -> Optional[ActionOrHandler]:
         """Left click confirms a selection."""
-        if self.engine.game_map.in_bounds(*event.tile):
+        if self.engine.game_map.in_bounds(*event.tile): # type: ignore
             if event.button == 1:
-                return self.on_index_selected(*event.tile)
+                return self.on_index_selected(*event.tile) # type: ignore
         return super().ev_mousebuttondown(event)
 
     def on_index_selected(self, x: int, y: int) -> Optional[ActionOrHandler]:
