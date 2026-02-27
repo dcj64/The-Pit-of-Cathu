@@ -7,6 +7,10 @@ from typing import TYPE_CHECKING
 from tcod.console import Console
 from tcod.map import compute_fov
 
+from typing import Tuple
+
+import tcod
+
 import config
 import exceptions
 from message_log import MessageLog
@@ -23,8 +27,10 @@ class Engine:
 
     def __init__(self, player: Actor):
         self.message_log = MessageLog()
-        self.mouse_location = (0, 0)
+        self.mouse_location: Tuple[int, int] = (0, 0)
+        #self.mouse_location = (0, 0)
         self.player = player
+        self.context: tcod.context.Context
 
     def handle_enemy_turns(self) -> None:
         for entity in set(self.game_map.actors) - {self.player}:
@@ -47,6 +53,9 @@ class Engine:
     def render(self, console: Console) -> None:
         self.game_map.render(console)
 
+        #console.print(1, 2, f"Mouse: {self.mouse_location}")
+        #console.print(1, 3, f"Player: {self.player.x}, {self.player.y}")
+
         self.message_log.render(console=console, x=40, y=60, width=40, height=5)  # x=25 y=45
 
         render_functions.render_bar(
@@ -63,7 +72,10 @@ class Engine:
         )
 
         render_functions.render_names_at_mouse_location(
-            console=console, x=53, y=55, engine=self
+            console=console,
+            x=53,
+            y=console.height - 5,
+            engine=self
         )
 
     def save_as(self, filename: str) -> None:

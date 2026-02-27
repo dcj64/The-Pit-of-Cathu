@@ -94,8 +94,8 @@ class RectangularRoom:
 
     @property
     def center(self) -> Tuple[int, int]:
-        center_x = int((self.x1 + self.x2) / 2)
-        center_y = int((self.y1 + self.y2) / 2)
+        center_x = int((self.x1 + self.x2) // 2)
+        center_y = int((self.y1 + self.y2) // 2)
 
         return center_x, center_y
 
@@ -214,7 +214,7 @@ def generate_dungeon(
             place_entities(new_room, dungeon, engine.game_world.current_floor)
 
             dungeon.tiles[center_of_last_room] = tile_types.down_stairs
-            dungeon.downstairs_location = center_of_last_room
+            dungeon.downstairs_location = center_of_last_room # type: ignore
         # Finally, append the new room to the list.
         rooms.append(new_room)
         (len(rooms))

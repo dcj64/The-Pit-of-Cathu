@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Tuple, TYPE_CHECKING
-
+import traceback
 import color
 import config
 from tcod import libtcodpy
@@ -13,11 +13,13 @@ if TYPE_CHECKING:
 
 
 def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
-    if not game_map.in_bounds(x, y) or not game_map.visible[x, y]:
+    if not game_map.in_bounds(x, y): #or not game_map.visible[x, y]:
         return ""
 
     names = ", ".join(
-        entity.name for entity in game_map.entities if entity.x == x and entity.y == y
+        entity.name
+        for entity in game_map.entities
+        if entity.x == x and entity.y == y
     )
 
     return names.capitalize()

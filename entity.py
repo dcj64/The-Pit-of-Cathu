@@ -85,6 +85,26 @@ class Entity:
         self.x += dx
         self.y += dy
 
+    @property
+    def x(self):
+        return self._x
+
+    @x.setter
+    def x(self, value):
+        if not isinstance(value, int):
+            raise TypeError(f"Entity x set to non-int: {value}")
+        self._x = value
+
+    @property
+    def y(self):
+        return self._y
+
+    @y.setter
+    def y(self, value):
+        if not isinstance(value, int):
+            raise TypeError(f"Entity y set to non-int: {value}")
+        self._y = value
+
 class Actor(Entity):
     def __init__(
         self,

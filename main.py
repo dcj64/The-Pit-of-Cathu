@@ -31,27 +31,39 @@ def main() -> None:
 
     handler: input_handlers.BaseEventHandler = setup_game.MainMenu()
 
-    with tcod.context.new_terminal(
-        screen_width,
-        screen_height,
+    with tcod.context.new(
+        columns = screen_width,
+        rows =screen_height,
         tileset=tileset,
         title="The Pit of Cathu VS-Code",
         vsync=True,
 
     ) as context:
         root_console = tcod.console.Console(screen_width, screen_height, order="F")
+
+        if isinstance(handler, input_handlers.EventHandler):
+            handler.engine.context = context
+
         try:
             while True:
-                context.present(root_console, keep_aspect=True, integer_scaling=True)
-                os.environ["SDL_RENDER_SCALE_QUALITY"] = "best"
-                os.environ["SDL_RENDER_SCALE_QUALITY"] = "linear"
-                root_console.clear()
-                handler.on_render(console=root_console)
-
                 try:
+                    root_console.clear()
+                    handler.on_render(console=root_console)
+                    context.present(
+                        
+                        root_console,
+                        keep_aspect=True,
+                        integer_scaling=True
+                    )
+                
                     for event in tcod.event.wait():
                         context.convert_event(event)
                         handler = handler.handle_events(event)
+
+                        # ALSO UPDATE CONTEXT IF HANDLER CHANGES
+                        if isinstance(handler, input_handlers.EventHandler):
+                            handler.engine.context = context
+
                 except Exception:  # Handle exceptions in game.
                     traceback.print_exc()  # Print error to stderr.
                     # Then print the error to the message log.

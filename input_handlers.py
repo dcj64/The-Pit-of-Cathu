@@ -152,8 +152,13 @@ class EventHandler(BaseEventHandler):
         return True
 
     def ev_mousemotion(self, event: tcod.event.MouseMotion) -> None:
-        if self.engine.game_map.in_bounds(event.tile.x, event.tile.y): # type: ignore
-            self.engine.mouse_location = event.tile.x, event.tile.y # type: ignore
+        x, y = event.position
+        
+        tile_x = int(x // 16)
+        tile_y = int(y // 16)
+
+        if self.engine.game_map.in_bounds(tile_x, tile_y):
+            self.engine.mouse_location = (tile_x, tile_y)
 
     def on_render(self, console: tcod.Console) -> None:
         self.engine.render(console)
@@ -408,7 +413,7 @@ class SelectIndexHandler(AskUserEventHandler):
         """Sets the cursor to the player when this handler is constructed."""
         super().__init__(engine)
         player = self.engine.player
-        engine.mouse_location = player.x, player.y # type: ignore
+        engine.mouse_location = int(player.x), int(player.y) # type: ignore
 
     def on_render(self, console: tcod.Console) -> None:
         """Highlight the tile under the cursor."""
