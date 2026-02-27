@@ -35,7 +35,7 @@ def main() -> None:
         screen_width,
         screen_height,
         tileset=tileset,
-        title="The Pit of Cathu",
+        title="The Pit of Cathu VS-Code",
         vsync=True,
 
     ) as context:
