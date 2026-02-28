@@ -1,4 +1,7 @@
 """ This is a collection of all the constants used in this project"""
+# Tile size
+tile_size = 16
+
 # import string
 
 number_of_rooms = 0

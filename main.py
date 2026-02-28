@@ -49,12 +49,7 @@ def main() -> None:
                 try:
                     root_console.clear()
                     handler.on_render(console=root_console)
-                    context.present(
-                        
-                        root_console,
-                        keep_aspect=True,
-                        integer_scaling=True
-                    )
+                    context.present(root_console,keep_aspect=True, integer_scaling=True)
                 
                     for event in tcod.event.wait():
                         context.convert_event(event)
