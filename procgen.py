@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Dict, Iterator, List, Tuple
 import random
-from typing import Dict, Iterator, List, Tuple, TYPE_CHECKING
 
 import tcod
 import config
 
-import entity_factories
 from game_map import GameMap
+import entity_factories
 import tile_types
 
 if TYPE_CHECKING:
@@ -44,9 +44,7 @@ enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
 }
 
 
-def get_max_value_for_floor(
-    max_value_by_floor: List[Tuple[int, int]], floor: int
-) -> int:
+def get_max_value_for_floor(max_value_by_floor: List[Tuple[int, int]], floor: int) -> int:
     current_value = 0
 
     for floor_minimum, value in max_value_by_floor:
@@ -78,9 +76,7 @@ def get_entities_at_random(
     entities = list(entity_weighted_chances.keys())
     entity_weighted_chance_values = list(entity_weighted_chances.values())
 
-    chosen_entities = random.choices(
-        entities, weights=entity_weighted_chance_values, k=number_of_entities
-    )
+    chosen_entities = random.choices(entities, weights=entity_weighted_chance_values, k=number_of_entities)
 
     return chosen_entities
 
@@ -94,8 +90,8 @@ class RectangularRoom:
 
     @property
     def center(self) -> Tuple[int, int]:
-        center_x = int((self.x1 + self.x2) // 2)
-        center_y = int((self.y1 + self.y2) // 2)
+        center_x = int((self.x1 + self.x2) / 2)
+        center_y = int((self.y1 + self.y2) / 2)
 
         return center_x, center_y
 
@@ -106,33 +102,18 @@ class RectangularRoom:
 
     def intersects(self, other: RectangularRoom) -> bool:
         """Return True if this room overlaps with another RectangularRoom."""
-        return (
-                self.x1 <= other.x2
-                and self.x2 >= other.x1
-                and self.y1 <= other.y2
-                and self.y2 >= other.y1
-        )
+        return self.x1 <= other.x2 and self.x2 >= other.x1 and self.y1 <= other.y2 and self.y2 >= other.y1
 
 
 def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int) -> None:
-    number_of_monsters = random.randint(
-        0, get_max_value_for_floor(max_monsters_by_floor, floor_number)
-    )
+    number_of_monsters = random.randint(0, get_max_value_for_floor(max_monsters_by_floor, floor_number))
+    number_of_items = random.randint(0, get_max_value_for_floor(max_items_by_floor, floor_number))
 
-    number_of_items = random.randint(
-        0, get_max_value_for_floor(max_items_by_floor, floor_number)
-    )
+    monsters: List[Entity] = get_entities_at_random(enemy_chances, number_of_monsters, floor_number)
+    items: List[Entity] = get_entities_at_random(item_chances, number_of_items, floor_number)
 
-    monsters: List[Entity] = get_entities_at_random(
-        enemy_chances, number_of_monsters, floor_number
-    )
-
-    items: List[Entity] = get_entities_at_random(
-        item_chances, number_of_items, floor_number
-    )
-
-    total_monsters = len(monsters)
-    print(total_monsters)
+    # total_monsters = len(monsters)
+    # print(total_monsters)
     config.total_level_monsters = config.total_level_monsters + len(monsters)
 
     for entity in monsters + items:
@@ -142,10 +123,66 @@ def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int) -
         if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
             entity.spawn(dungeon, x, y)
 
+# Add doors to dungeon rooms. This is a very simple implementation that just adds doors 
+# to any walkable tile that has exactly two walkable neighbors, and isn't a diagonal connection.
+def add_simple_doors(dungeon: GameMap) -> None:
+    for x in range(1, dungeon.width - 1):
+        for y in range(1, dungeon.height - 1):
 
-def tunnel_between(
-    start: Tuple[int, int], end: Tuple[int, int]
-) -> Iterator[Tuple[int, int]]:
+            if not dungeon.tiles["walkable"][x, y]:
+                continue
+
+            # Neighbours
+            left  = dungeon.tiles["walkable"][x - 1, y]
+            right = dungeon.tiles["walkable"][x + 1, y]
+            up    = dungeon.tiles["walkable"][x, y - 1]
+            down  = dungeon.tiles["walkable"][x, y + 1]
+
+            walkable_count = sum([left, right, up, down])
+
+            if walkable_count != 2:
+                continue
+
+            # Must be straight corridor
+            horizontal = left and right and not up and not down
+            vertical   = up and down and not left and not right
+
+            if not (horizontal or vertical):
+                continue
+
+            # NEW RULE:
+            # At least one adjacent tile must have 3+ walkable neighbours
+            # (meaning it's part of a room interior)
+            adjacent_positions = [
+                (x - 1, y),
+                (x + 1, y),
+                (x, y - 1),
+                (x, y + 1),
+            ]
+
+            touches_room = False
+
+            for ax, ay in adjacent_positions:
+                if not dungeon.tiles["walkable"][ax, ay]:
+                    continue
+
+                neighbors_of_neighbor = sum([
+                    dungeon.tiles["walkable"][ax - 1, ay],
+                    dungeon.tiles["walkable"][ax + 1, ay],
+                    dungeon.tiles["walkable"][ax, ay - 1],
+                    dungeon.tiles["walkable"][ax, ay + 1],
+                ])
+
+                if neighbors_of_neighbor >= 3:
+                    touches_room = True
+                    break
+
+            if touches_room and random.random() < 0.3:  # 30% chance to place a door
+                dungeon.tiles[x, y] = tile_types.door_closed
+
+# Add tunnels to connect rooms that aren't already connected. This is a simple implementation that just 
+# checks if there's a path between the center of each room, and if not, digs a tunnel.
+def tunnel_between(start: Tuple[int, int], end: Tuple[int, int]) -> Iterator[Tuple[int, int]]:
     """Return an L-shaped tunnel between these two points."""
     x1, y1 = start
     x2, y2 = end
@@ -157,14 +194,13 @@ def tunnel_between(
         corner_x, corner_y = x1, y2
 
     # Generate the coordinates for this tunnel.
-    # noinspection PyTypeChecker
     for x, y in tcod.los.bresenham((x1, y1), (corner_x, corner_y)).tolist():
         yield x, y
-    # noinspection PyTypeChecker
     for x, y in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
         yield x, y
 
-
+# Generate the dungeon map. This is the main function that puts everything together.
+# It creates rooms, connects them with tunnels, adds doors, and places entities.
 def generate_dungeon(
     max_rooms: int,
     room_min_size: int,
@@ -181,7 +217,7 @@ def generate_dungeon(
 
     center_of_last_room = (0, 0)
 
-    for r in range(max_rooms):
+    for _ in range(max_rooms):
         room_width = random.randint(room_min_size, room_max_size)
         room_height = random.randint(room_min_size, room_max_size)
 
@@ -189,37 +225,37 @@ def generate_dungeon(
         y = random.randint(0, dungeon.height - room_height - 1)
 
         # "RectangularRoom" class makes rectangles easier to work with
-
         new_room = RectangularRoom(x, y, room_width, room_height)
+
         # Run through the other rooms and see if they intersect with this one.
         if any(new_room.intersects(other_room) for other_room in rooms):
             continue  # This room intersects, so go to the next attempt.
         # If there are no intersections then the room is valid.
 
-        # Dig out these rooms inner area.
+        # Dig out this rooms inner area.
         dungeon.tiles[new_room.inner] = tile_types.floor
 
         if len(rooms) == 0:
             # The first room, where the player starts.
-            # noinspection PyTypeChecker
             player.place(*new_room.center, dungeon)
         else:  # All rooms after the first.
             # Dig out a tunnel between this room and the previous one.
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x, y] = tile_types.floor
 
-                center_of_last_room = new_room.center
+            center_of_last_room = new_room.center
 
         if len(rooms) != 0:
             place_entities(new_room, dungeon, engine.game_world.current_floor)
 
             dungeon.tiles[center_of_last_room] = tile_types.down_stairs
-            dungeon.downstairs_location = center_of_last_room # type: ignore
+            dungeon.downstairs_location = center_of_last_room
+
         # Finally, append the new room to the list.
         rooms.append(new_room)
-        (len(rooms))
-        #  print(len(rooms))
+        (len(rooms)) #count number of rooms
         config.number_of_rooms = len(rooms)
-        #  print("Number of rooms = ", config.number_of_rooms)
+
+    add_simple_doors(dungeon)
 
     return dungeon

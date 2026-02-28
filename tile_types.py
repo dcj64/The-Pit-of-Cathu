@@ -54,3 +54,18 @@ down_stairs = new_tile(
     dark=(ord(">"), (0, 0, 100), (141, 182, 0)),
     light=(ord(">"), (255, 255, 255), (141, 182, 0)),
 )
+
+door_closed = new_tile(
+    walkable=False,
+    transparent=False,
+    dark=(ord("+"), (120, 90, 40), (0, 0, 0)),
+    light=(ord("+"), (200, 170, 80), (0, 0, 0)),
+)
+
+door_open = new_tile(
+    walkable=True,
+    transparent=True,
+    dark=(ord("/"), (120, 90, 40), (0, 0, 0)),
+    light=(ord("/"), (200, 170, 80), (0, 0, 0)),
+)
+

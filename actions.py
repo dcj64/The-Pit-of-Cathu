@@ -7,6 +7,9 @@ import config
 import exceptions
 import time
 
+import numpy as np
+import tile_types
+
 if TYPE_CHECKING:
     from engine import Engine
     from entity import Actor, Entity, Item
@@ -197,15 +200,25 @@ class MeleeAction(ActionWithDirection):
 class MovementAction(ActionWithDirection):
     def perform(self) -> None:
         dest_x, dest_y = self.dest_xy
+        game_map = self.engine.game_map
 
-        if not self.engine.game_map.in_bounds(dest_x, dest_y):
-            # Destination is out of bounds.
+        if not game_map.in_bounds(dest_x, dest_y):
             raise exceptions.Impossible("That way is blocked.")
-        if not self.engine.game_map.tiles["walkable"][dest_x, dest_y]:
-            # Destination is blocked by a tile.
+
+        tile = game_map.tiles[dest_x, dest_y]
+
+        # If it's a closed door, open it instead of blocking
+        if np.array_equal(tile, tile_types.door_closed):
+            game_map.tiles[dest_x, dest_y] = tile_types.door_open
+            self.engine.message_log.add_message("You open the door.")
+            return  # Opening door takes a turn
+
+        # Blocked by tile
+        if not game_map.tiles["walkable"][dest_x, dest_y]:
             raise exceptions.Impossible("That way is blocked.")
-        if self.engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
-            # Destination is blocked by an entity.
+
+        # Blocked by entity
+        if game_map.get_blocking_entity_at_location(dest_x, dest_y):
             raise exceptions.Impossible("That way is blocked.")
 
         self.entity.move(self.dx, self.dy)
