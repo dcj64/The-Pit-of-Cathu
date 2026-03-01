@@ -131,12 +131,36 @@ class GameWorld:
     def generate_floor(self) -> None:
         from procgen import generate_dungeon
         self.current_floor += 1
+        if self.current_floor == 1:
+            self.engine.game_map = generate_dungeon(
+                max_rooms=self.max_rooms,
+                room_min_size=self.room_min_size,
+                room_max_size=self.room_max_size,
+                map_width=self.map_width,
+                map_height=self.map_height,
+                engine=self.engine,
+            )
 
-        self.engine.game_map = generate_dungeon(
-            max_rooms=self.max_rooms,
-            room_min_size=self.room_min_size,
-            room_max_size=self.room_max_size,
-            map_width=self.map_width,
-            map_height=self.map_height,
-            engine=self.engine,
-        )
+        elif 2 <= self.current_floor <= 4:
+            # 3 floors of surface caves. Caves get broader as you descend
+            self.room_max_size = 6
+            self.room_min_size = 4
+            self.engine.game_map = generate_dungeon(
+                max_rooms=self.max_rooms,
+                room_min_size=self.room_min_size,
+                room_max_size=self.room_max_size,
+                map_width=self.map_width,
+                map_height=self.map_height,
+                engine=self.engine,
+            )
+        else:
+            # Not yet implemented, but this is where the deeper floors would be generated. For now, just repeat the original floor.
+            self.engine.game_map = generate_dungeon(
+                max_rooms=self.max_rooms,
+                room_min_size=self.room_min_size,
+                room_max_size=self.room_max_size,
+                map_width=self.map_width,
+                map_height=self.map_height,
+                engine=self.engine,
+            )
+        
