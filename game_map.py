@@ -24,11 +24,9 @@ class GameMap:
         self.entities = set(entities)
         self.tiles = np.full((self.width, self.height), fill_value=tile_types.wall, order="F")
 
-        self.visible = np.full(
-            (width, height), fill_value=False, order="F"
+        self.visible = np.full((width, height), fill_value=False, order="F"
         )  # Tiles the player can currently see
-        self.explored = np.full(
-            (width, height), fill_value=False, order="F"
+        self.explored = np.full((width, height), fill_value=False, order="F"
         )  # Tiles the player has seen before
 
         self.downstairs_location: tuple[int, int] = (0, 0)
@@ -128,10 +126,24 @@ class GameWorld:
 
         self.current_floor = current_floor
 
+
     def generate_floor(self) -> None:
-        from procgen import generate_dungeon
+        from procgen import generate_dungeon, generate_cave
+
         self.current_floor += 1
-        if self.current_floor == 1:
+
+        # --- Force level 2 to be cavern for testing ---
+        if self.current_floor == 2:
+            self.engine.game_map = generate_cave(
+                map_width=self.map_width,
+                map_height=self.map_height,
+                engine=self.engine,
+                floor_number=self.current_floor,
+        )
+
+
+        # --- Structured early dungeon ---
+        elif 1 <= self.current_floor <= 3:
             self.engine.game_map = generate_dungeon(
                 max_rooms=self.max_rooms,
                 room_min_size=self.room_min_size,
@@ -141,24 +153,28 @@ class GameWorld:
                 engine=self.engine,
             )
 
-        elif 2 <= self.current_floor <= 4:
-            # 3 floors of surface caves. Caves get broader as you descend
-            self.room_max_size = 6
-            self.room_min_size = 4
-            self.engine.game_map = generate_dungeon(
-                max_rooms=self.max_rooms,
-                room_min_size=self.room_min_size,
-                room_max_size=self.room_max_size,
+        # --- Cavern levels ---
+        elif 4 <= self.current_floor <= 6:
+            openness = 0.48 - (self.current_floor * 0.01)  # Decrease openness as you go deeper
+            
+            self.engine.game_map = generate_cave(
                 map_width=self.map_width,
                 map_height=self.map_height,
                 engine=self.engine,
+                fill_percent=openness,
+                floor_number=self.current_floor,
             )
+
+        # --- Deeper structured levels again ---
         else:
-            # Not yet implemented, but this is where the deeper floors would be generated. For now, just repeat the original floor.
+            # You can tweak room sizes for deeper floors if desired
+            deeper_min = 8
+            deeper_max = 14
+
             self.engine.game_map = generate_dungeon(
                 max_rooms=self.max_rooms,
-                room_min_size=self.room_min_size,
-                room_max_size=self.room_max_size,
+                room_min_size=deeper_min,
+                room_max_size=deeper_max,
                 map_width=self.map_width,
                 map_height=self.map_height,
                 engine=self.engine,

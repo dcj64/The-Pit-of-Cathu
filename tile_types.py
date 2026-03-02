@@ -39,8 +39,8 @@ SHROUD = np.array((ord(" "), (255, 255, 255), (31, 44, 51)), dtype=graphic_dt)
 floor = new_tile(
     walkable=True,
     transparent=True,
-    dark=(ord("."), (255, 255, 255), (50, 50, 150)),
-    light=(ord("."), (255, 255, 255), (200, 180, 50)),
+    dark=(ord("."), (80, 80, 120), (0, 0, 0)),
+    light=(ord("."), (140, 140, 200), (0, 0, 0)),
 )
 wall = new_tile(
     walkable=False,
@@ -48,6 +48,14 @@ wall = new_tile(
     dark=(ord("#"), (255, 255, 255), (0, 0, 100)),
     light=(ord("#"), (255, 255, 255), (130, 110, 50)),
 )
+
+ruin_wall = new_tile(
+    walkable=False,
+    transparent=False,
+    dark=(ord("▓"), (60, 60, 60), (0, 0, 0)),
+    light=(ord("▓"), (170, 170, 170), (40, 40, 40)),
+)
+
 down_stairs = new_tile(
     walkable=True,
     transparent=True,
@@ -67,5 +75,19 @@ door_open = new_tile(
     transparent=True,
     dark=(ord("/"), (120, 90, 40), (0, 0, 0)),
     light=(ord("/"), (200, 170, 80), (0, 0, 0)),
+)
+
+water = new_tile(
+    walkable=False,
+    transparent=True,
+    dark=(ord("≈"), (0, 0, 100), (0, 0, 40)),
+    light=(ord("≈"), (0, 100, 255), (0, 0, 80)),
+)
+
+lava = new_tile(
+    walkable=False,
+    transparent=True,
+    dark=(ord("^"), (120, 0, 0), (40, 0, 0)),
+    light=(ord("^"), (255, 140, 0), (120, 20, 0)),
 )
 
