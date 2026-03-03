@@ -81,6 +81,14 @@ class Engine:
             engine=self
         )
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+
+        # Remove unpickleable tcod context
+        state["context"] = None
+
+        return state
+
     def save_as(self, filename: str) -> None:
         """Save this Engine instance as a compressed file."""
         save_data = lzma.compress(pickle.dumps(self))

@@ -527,7 +527,7 @@ class MainGameEventHandler(EventHandler):
         player = self.engine.player
 
         if key == tcod.event.KeySym.PERIOD and modifier & (
-                tcod.event.KMOD_LSHIFT | tcod.event.KMOD_RSHIFT
+                tcod.event.Modifier.LSHIFT | tcod.event.Modifier.RSHIFT
         ):
             return actions.TakeStairsAction(player)
 
