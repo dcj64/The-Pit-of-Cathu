@@ -8,7 +8,6 @@ from tcod.console import Console
 from entity import Actor, Item
 import tile_types
 
-
 if TYPE_CHECKING:
     from engine import Engine
     from entity import Entity
