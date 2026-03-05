@@ -24,6 +24,6 @@ max_rooms = 30  # 30
 max_levels = 26  # 26
 new_level = 0
 
-lamp_strength = 4
+lamp_strength = 2
 
 

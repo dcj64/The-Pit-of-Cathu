@@ -40,6 +40,88 @@ class RectangularRoom:
                 and self.y2 >= other.y1
         )
 
+def choose_room_type():
+
+    room_types = [
+        ("normal", 60),
+        ("treasure", 10),
+        ("nest", 10),
+        ("collapsed", 10),
+        ("shrine", 10),
+    ]
+
+    types = [t for t, w in room_types]
+    weights = [w for t, w in room_types]
+
+    return random.choices(types, weights=weights, k=1)[0]
+
+def decorate_room(room_type, room, dungeon):
+
+    if room_type == "treasure":
+
+        cx, cy = room.center
+        dungeon.tiles[cx, cy] = tile_types.floor
+
+        # spawn items
+        from procgen.entities import place_entities
+        place_entities(room, dungeon, dungeon.engine.game_world.current_floor)
+
+    elif room_type == "nest":
+
+        from procgen.entities import place_entities
+
+        # spawn extra monsters
+        for _ in range(random.randint(2, 4)):
+            place_entities(room, dungeon, dungeon.engine.game_world.current_floor)
+
+    elif room_type == "collapsed":
+
+        for x in range(room.x1 + 1, room.x2 - 1):
+            for y in range(room.y1 + 1, room.y2 - 1):
+
+                if random.random() < 0.25:
+                    dungeon.tiles[x, y] = tile_types.wall
+
+    elif room_type == "shrine":
+
+        cx, cy = room.center
+        dungeon.tiles[cx, cy] = tile_types.floor
+
+
+def randomize_walls(dungeon: GameMap):
+
+    wall_variants = [
+        tile_types.wall,
+        tile_types.wall_cracked,
+        tile_types.wall_mossy,
+        tile_types.wall_broken,
+    ]
+
+    weights = [70, 15, 10, 5]
+
+    for x in range(1, dungeon.width - 1):
+        for y in range(1, dungeon.height - 1):
+
+            # Only affect wall tiles
+            if dungeon.tiles["walkable"][x, y]:
+                continue
+
+            # Check if this wall touches a floor
+            neighbors = [
+                dungeon.tiles["walkable"][x - 1, y],
+                dungeon.tiles["walkable"][x + 1, y],
+                dungeon.tiles["walkable"][x, y - 1],
+                dungeon.tiles["walkable"][x, y + 1],
+            ]
+
+            if any(neighbors):
+
+                dungeon.tiles[x, y] = random.choices(
+                    wall_variants,
+                    weights=weights,
+                    k=1
+                )[0]     
+
 def generate_dungeon(
     max_rooms: int,
     room_min_size: int,
@@ -90,6 +172,10 @@ def generate_dungeon(
         # Dig out this rooms inner area.
         dungeon.tiles[new_room.inner] = tile_types.floor
 
+        room_type = choose_room_type()
+
+        decorate_room(room_type, new_room, dungeon)
+
         if len(rooms) == 0:
             # The first room, where the player starts.
             player.place(*new_room.center, dungeon)
@@ -108,6 +194,8 @@ def generate_dungeon(
 
         # Finally, append the new room to the list.
         rooms.append(new_room)
+
+    randomize_walls(dungeon)
 
     add_simple_doors(dungeon)
 

@@ -1,0 +1,22 @@
+{
+  "ruins": {
+    "floors": [1, 3],
+    "generator": "dungeon",
+    "monster_tags": ["orc", "goblin"],
+    "description": "Ancient ruined halls"
+  },
+
+  "caves": {
+    "floors": [4, 6],
+    "generator": "cave",
+    "monster_tags": ["troll", "spider"],
+    "description": "Damp underground caverns"
+  },
+
+  "deep": {
+    "floors": [7, 26],
+    "generator": "cave",
+    "monster_tags": ["troll", "cathu"],
+    "description": "The deep volcanic tunnels"
+  }
+}

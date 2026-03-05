@@ -56,6 +56,27 @@ ruin_wall = new_tile(
     light=(ord("▓"), (170, 170, 170), (40, 40, 40)),
 )
 
+wall_cracked = new_tile(
+    walkable=False,
+    transparent=False,
+    dark=(ord("▒"), (70, 70, 70), (0, 0, 0)),
+    light=(ord("▒"), (110, 110, 110), (0, 0, 0)),
+)
+
+wall_mossy = new_tile(
+    walkable=False,
+    transparent=False,
+    dark=(ord("#"), (40, 80, 40), (0, 0, 0)),
+    light=(ord("#"), (60, 120, 60), (0, 0, 0)),
+)
+
+wall_broken = new_tile(
+    walkable=False,
+    transparent=False,
+    dark=(ord("#"), (90, 90, 90), (0, 0, 0)),
+    light=(ord("#"), (140, 140, 140), (0, 0, 0)),
+)
+
 down_stairs = new_tile(
     walkable=True,
     transparent=True,

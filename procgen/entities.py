@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import types
 from typing import TYPE_CHECKING, Dict, List, Tuple
 import random
 
 from game_map import GameMap
 
-from setup_game import ITEMS, MONSTERS
+from data_loader import ITEMS, MONSTERS
 
 if TYPE_CHECKING:
     from procgen.dungeon import RectangularRoom
@@ -46,7 +47,18 @@ def get_monsters_for_floor(monsters, floor, count):
     monster_types = [m for m, w in candidates]
     weights = [w for m, w in candidates]
 
-    return random.choices(monster_types, weights=weights, k=count)
+    chosen = random.choices(monster_types, weights=weights, k=count)
+
+    monsters = []
+
+    for monster in chosen:
+
+        pack_size = random.randint(monster.group_min, monster.group_max)
+
+        for _ in range(pack_size):
+            monsters.append(monster)
+
+    return monsters
 
 
 def get_max_value_for_floor(max_value_by_floor: List[Tuple[int, int]], floor: int) -> int:
@@ -108,9 +120,25 @@ def place_entities(room: "RectangularRoom", dungeon: GameMap, floor_number: int)
 
     for entity in monsters + items:
 
-        x = random.randint(room.x1 + 1, room.x2 - 1)
-        y = random.randint(room.y1 + 1, room.y2 - 1)
+        # choose a base spawn point
+        base_x = random.randint(room.x1 + 1, room.x2 - 1)
+        base_y = random.randint(room.y1 + 1, room.y2 - 1)
 
-        if not any(e.x == x and e.y == y for e in dungeon.entities):
+        # try nearby tiles first (pack clustering)
+        for _ in range(10):
+
+            x = base_x + random.randint(-2, 2)
+            y = base_y + random.randint(-2, 2)
+
+            if not dungeon.in_bounds(x, y):
+                continue
+
+            if not dungeon.tiles["walkable"][x, y]:
+                continue
+
+            if any(e.x == x and e.y == y for e in dungeon.entities):
+                continue
+
             entity.spawn(dungeon, x, y)
+            break
 

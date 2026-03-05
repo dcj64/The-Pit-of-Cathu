@@ -7,9 +7,13 @@
     "defense": 1,
     "power": 3,
     "xp": 35,
+
     "spawn_min": 1,
     "spawn_max": 6,
-    "rarity": 40
+    "rarity": 40,
+
+    "group_min": 2,
+    "group_max": 4
   },
 
   {
@@ -20,9 +24,13 @@
     "defense": 2,
     "power": 4,
     "xp": 100,
+
     "spawn_min": 3,
     "spawn_max": 12,
-    "rarity": 30
+    "rarity": 30,
+
+    "group_min": 2,
+    "group_max": 3
   },
 
   {
@@ -33,9 +41,13 @@
     "defense": 4,
     "power": 6,
     "xp": 25,
+
     "spawn_min": 3,
     "spawn_max": 12,
-    "rarity": 30
+    "rarity": 30,
+
+    "group_min": 2,
+    "group_max": 2
   },
 
   {
@@ -46,9 +58,13 @@
     "defense": 8,
     "power": 10,
     "xp": 150,
+
     "spawn_min": 6,
     "spawn_max": 14,
-    "rarity": 30
+    "rarity": 30,
+
+    "group_min": 1,
+    "group_max": 2
   },
 
   {
@@ -59,9 +75,13 @@
     "defense": 1,
     "power": 3,
     "xp": 50,
+
     "spawn_min": 1,
     "spawn_max": 4,
-    "rarity": 50
+    "rarity": 50,
+
+    "group_min": 3,
+    "group_max": 6
   },
 
   {
@@ -72,9 +92,13 @@
     "defense": 2,
     "power": 2,
     "xp": 25,
+
     "spawn_min": 2,
     "spawn_max": 8,
-    "rarity": 30
+    "rarity": 30,
+
+    "group_min": 2,
+    "group_max": 4
   },
 
   {
@@ -85,9 +109,13 @@
     "defense": 0,
     "power": 4,
     "xp": 75,
+
     "spawn_min": 4,
     "spawn_max": 8,
-    "rarity": 30
+    "rarity": 30,
+
+    "group_min": 2,
+    "group_max": 2
   },
 
   {
@@ -98,8 +126,12 @@
     "defense": 0,
     "power": 1,
     "xp": 15,
+
     "spawn_min": 2,
     "spawn_max": 8,
-    "rarity": 30
+    "rarity": 30,
+
+    "group_min": 2,
+    "group_max": 4
   }
 ]

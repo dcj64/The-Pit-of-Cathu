@@ -23,10 +23,7 @@ from components.equipment import Equipment
 from components.level import Level
 from components.ai import PlayerAI
 
-from data_loader import load_items, load_monsters
-
-ITEMS = load_items()
-MONSTERS = load_monsters()
+from data_loader import ITEMS
 
 # Load the background image and remove the alpha channel.
 background_image = tcod.image.load("menu_background.png")[:, :, :3]

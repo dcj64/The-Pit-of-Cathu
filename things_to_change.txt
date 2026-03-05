@@ -17,3 +17,12 @@ Or remove global config usage entirely
 
 If you'd like, I can also show you a very powerful improvement to this JSON system that will automatically 
 spawn monsters and loot by dungeon depth, replacing your current spawn tables entirely. It will simplify your procgen/entities.py a lot.
+
+Step 5 — Optional Visual Improvements
+
+Later you can add special tiles:
+
+altar tile
+statue tile
+treasure chest tile
+broken pillar tile

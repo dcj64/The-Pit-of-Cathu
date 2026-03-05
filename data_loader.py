@@ -167,4 +167,19 @@ def build_monster(data):
     monster.spawn_max = data.get("spawn_max", 999)
     monster.rarity = data.get("rarity", 50)
 
+    monster.group_min = data.get("group_min", 1)
+    monster.group_max = data.get("group_max", 1)
+
     return monster
+
+
+def load_biomes():
+    path = os.path.join(os.path.dirname(__file__), "data/biomes.json")
+
+    with open(path) as f:
+        return json.load(f)
+    
+
+ITEMS = load_items()
+MONSTERS = load_monsters()
+BIOMES = load_biomes()

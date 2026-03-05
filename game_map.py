@@ -8,6 +8,9 @@ from tcod.console import Console
 from entity import Actor, Item
 import tile_types
 
+from data_loader import BIOMES
+
+
 if TYPE_CHECKING:
     from engine import Engine
     from entity import Entity
@@ -119,35 +122,36 @@ class GameWorld:
         current_floor: int = 0
     ):
         self.engine = engine
-
         self.map_width = map_width
         self.map_height = map_height
-
         self.max_rooms = max_rooms
-
         self.room_min_size = room_min_size
         self.room_max_size = room_max_size
-
         self.current_floor = current_floor
 
+    def get_biome_for_floor(self,floor):
+
+        for name, biome in BIOMES.items():
+
+            start, end = biome["floors"]
+
+            if start <= floor <= end:
+                return name, biome
+
+        return "ruins", BIOMES["ruins"]
 
     def generate_floor(self) -> None:
+
         from procgen import generate_dungeon, generate_cave
 
         self.current_floor += 1
 
-        # --- Force level 2 to be cavern for testing ---
-        if self.current_floor == 2:
-            self.engine.game_map = generate_cave(
-                map_width=self.map_width,
-                map_height=self.map_height,
-                engine=self.engine,
-                floor_number=self.current_floor,
-        )
+        biome_name, biome = self.get_biome_for_floor(self.current_floor)
 
+        generator = biome["generator"]
 
-        # --- Structured early dungeon ---
-        elif 1 <= self.current_floor <= 3:
+        if generator == "dungeon":
+
             self.engine.game_map = generate_dungeon(
                 max_rooms=self.max_rooms,
                 room_min_size=self.room_min_size,
@@ -157,30 +161,15 @@ class GameWorld:
                 engine=self.engine,
             )
 
-        # --- Cavern levels ---
-        elif 4 <= self.current_floor <= 6:
-            openness = 0.48 - (self.current_floor * 0.01)  # Decrease openness as you go deeper
-            
+        elif generator == "cave":
+
             self.engine.game_map = generate_cave(
                 map_width=self.map_width,
                 map_height=self.map_height,
                 engine=self.engine,
-                fill_percent=openness,
                 floor_number=self.current_floor,
             )
 
-        # --- Deeper structured levels again ---
-        else:
-            # You can tweak room sizes for deeper floors if desired
-            deeper_min = 8
-            deeper_max = 14
-
-            self.engine.game_map = generate_dungeon(
-                max_rooms=self.max_rooms,
-                room_min_size=deeper_min,
-                room_max_size=deeper_max,
-                map_width=self.map_width,
-                map_height=self.map_height,
-                engine=self.engine,
-            )
-        
+        self.engine.message_log.add_message(
+            f"You enter the {biome_name}."
+        )    
