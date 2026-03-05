@@ -163,4 +163,8 @@ def build_monster(data):
         level=Level(xp_given=data.get("xp", 0)),
     )
 
+    monster.spawn_min = data.get("spawn_min", 1)
+    monster.spawn_max = data.get("spawn_max", 999)
+    monster.rarity = data.get("rarity", 50)
+
     return monster

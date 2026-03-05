@@ -118,6 +118,9 @@ class Actor(Entity):
         fighter: Fighter,
         inventory: Inventory,
         level: Level,
+        spawn_min: int = 1,
+        spawn_max: int = 999,
+        rarity: int = 50,
     ):
         super().__init__(
             x=x,

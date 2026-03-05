@@ -6,7 +6,10 @@
     "hp": 10,
     "defense": 1,
     "power": 3,
-    "xp": 35
+    "xp": 35,
+    "spawn_min": 1,
+    "spawn_max": 6,
+    "rarity": 40
   },
 
   {
@@ -16,7 +19,10 @@
     "hp": 16,
     "defense": 2,
     "power": 4,
-    "xp": 100
+    "xp": 100,
+    "spawn_min": 3,
+    "spawn_max": 12,
+    "rarity": 30
   },
 
   {
@@ -26,7 +32,10 @@
     "hp": 25,
     "defense": 4,
     "power": 6,
-    "xp": 25
+    "xp": 25,
+    "spawn_min": 3,
+    "spawn_max": 12,
+    "rarity": 30
   },
 
   {
@@ -36,7 +45,10 @@
     "hp": 40,
     "defense": 8,
     "power": 10,
-    "xp": 150
+    "xp": 150,
+    "spawn_min": 6,
+    "spawn_max": 14,
+    "rarity": 30
   },
 
   {
@@ -46,7 +58,10 @@
     "hp": 8,
     "defense": 1,
     "power": 3,
-    "xp": 50
+    "xp": 50,
+    "spawn_min": 1,
+    "spawn_max": 4,
+    "rarity": 50
   },
 
   {
@@ -56,7 +71,10 @@
     "hp": 6,
     "defense": 2,
     "power": 2,
-    "xp": 25
+    "xp": 25,
+    "spawn_min": 2,
+    "spawn_max": 8,
+    "rarity": 30
   },
 
   {
@@ -66,7 +84,10 @@
     "hp": 12,
     "defense": 0,
     "power": 4,
-    "xp": 75
+    "xp": 75,
+    "spawn_min": 4,
+    "spawn_max": 8,
+    "rarity": 30
   },
 
   {
@@ -76,6 +97,9 @@
     "hp": 5,
     "defense": 0,
     "power": 1,
-    "xp": 15
+    "xp": 15,
+    "spawn_min": 2,
+    "spawn_max": 8,
+    "rarity": 30
   }
 ]

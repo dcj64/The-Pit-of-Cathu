@@ -5,10 +5,10 @@ from typing import Optional
 from components.base_component import BaseComponent
 from equipment_types import EquipmentType
 
-from entity import Item
+from entity import Actor, Item
 
 
-class Equipment(BaseComponent[Item]):
+class Equipment(BaseComponent[Actor]):
     #parent: Actor
 
     def __init__(self, weapon: Optional[Item] = None, armor: Optional[Item] = None, amulet: Optional[Item] = None,

@@ -4,10 +4,8 @@ from typing import TYPE_CHECKING, Dict, List, Tuple
 import random
 
 from game_map import GameMap
-from entity import Entity
 
 from setup_game import ITEMS, MONSTERS
-
 
 if TYPE_CHECKING:
     from procgen.dungeon import RectangularRoom
@@ -34,13 +32,21 @@ item_chances: Dict[int, List[Tuple[Entity, int]]] = {
     8: [(ITEMS["Amulet of Sol"], 30)],
 }
 
-enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(MONSTERS["Orc"], 80)],
-    3: [(MONSTERS["Troll"], 15)],
-    5: [(MONSTERS["Troll"], 30), (MONSTERS["Shambler"], 15)],
-    7: [(MONSTERS["Troll"], 60), (MONSTERS["Shambler"], 30)],
-    10: [(MONSTERS["Cathu"], 30)],
-}
+
+def get_monsters_for_floor(monsters, floor, count):
+    candidates = []
+
+    for monster in monsters.values():
+        if monster.spawn_min <= floor <= monster.spawn_max:
+            candidates.append((monster, monster.rarity))
+
+    if not candidates:
+        return []
+
+    monster_types = [m for m, w in candidates]
+    weights = [w for m, w in candidates]
+
+    return random.choices(monster_types, weights=weights, k=count)
 
 
 def get_max_value_for_floor(max_value_by_floor: List[Tuple[int, int]], floor: int) -> int:
@@ -81,27 +87,30 @@ def get_entities_at_random(
 
 
 def place_entities(room: "RectangularRoom", dungeon: GameMap, floor_number: int) -> None:
+
     number_of_monsters = random.randint(
         0, get_max_value_for_floor(max_monsters_by_floor, floor_number)
-        )
+    )
+
     number_of_items = random.randint(
         0, get_max_value_for_floor(max_items_by_floor, floor_number)
-        )
+    )
 
-    monsters: List[Entity] = get_entities_at_random(
-        enemy_chances, number_of_monsters, floor_number
-        )
     items: List[Entity] = get_entities_at_random(
         item_chances, number_of_items, floor_number
-        )
+    )
 
-    
-    dungeon.total_monsters = dungeon.total_monsters + len(monsters)
+    monsters = get_monsters_for_floor(
+        MONSTERS,
+        floor_number,
+        number_of_monsters
+    )
 
     for entity in monsters + items:
+
         x = random.randint(room.x1 + 1, room.x2 - 1)
         y = random.randint(room.y1 + 1, room.y2 - 1)
 
-        if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
+        if not any(e.x == x and e.y == y for e in dungeon.entities):
             entity.spawn(dungeon, x, y)
 
