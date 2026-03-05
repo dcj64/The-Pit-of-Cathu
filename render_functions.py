@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from typing import Tuple, TYPE_CHECKING
-import traceback
 import color
-import config
 from tcod import libtcodpy
 
 if TYPE_CHECKING:
@@ -26,7 +24,7 @@ def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
 
 
 def render_bar(
-    console: Console, current_value: int, maximum_value: int, total_width: int
+    console: Console, engine: Engine, current_value: int, maximum_value: int, total_width: int
 ) -> None:
     bar_width = int(float(current_value) / maximum_value * total_width)
 
@@ -46,62 +44,61 @@ def render_bar(
     console.print_box(x=95, y=58, width=13, height=1, string="┤Inventory(i)├", alignment=libtcodpy.CENTER)
 
     console.print(
-        x=5, y=70, string=f"Monsters per level:{config.total_level_monsters}/"
-                          f"{config.monsters_on_level_killed}", fg=color.bar_text
+        x=5, y=70, string=f"Monsters per level:{engine.game_map.total_monsters}", fg=color.bar_text
     )
     console.print(
-        x=5, y=72, string=f"Total Monsters killed:{config.total_monsters_killed}", fg=(204, 0, 0)
+        x=5, y=72, string=f"Total Monsters killed:{engine.stats.total_monsters_killed}", fg=(204, 0, 0)
     )
 
     console.print(
-        x=5, y=76, string=f"Total Rooms: {config.number_of_rooms}", fg=color.bar_text
+        x=5, y=76, string=f"Total Rooms: {engine.game_map.number_of_rooms}", fg=color.bar_text
     )
     console.print(
-        x=96, y=61, string=f"    Inventory/Used", fg=color.bar_text
+        x=96, y=61, string="    Inventory/Used", fg=color.bar_text
     )
     console.print(
-        x=88, y=62, string=f"Healing Potions :  {config.health_potion_total} / "
-                           f"{config.health_potion_used}", fg=color.bar_text
+        x=88, y=62, string=f"Healing Potions :  {engine.stats.items_found['health_potion']} / "
+                           f"{engine.stats.items_used['health_potion']}", fg=color.bar_text
     )
     console.print(
-        x=88, y=63, string=f""
+        x=88, y=63, string=""
     )
     console.print(
-        x=88, y=64, string=f" *** Scrolls ***", fg=color.bar_text3  # :  {config.scrolls_total} / "
+        x=88, y=64, string=" *** Scrolls ***", fg=color.bar_text3  # :  {config.scrolls_total} / "
                            # f"{config.scrolls_used}", fg=color.bar_text
     )
     console.print(
-        x=88, y=65, string=f"Lighting Scroll :  {config.lightning_scroll_total} / "
-                           f"{config.lightning_scroll_used}", fg=color.bar_text
+        x=88, y=65, string=f"Lighting Scroll :  {engine.stats.items_found['lightning_scroll']} / "
+                           f"{engine.stats.items_used['lightning_scroll']}", fg=color.bar_text
     )
     console.print(
-        x=88, y=66, string=f"Confusion Scroll:  {config.confusion_scroll_total} / "
-                           f"{config.confusion_scroll_used}", fg=color.bar_text
+        x=88, y=66, string=f"Confusion Scroll:  {engine.stats.items_found['confusion_scroll']} / "
+                           f"{engine.stats.items_used['confusion_scroll']}", fg=color.bar_text
     )
     console.print(
-        x=88, y=67, string=f"Fireball Scroll :  {config.fireball_scroll_total} / "
-                           f"{config.fireball_scroll_used}", fg=color.bar_text
+        x=88, y=67, string=f"Fireball Scroll :  {engine.stats.items_found['fireball_scroll']} / "
+                           f"{engine.stats.items_used['fireball_scroll']}", fg=color.bar_text
     )
     console.print(
-        x=88, y=68, string=f"Berserker Scroll:  {config.berserker_scroll_total} / "
-                           f"{config.berserker_scroll_used}", fg=color.bar_text
+        x=88, y=68, string=f"Berserker Scroll:  {engine.stats.items_found['berserker_scroll']} / "
+                           f"{engine.stats.items_used['berserker_scroll']}", fg=color.bar_text
     )
     console.print(
-        x=88, y=69, string=f"Genocide Scroll :  {config.genocide_scroll_total} / "
-                           f"{config.genocide_scroll_used}", fg=color.bar_text2
+        x=88, y=69, string=f"Genocide Scroll :  {engine.stats.items_found['genocide_scroll']} / "
+                           f"{engine.stats.items_used['genocide_scroll']}", fg=color.bar_text2
     )
     console.print(  # testing how to print char to screen
-        x=88, y=71, string=f" ** Equipment ** ", fg=color.bar_text3
+        x=88, y=71, string=" ** Equipment ** ", fg=color.bar_text3
     )
     console.print(
-        x=88, y=72, string=f"Amulets :  {config.amulets_total} ", fg=color.bar_text
+        x=88, y=72, string=f"Amulets :  {engine.stats.equipment_found['amulet']} ", fg=color.bar_text
     )
     console.print(
-        x=88, y=73, string=f"Rings   :  {config.rings_total} ", fg=color.bar_text
+        x=88, y=73, string=f"Rings   :  {engine.stats.equipment_found['ring']} ", fg=color.bar_text
     )
 
     console.print(  # testing how to print char to screen
-        x=85, y=76, string=f"Player Moves: {config.moves_used} "
+        x=85, y=76, string=f"Player Moves: {engine.stats.moves_used} "
     )
 
 

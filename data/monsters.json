@@ -1,0 +1,81 @@
+[
+  {
+    "name": "Orc",
+    "char": "o",
+    "color": [63, 127, 63],
+    "hp": 10,
+    "defense": 1,
+    "power": 3,
+    "xp": 35
+  },
+
+  {
+    "name": "Troll",
+    "char": "T",
+    "color": [0, 127, 0],
+    "hp": 16,
+    "defense": 2,
+    "power": 4,
+    "xp": 100
+  },
+
+  {
+    "name": "Shambler",
+    "char": "S",
+    "color": [99, 57, 57],
+    "hp": 25,
+    "defense": 4,
+    "power": 6,
+    "xp": 25
+  },
+
+  {
+    "char": "C",
+    "color": [245, 50, 0],
+    "name": "Cathu",
+    "hp": 40,
+    "defense": 8,
+    "power": 10,
+    "xp": 150
+  },
+
+  {
+    "name": "Giant Spider",
+    "char": "s",
+    "color": [0, 127, 127],
+    "hp": 8,
+    "defense": 1,
+    "power": 3,
+    "xp": 50
+  },
+
+  {
+    "name": "Kobold",
+    "char": "k",
+    "color": [127, 127, 0],
+    "hp": 6,
+    "defense": 2,
+    "power": 2,
+    "xp": 25
+  },
+
+  {
+    "name": "Giant Snake",
+    "char": "S",
+    "color": [0, 127, 0],
+    "hp": 12,
+    "defense": 0,
+    "power": 4,
+    "xp": 75
+  },
+
+  {
+    "name": "Giant Bat",
+    "char": "b",
+    "color": [127, 0, 127],
+    "hp": 5,
+    "defense": 0,
+    "power": 1,
+    "xp": 15
+  }
+]

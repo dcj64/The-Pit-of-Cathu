@@ -7,11 +7,9 @@ import config
 from components.base_component import BaseComponent
 from render_order import RenderOrder
 
-if TYPE_CHECKING:
-    from entity import Actor
+from entity import Actor
 
-
-class Fighter(BaseComponent):
+class Fighter(BaseComponent[Actor]):
     parent: Actor
 
     def __init__(self, hp: int, base_defense: int, base_power: int, base_light: int):
@@ -71,8 +69,7 @@ class Fighter(BaseComponent):
         else:
             death_message = f"{self.parent.name} is dead!"
             death_message_color = color.enemy_die
-            config.monsters_on_level_killed = config.monsters_on_level_killed + 1
-            config.total_monsters_killed = config.total_monsters_killed + 1
+            self.engine.stats.total_monsters_killed += 1
 
         self.parent.char = "%"
         self.parent.color = (191, 0, 0)

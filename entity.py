@@ -4,7 +4,6 @@ import copy
 import math
 from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING, Union
 
-import config
 from render_order import RenderOrder
 
 if TYPE_CHECKING:

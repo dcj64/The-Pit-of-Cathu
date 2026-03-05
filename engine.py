@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import lzma
 import pickle
-from tkinter.font import names
 from typing import TYPE_CHECKING
 
 from tcod.console import Console
@@ -10,6 +9,7 @@ from tcod.map import compute_fov
 from render_functions import get_names_at_location
 
 from typing import Tuple
+from game_stats import GameStats
 
 import tcod
 
@@ -32,6 +32,7 @@ class Engine:
         self.mouse_location: Tuple[int, int] = (0, 0)
         self.player = player
         self.context: tcod.context.Context
+        self.stats = GameStats()
 
     def handle_enemy_turns(self) -> None:
         for entity in set(self.game_map.actors) - {self.player}:
@@ -65,6 +66,7 @@ class Engine:
 
         render_functions.render_bar(
             console=console,
+            engine=self,
             current_value=self.player.fighter.hp,
             maximum_value=self.player.fighter.max_hp,
             total_width=20,

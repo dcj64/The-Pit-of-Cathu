@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterator, List, Tuple
 import random
 import tcod
-import config
 
 from game_map import GameMap
 import tile_types
@@ -34,8 +33,12 @@ class RectangularRoom:
 
     def intersects(self, other: RectangularRoom) -> bool:
         """Return True if this room overlaps with another RectangularRoom."""
-        return self.x1 <= other.x2 and self.x2 >= other.x1 and self.y1 <= other.y2 and self.y2 >= other.y1
-
+        return (
+                self.x1 <= other.x2
+                and self.x2 >= other.x1 
+                and self.y1 <= other.y2 
+                and self.y2 >= other.y1
+        )
 
 def generate_dungeon(
     max_rooms: int,
@@ -105,8 +108,6 @@ def generate_dungeon(
 
         # Finally, append the new room to the list.
         rooms.append(new_room)
-        (len(rooms)) #count number of rooms
-        config.number_of_rooms = len(rooms)
 
     add_simple_doors(dungeon)
 
@@ -166,7 +167,7 @@ def add_simple_doors(dungeon: GameMap) -> None:
                     touches_room = True
                     break
 
-            if touches_room and random.random() < 0.3:  # 30% chance to place a door
+            if touches_room and random.random() < 0.1:  # 10% chance to place a door
                 dungeon.tiles[x, y] = tile_types.door_closed
 
 

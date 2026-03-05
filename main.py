@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import traceback
 
 import tcod
@@ -21,9 +20,6 @@ def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
 def main() -> None:
     screen_width = config.screen_width  # 80
     screen_height = config.screen_height  # 50
-
-    # map_width = 100
-    # map_height = 52
 
     tileset = tcod.tileset.load_tilesheet(
         "Cheepicus_16x16.png", 16, 16, tcod.tileset.CHARMAP_CP437

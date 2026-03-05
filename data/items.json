@@ -1,0 +1,141 @@
+[
+  {
+    "name": "Health Potion",
+    "char": "!",
+    "color": [127, 0, 255],
+    "type": "healing",
+    "amount": 4
+  },
+
+  {
+    "name": "Amulet of Sol",
+    "char": "☼",
+    "color": [255, 255, 0],
+    "type": "amulet",
+    "light_bonus": 4
+  },
+
+  {
+    "name": "Amulet of Luna",
+    "char": "☽",
+    "color": [255, 255, 255],
+    "type": "amulet",
+    "light_bonus": 1
+  },
+
+  {
+    "name": "Amulet of Stars",
+    "char": "✶",
+    "color": [255, 255, 255],
+    "type": "amulet",
+    "light_bonus": 2
+  },
+
+  {
+    "name": "Lightning Scroll",
+    "char": "~",
+    "color": [76, 153, 0],
+    "type": "lightning",
+    "damage": 15,
+    "range": 5
+  },
+
+  {
+    "name": "Confusion Scroll",
+    "char": "~",
+    "color": [207, 63, 255],
+    "type": "confusion",
+    "turns": 10
+  },
+
+  {
+    "name": "Berserker Scroll",
+    "char": "~",
+    "color": [255, 0, 0],
+    "type": "berserker",
+    "turns": 5,
+    "damage": 12
+  },
+
+  {
+    "name": "Fireball Scroll",
+    "char": "~",
+    "color": [255, 0, 0],
+    "type": "fireball",
+    "damage": 12,
+    "radius": 3
+  },
+
+  {
+    "name": "Genocide Scroll",
+    "char": "~",
+    "color": [204, 0, 0],
+    "type": "genocide",
+    "radius": 1,
+    "damage": 40
+  },
+
+  {
+    "name": "Dagger",
+    "char": "/",
+    "color": [0, 191, 255],
+    "type": "weapon",
+    "power_bonus": 2
+  },
+
+  {
+    "name": "Sword",
+    "char": "/",
+    "color": [0, 127, 255],
+    "type": "weapon",
+    "power_bonus": 4
+  },
+
+  {
+    "name": "Axe",
+    "char": "/",
+    "color": [0, 63, 255],
+    "type": "weapon",
+    "power_bonus": 6
+  },
+
+  {
+    "name": "Ring of Strength",
+    "char": "o",
+    "color": [127, 5, 255],
+    "type": "ring",
+    "power_bonus": 2
+  },
+
+  {
+    "name": "Ring of Power",
+    "char": "o",
+    "color": [127, 0, 255],
+    "type": "ring",
+    "power_bonus": 4
+  },
+
+  {
+    "name": "Leather Armor",
+    "char": "'['",
+    "color": [160, 160, 160],
+    "type": "armor",
+    "defense_bonus": 2
+  },
+
+  {
+    "name": "Chain Mail",
+    "char": "¥",
+    "color": [96, 96, 96],
+    "type": "armor",
+    "defense_bonus": 4
+  },
+
+  {
+    "name": "Plate Mail",
+    "char": "≡",
+    "color": [64, 64, 64],
+    "type": "armor",
+    "defense_bonus": 6
+  }
+]

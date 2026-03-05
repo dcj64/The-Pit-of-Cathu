@@ -115,3 +115,8 @@ class HostileEnemy(BaseAI):
 
         return WaitAction(self.entity).perform()
 
+class PlayerAI(BaseAI):
+    """Player-controlled AI (does nothing automatically)."""
+
+    def perform(self) -> None:
+        pass

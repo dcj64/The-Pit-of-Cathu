@@ -1,0 +1,19 @@
+Remove config.number_of_rooms and move it into GameMap
+
+Convert spawn tables into a biome-aware registry
+
+Remove global config.total_level_monsters
+
+Or simplify imports across the whole project
+
+But structurally, dungeon.py is now solid.
+
+Add biome registry system
+
+Introduce depth-based cave styles
+
+Or remove global config usage entirely
+
+
+If you'd like, I can also show you a very powerful improvement to this JSON system that will automatically 
+spawn monsters and loot by dungeon depth, replacing your current spawn tables entirely. It will simplify your procgen/entities.py a lot.

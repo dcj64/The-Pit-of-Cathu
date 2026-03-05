@@ -21,6 +21,11 @@ class GameMap:
         self.width = width
         self.height = height
         self.entities = set(entities)
+        # --- Level-specific runtime state ---
+        self.number_of_rooms = 0
+        self.total_monsters = 0
+        self.monsters_killed = 0
+        # --- End level-specific runtime state ---
         self.tiles = np.full((self.width, self.height), fill_value=tile_types.wall, order="F")
 
         self.visible = np.full((width, height), fill_value=False, order="F"

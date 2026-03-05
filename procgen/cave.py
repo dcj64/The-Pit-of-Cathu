@@ -272,3 +272,4 @@ def get_reachable_tiles(dungeon: GameMap, start_x: int, start_y: int):
                 stack.append((nx, ny))
 
     return visited
+

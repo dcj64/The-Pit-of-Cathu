@@ -13,13 +13,45 @@ import config
 
 import color
 from engine import Engine
-import entity_factories
 from game_map import GameWorld
 import input_handlers
 
+from entity import Actor
+from components.fighter import Fighter
+from components.inventory import Inventory
+from components.equipment import Equipment
+from components.level import Level
+from components.ai import PlayerAI
+
+from data_loader import load_items, load_monsters
+
+ITEMS = load_items()
+MONSTERS = load_monsters()
 
 # Load the background image and remove the alpha channel.
 background_image = tcod.image.load("menu_background.png")[:, :, :3]
+
+
+def create_player() -> Actor:
+    fighter = Fighter(
+        hp=30,
+        base_defense=1,
+        base_power=2,
+        base_light=2,
+    )
+
+    player = Actor(
+        char="@",
+        color=(255, 255, 255),
+        name="Player",
+        ai_cls=PlayerAI,
+        fighter=fighter,
+        inventory=Inventory(capacity=26),
+        equipment=Equipment(),
+        level=Level(level_up_base=200),
+    )
+
+    return player
 
 
 def new_game() -> Engine:
@@ -31,7 +63,7 @@ def new_game() -> Engine:
     room_min_size = config.room_min_size
     max_rooms = config.max_rooms
 
-    player = copy.deepcopy(entity_factories.player)
+    player = create_player()
 
     engine = Engine(player=player)
 
@@ -51,8 +83,8 @@ def new_game() -> Engine:
         "Hello and welcome, adventurer, to yet another dungeon!", color.welcome_text
     )
 
-    dagger = copy.deepcopy(entity_factories.dagger)
-    leather_armor = copy.deepcopy(entity_factories.leather_armor)
+    dagger = copy.deepcopy(ITEMS["Dagger"])
+    leather_armor = copy.deepcopy(ITEMS["Leather Armor"])
 
     dagger.parent = player.inventory
     leather_armor.parent = player.inventory

@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import Optional, Tuple, TYPE_CHECKING
 
 import color
-import config
 import exceptions
 import time
 
 import numpy as np
+
 import tile_types
 
 if TYPE_CHECKING:
@@ -62,21 +62,21 @@ class PickupAction(Action):
                 elif item.name == "Genocide Scroll":
                     self.engine.message_log.add_message(f"You picked up the {item.name}!", (255, 0, 0))
                 if item.name == "Health Potion":
-                    config.health_potion_total = config.health_potion_total + 1
+                    self.engine.stats.item_found("health_potion")
                 elif item.name == "Lightning Scroll":
-                    config.lightning_scroll_total = config.lightning_scroll_total + 1
+                    self.engine.stats.item_found("lightning_scroll")
                 elif item.name == "Confusion Scroll":
-                    config.confusion_scroll_total = config.confusion_scroll_total + 1
+                    self.engine.stats.item_found("confusion_scroll")
                 elif item.name == "Fireball Scroll":
-                    config.fireball_scroll_total = config.fireball_scroll_total + 1
+                    self.engine.stats.item_found("fireball_scroll")
                 elif item.name == "Berserker Scroll":
-                    config.berserker_scroll_total = config.berserker_scroll_total + 1
+                    self.engine.stats.item_found("berserker_scroll")
                 elif item.name == "Genocide Scroll":
-                    config.genocide_scroll_total = config.genocide_scroll_total + 1
+                    self.engine.stats.item_found("genocide_scroll")
                 elif item.name == "Amulet of Sol":
-                    config.amulets_total = config.amulets_total + 1
+                    self.engine.stats.item_found("amulet_of_sol")
                 elif item.name == "Ring of Strength":
-                    config.rings_total = config.rings_total + 1
+                    self.engine.stats.item_found("ring_of_strength")
                 return
 
         raise exceptions.Impossible("There is nothing here to pick up.")
@@ -132,8 +132,7 @@ class TakeStairsAction(Action):
         Take the stairs, if any exist at the entity's location.
         """
         if (self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location:
-            config.total_level_monsters = 0
-            config.monsters_on_level_killed = 0
+            self.engine.game_map.monsters_killed = 0
             self.engine.message_log.add_message(
                 "You cautiously descend the staircase.", color.descend
             )

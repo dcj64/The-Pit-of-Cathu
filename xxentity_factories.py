@@ -73,7 +73,7 @@ confusion_scroll = Item(
     char="~",
     color=(207, 63, 255),
     name="Confusion Scroll",
-    consumable=consumable.ConfusionConsumable(number_of_turns=10),
+    consumable=consumable.ConfusionConsumable(turns=10),
 )
 fireball_scroll = Item(
     char="~",
@@ -85,7 +85,7 @@ berserker_scroll = Item(
     char="~",
     color=(204, 0, 204),
     name="Berserker Scroll",
-    consumable=consumable.BerserkerDamageConsumable(number_of_turns=5, damage=12),
+    consumable=consumable.BerserkerDamageConsumable(turns=5, damage=12),
 )
 genocide_scroll = Item(
     char="~",

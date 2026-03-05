@@ -534,7 +534,7 @@ class MainGameEventHandler(EventHandler):
         if key in MOVE_KEYS:
             dx, dy = MOVE_KEYS[key]
             action = BumpAction(player, dx, dy)
-            config.moves_used = config.moves_used + 1  # count players moves
+            self.engine.stats.moves_used +=1 # count players moves
         elif key in WAIT_KEYS:
             action = WaitAction(player)
 

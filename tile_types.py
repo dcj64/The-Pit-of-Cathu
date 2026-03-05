@@ -91,3 +91,11 @@ lava = new_tile(
     light=(ord("^"), (255, 140, 0), (120, 20, 0)),
 )
 
+hole = new_tile(
+    walkable=False,
+    transparent=True,
+    dark=(ord("░"), (0, 0, 0), (36, 36, 36)),
+    light=(ord("░"), (0, 0, 0), (36, 36, 36)),
+)
+
+

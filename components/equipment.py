@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 
 from components.base_component import BaseComponent
 from equipment_types import EquipmentType
 
-if TYPE_CHECKING:
-    from entity import Actor, Item
+from entity import Item
 
 
-class Equipment(BaseComponent):
-    parent: Actor
+class Equipment(BaseComponent[Item]):
+    #parent: Actor
 
     def __init__(self, weapon: Optional[Item] = None, armor: Optional[Item] = None, amulet: Optional[Item] = None,
                  ring: Optional[Item] = None):
@@ -88,6 +87,7 @@ class Equipment(BaseComponent):
         setattr(self, slot, None)
 
     def toggle_equip(self, equippable_item: Item, add_message: bool = True) -> None:
+        slot = None
         if (
             equippable_item.equippable
             and equippable_item.equippable.equipment_type == EquipmentType.WEAPON
@@ -108,6 +108,9 @@ class Equipment(BaseComponent):
                 and equippable_item.equippable.equipment_type == EquipmentType.RING
         ):
             slot = "ring"
+
+        if slot is None:
+            return
 
         if getattr(self, slot) == equippable_item:
             self.unequip_from_slot(slot, add_message)
