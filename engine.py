@@ -62,7 +62,7 @@ class Engine:
             bg = console.rgb["bg"][mx, my]
             console.rgb["bg"][mx, my] = (bg + (30, 30, 30)).clip(0, 255)
         
-        self.message_log.render(console=console, x=40, y=60, width=40, height=5)  # x=25 y=45
+        self.message_log.render(console=console, x=38, y=58, width=43, height=5)  # x=25 y=45
 
         render_functions.render_bar(
             console=console,

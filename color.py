@@ -4,6 +4,8 @@ red = (0xFF, 0x0, 0x0)
 green = (0x0, 0xFF, 0x0)
 
 player_atk = (0xE0, 0xE0, 0xE0)
+player_def = (100, 200, 255)
+player_light = (255, 255, 150)
 enemy_atk = (0xFF, 0xC0, 0xC0)
 needs_target = (0x3F, 0xFF, 0xFF)
 status_effect_applied = (0x3F, 0xFF, 0x3F)
@@ -25,6 +27,10 @@ bar_text2 = red
 bar_text3 = green
 bar_filled = (0x0, 0x60, 0x0)
 bar_empty = (0x40, 0x10, 0x10)
+
+hp_bar_green = (0, 200, 0)
+hp_bar_yellow = (255, 180, 0)
+hp_bar_red = (200, 0, 0)
 
 menu_title = (255, 255, 63)
 menu_text = white

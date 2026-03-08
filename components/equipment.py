@@ -11,12 +11,18 @@ from entity import Actor, Item
 class Equipment(BaseComponent[Actor]):
     #parent: Actor
 
-    def __init__(self, weapon: Optional[Item] = None, armor: Optional[Item] = None, amulet: Optional[Item] = None,
-                 ring: Optional[Item] = None):
+    def __init__(self,
+            weapon: Optional[Item] = None,
+            armor: Optional[Item] = None,
+            amulet: Optional[Item] = None,
+            ring1: Optional[Item] = None,
+            ring2:Optional[Item] = None,
+    ):
         self.weapon = weapon
         self.armor = armor
         self.amulet = amulet
-        self.ring = ring
+        self.ring1 = ring1
+        self.ring2 = ring2
 
     @property
     def defense_bonus(self) -> int:
@@ -28,8 +34,9 @@ class Equipment(BaseComponent[Actor]):
         if self.armor is not None and self.armor.equippable is not None:
             bonus += self.armor.equippable.defense_bonus
 
-        if self.ring is not None and self.ring.equippable is not None:
-            bonus += self.ring.equippable.defense_bonus
+        for ring in (self.ring1, self.ring2):
+            if ring is not None and ring.equippable is not None:
+                bonus += ring.equippable.defense_bonus
 
         return bonus
 
@@ -55,7 +62,59 @@ class Equipment(BaseComponent[Actor]):
         return bonus
 
     def item_is_equipped(self, item: Item) -> bool:
-        return self.weapon == item or self.armor == item or self.amulet == item or self.ring == item
+        return (
+            self.weapon == item
+            or self.armor == item
+            or self.amulet == item
+            or self.ring1 == item
+            or self.ring2 == item
+        )
+    
+    def equipped_items(self) -> list[Item]:
+        items = []
+
+        if self.weapon:
+            items.append(self.weapon)
+
+        if self.armor:
+            items.append(self.armor)
+
+        if self.amulet:
+            items.append(self.amulet)
+
+        if self.ring1:
+            items.append(self.ring1)
+
+        if self.ring2:
+            items.append(self.ring2)
+
+        return items
+
+
+    def rings_equipped(self) -> int:
+        count = 0
+        if self.ring1:
+            count += 1
+        if self.ring2:
+            count += 1
+        return count
+    
+    def equipped_rings(self) -> list[Item]:
+        rings = []
+        if self.ring1:
+            rings.append(self.ring1)
+        if self.ring2:
+            rings.append(self.ring2)
+        return rings
+
+
+    def equipped_amulet(self) -> Optional[Item]:
+        return self.amulet
+
+
+    def amulet_equipped(self) -> int:
+        return 1 if self.amulet else 0
+    
 
     def unequip_message(self, item_name: str) -> None:
         self.parent.gamemap.engine.message_log.add_message(
@@ -106,8 +165,13 @@ class Equipment(BaseComponent[Actor]):
         elif (
                 equippable_item.equippable
                 and equippable_item.equippable.equipment_type == EquipmentType.RING
-        ):
-            slot = "ring"
+        ):  
+            if self.ring1 is None:
+                slot = "ring1"
+            elif self.ring2 is None:
+                slot = "ring2"
+            else:
+                slot = "ring1"
 
         if slot is None:
             return
