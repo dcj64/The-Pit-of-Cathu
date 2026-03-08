@@ -24,4 +24,13 @@ class Inventory(BaseComponent):
 
         self.engine.message_log.add_message(f"You dropped the {item.name}.")
 
+    def count_items(self, stat_key: str) -> int:
+        count = 0
 
+        for item in self.items:
+            consumable_key = getattr(item.consumable, "stat_key", None)
+            equipment_key = getattr(item.equippable, "stat_key", None)
+
+            if consumable_key == stat_key or equipment_key == stat_key:
+                count += 1
+        return count

@@ -65,6 +65,7 @@ def decorate_room(room_type, room, dungeon):
         # spawn items
         from procgen.entities import place_entities
         place_entities(room, dungeon, dungeon.engine.game_world.current_floor)
+        
 
     elif room_type == "nest":
 
@@ -97,7 +98,7 @@ def randomize_walls(dungeon: GameMap):
         tile_types.wall_broken,
     ]
 
-    weights = [70, 15, 10, 5]
+    weights = [80, 5, 10, 5]
 
     for x in range(1, dungeon.width - 1):
         for y in range(1, dungeon.height - 1):

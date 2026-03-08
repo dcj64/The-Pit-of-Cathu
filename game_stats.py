@@ -1,8 +1,17 @@
 from __future__ import annotations
+import inspect
 
 
 class GameStats:
     """Tracks run-wide statistics for the current game."""
+    DEBUG_STATS = True
+
+    def debug(self, message: str) -> None:
+        if self.DEBUG_STATS:
+            frame = inspect.stack()[1]
+            file = frame.filename.split("/")[-1]
+            line = frame.lineno
+            print(f"[STATS] ({file}:{line}) {message}")
 
     def __init__(self) -> None:
         # --- Combat ---
@@ -52,11 +61,14 @@ class GameStats:
     def item_found(self, item_name: str) -> None:
         if item_name in self.items_found:
             self.items_found[item_name] += 1
+            self.debug(f"{item_name} found → {self.items_found[item_name]}")
 
     def item_used(self, item_name: str) -> None:
         if item_name in self.items_used:
             self.items_used[item_name] += 1
+            self.debug(f"{item_name} used → {self.items_used[item_name]}")
 
     def equipment_found_item(self, equipment_name: str) -> None:
         if equipment_name in self.equipment_found:
             self.equipment_found[equipment_name] += 1
+            self.debug(f"{equipment_name} found → {self.equipment_found[equipment_name]}")

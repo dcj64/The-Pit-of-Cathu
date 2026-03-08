@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, Tuple, TYPE_CHECKING
 
+
 import color
 import exceptions
 import time
@@ -57,26 +58,23 @@ class PickupAction(Action):
                 item.parent = self.entity.inventory
                 inventory.items.append(item)
 
-                if item.name != "Genocide Scroll":
-                    self.engine.message_log.add_message(f"You picked up the {item.name}", (255, 255, 0))
-                elif item.name == "Genocide Scroll":
-                    self.engine.message_log.add_message(f"You picked up the {item.name}!", (255, 0, 0))
-                if item.name == "Health Potion":
-                    self.engine.stats.item_found("health_potion")
-                elif item.name == "Lightning Scroll":
-                    self.engine.stats.item_found("lightning_scroll")
-                elif item.name == "Confusion Scroll":
-                    self.engine.stats.item_found("confusion_scroll")
-                elif item.name == "Fireball Scroll":
-                    self.engine.stats.item_found("fireball_scroll")
-                elif item.name == "Berserker Scroll":
-                    self.engine.stats.item_found("berserker_scroll")
-                elif item.name == "Genocide Scroll":
-                    self.engine.stats.item_found("genocide_scroll")
-                elif item.name == "Amulet of Sol":
-                    self.engine.stats.item_found("amulet_of_sol")
-                elif item.name == "Ring of Strength":
-                    self.engine.stats.item_found("ring_of_strength")
+                # Track consumables
+                key = getattr(item.consumable, "stat_key", None)
+                if key:
+                    self.engine.stats.item_found(key)
+
+                # Track equipment
+                eq_key = getattr(item.equippable, "stat_key", None)
+                if eq_key:
+                    self.engine.stats.equipment_found_item(eq_key)
+
+                # Track equipment
+                elif item.equippable:
+                    if "Amulet" in item.name:
+                        self.engine.stats.equipment_found_item("amulet")
+                    elif "Ring" in item.name:
+                        self.engine.stats.equipment_found_item("ring")
+
                 return
 
         raise exceptions.Impossible("There is nothing here to pick up.")

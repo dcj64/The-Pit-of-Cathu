@@ -43,12 +43,12 @@ class LeatherArmor(Equippable):
 
 class ChainMail(Equippable):
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.ARMOR, defense_bonus=3)
+        super().__init__(equipment_type=EquipmentType.ARMOR, defense_bonus=2)
 
 
 class PlateMail(Equippable):
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.ARMOR, defense_bonus=6)
+        super().__init__(equipment_type=EquipmentType.ARMOR, defense_bonus=4)
 
 
 class Amulets(Equippable):

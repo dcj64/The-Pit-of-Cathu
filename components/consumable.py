@@ -5,7 +5,10 @@ from typing import Optional, TYPE_CHECKING
 import actions
 import color
 import components.ai
-import components.inventory
+
+from typing import cast
+from components.inventory import Inventory
+from stats_keys import ItemStat
 
 from components.base_component import BaseComponent
 from exceptions import Impossible
@@ -22,49 +25,42 @@ if TYPE_CHECKING:
 
 
 class Consumable(BaseComponent[Item]):
+    stat_key: str | None = None
 
     def get_action(self, consumer: Actor) -> Optional[ActionOrHandler]:
-        """Return the action for this item."""
         return actions.ItemAction(consumer, self.parent)
 
     def activate(self, action: actions.ItemAction) -> None:
-        """Invoke this item's ability."""
+        consumer = action.entity
+
+        # Run the item's effect
+        self.apply_effect(consumer)
+
+        # Update stats
+        if self.stat_key:
+            self.engine.stats.items_used[self.stat_key] += 1
+
+        # Remove the item
+        self.consume()
+
+    def apply_effect(self, consumer: Actor) -> None:
         raise NotImplementedError()
 
     def consume(self) -> None:
-        """Remove the consumed item from its containing inventory."""
-        entity = self.parent
-        inventory = entity.parent
+        item = self.parent
+        container = item.parent
 
-        if isinstance(inventory, components.inventory.Inventory):
-            inventory.items.remove(entity)
-
-    def use_item(self, stat_key: str) -> None:
-        """Register item usage and remove it from inventory."""
-        self.engine.stats.items_used[stat_key] += 1
-        self.consume()
-
+        if isinstance(container, Inventory) and item in container.items:
+            container.items.remove(item)
+        
 
 # ---------------------------------------------------------------------
 # SELF TARGET ITEMS (potions etc)
 # ---------------------------------------------------------------------
 
-class SelfConsumable(Consumable):
+class HealingConsumable(Consumable):
 
-    stat_key: str
-
-    def activate(self, action: actions.ItemAction) -> None:
-        consumer = action.entity
-        self.apply_effect(consumer)
-        self.use_item(self.stat_key)
-
-    def apply_effect(self, consumer: Actor) -> None:
-        raise NotImplementedError()
-
-
-class HealingConsumable(SelfConsumable):
-
-    stat_key = "health_potion"
+    stat_key = ItemStat.HEALTH_POTION
 
     def __init__(self, amount: int):
         self.amount = amount
@@ -81,7 +77,7 @@ class HealingConsumable(SelfConsumable):
             raise Impossible("Your health is already full.")
 
 
-class BerserkerDamageConsumable(SelfConsumable):
+class BerserkerDamageConsumable(Consumable):
 
     stat_key = "berserker_scroll"
 
@@ -93,6 +89,9 @@ class BerserkerDamageConsumable(SelfConsumable):
         for actor in self.engine.game_map.actors:
             if actor.fighter.base_power > 1:
                 actor.fighter.base_power += self.damage
+
+            if self.stat_key:
+                self.engine.stats.items_used[self.stat_key] += 1              
 
         self.engine.message_log.add_message(
             f"You become a Berserker for {self.turns} turns, gaining {self.damage} extra damage!",
@@ -106,7 +105,7 @@ class BerserkerDamageConsumable(SelfConsumable):
 
 class TargetConsumable(Consumable):
 
-    stat_key: str
+    stat_key: str | None = None
 
     def get_action(self, consumer: Actor) -> SingleRangedAttackHandler:
         self.engine.message_log.add_message(
@@ -151,8 +150,8 @@ class ConfusionConsumable(TargetConsumable):
             color.status_effect_applied,
         )
 
-        self.use_item(self.stat_key)
-
+        if self.stat_key:
+            self.engine.stats.items_used[self.stat_key] += 1
 
 class LightningDamageConsumable(Consumable):
 
@@ -186,7 +185,8 @@ class LightningDamageConsumable(Consumable):
 
             target.fighter.take_damage(self.damage)
 
-            self.use_item(self.stat_key)
+            if self.stat_key:
+                self.engine.stats.items_used[self.stat_key] += 1
 
         else:
             raise Impossible("No enemy is close enough to strike.")
@@ -198,7 +198,7 @@ class LightningDamageConsumable(Consumable):
 
 class AreaConsumable(Consumable):
 
-    stat_key: str
+    stat_key: str | None = None
     radius: int
 
     def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
@@ -243,8 +243,8 @@ class FireballDamageConsumable(AreaConsumable):
         if not targets_hit:
             raise Impossible("There are no targets in the radius.")
 
-        self.use_item(self.stat_key)
-
+        if self.stat_key:
+            self.engine.stats.items_used[self.stat_key] += 1
 
 class GenocideDamageConsumable(AreaConsumable):
 
@@ -268,12 +268,13 @@ class GenocideDamageConsumable(AreaConsumable):
                 self.engine.message_log.add_message(
                     f"The {actor.name} has been annihilated!"
                 )
-
+                
                 actor.fighter.take_damage(self.damage)
                 targets_hit = True
 
         if not targets_hit:
             raise Impossible("There are no targets in the radius.")
 
-        self.use_item(self.stat_key)
+        if self.stat_key:
+            self.engine.stats.items_used[self.stat_key] += 1
         

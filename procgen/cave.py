@@ -66,6 +66,8 @@ def generate_cave(
     # Add pillars to the cave for variety. The pillars get more common as you go deeper,
     # since the later caves are more tightly packed and have less room for large open areas.
     add_cave_pillars(dungeon, density=0.015)
+
+    add_cave_trees(dungeon, density=0.030)
     
     # Place player in a random walkable location
     while True:
@@ -242,6 +244,28 @@ def add_cave_pillars(dungeon: GameMap, density: float = 0.015):
             # Only place pillar in open spaces
             if neighbors < 2 and random.random() < density:
                 dungeon.tiles[x, y] = tile_types.wall
+
+def add_cave_trees(dungeon: GameMap, density: float = 0.015):
+    width, height = dungeon.width, dungeon.height
+
+    for x in range(2, width - 2):
+        for y in range(2, height - 2):
+
+            # Only consider floor tiles
+            if not dungeon.tiles["walkable"][x, y]:
+                continue
+
+            # Check surrounding area to avoid clutter
+            neighbors = 0
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    if not dungeon.tiles["walkable"][x + dx, y + dy]:
+                        neighbors += 1
+
+            # Only place pillar in open spaces
+            if neighbors < 2 and random.random() < density:
+                dungeon.tiles[x, y] = tile_types.tree
+
 
 # Check for reachable tiles from a starting point. This is used to ensure that the stairs
 # are placed in a location that the player can actually reach.

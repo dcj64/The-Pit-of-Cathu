@@ -22,6 +22,50 @@ def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
 
     return names.capitalize()
 
+def render_consumables_panel(console: Console, engine: Engine, x: int, y: int) -> int:
+    console.print(x=x, y=y, string=" *** Consumables ***", fg=color.bar_text3)
+    y +=1
+
+    for key in engine.stats.items_used:
+        carried = engine.player.inventory.count_items(key)
+        used = engine.stats.items_used[key]
+
+        # Skip items never seen or used
+        if carried == 0 and used == 0:
+            continue
+
+        name = key.replace("_", " ").title()
+
+        console.print(
+            x=x,
+            y=y,
+            string=f"{name:<18}: {carried} / {used}",
+            fg=color.bar_text,
+        )
+
+        y += 1
+
+    return y
+
+def render_equipment_panel(console: Console, engine: Engine, x: int, y: int) -> int:
+    console.print(x=x, y=y, string=" ** Equipment ** ", fg=color.bar_text3)
+    y += 1
+
+    for key in engine.stats.equipment_found:
+        carried = engine.player.inventory.count_items(key)
+
+        name = key.replace("_", " ").title()
+
+        console.print(
+            x=x,
+            y=y,
+            string=f"{name:<16}: {carried}",
+            fg=color.bar_text,
+        )
+
+        y += 1
+
+    return y
 
 def render_bar(
     console: Console, engine: Engine, current_value: int, maximum_value: int, total_width: int
@@ -44,58 +88,16 @@ def render_bar(
     console.print_box(x=95, y=58, width=13, height=1, string="┤Inventory(i)├", alignment=libtcodpy.CENTER)
 
     console.print(
-        x=5, y=70, string=f"Monsters per level:{engine.game_map.total_monsters}", fg=color.bar_text
-    )
-    console.print(
         x=5, y=72, string=f"Total Monsters killed:{engine.stats.total_monsters_killed}", fg=(204, 0, 0)
     )
 
-    console.print(
-        x=5, y=76, string=f"Total Rooms: {engine.game_map.number_of_rooms}", fg=color.bar_text
-    )
-    console.print(
-        x=96, y=61, string="    Inventory/Used", fg=color.bar_text
-    )
-    console.print(
-        x=88, y=62, string=f"Healing Potions :  {engine.stats.items_found['health_potion']} / "
-                           f"{engine.stats.items_used['health_potion']}", fg=color.bar_text
-    )
-    console.print(
-        x=88, y=63, string=""
-    )
-    console.print(
-        x=88, y=64, string=" *** Scrolls ***", fg=color.bar_text3  # :  {config.scrolls_total} / "
-                           # f"{config.scrolls_used}", fg=color.bar_text
-    )
-    console.print(
-        x=88, y=65, string=f"Lighting Scroll :  {engine.stats.items_found['lightning_scroll']} / "
-                           f"{engine.stats.items_used['lightning_scroll']}", fg=color.bar_text
-    )
-    console.print(
-        x=88, y=66, string=f"Confusion Scroll:  {engine.stats.items_found['confusion_scroll']} / "
-                           f"{engine.stats.items_used['confusion_scroll']}", fg=color.bar_text
-    )
-    console.print(
-        x=88, y=67, string=f"Fireball Scroll :  {engine.stats.items_found['fireball_scroll']} / "
-                           f"{engine.stats.items_used['fireball_scroll']}", fg=color.bar_text
-    )
-    console.print(
-        x=88, y=68, string=f"Berserker Scroll:  {engine.stats.items_found['berserker_scroll']} / "
-                           f"{engine.stats.items_used['berserker_scroll']}", fg=color.bar_text
-    )
-    console.print(
-        x=88, y=69, string=f"Genocide Scroll :  {engine.stats.items_found['genocide_scroll']} / "
-                           f"{engine.stats.items_used['genocide_scroll']}", fg=color.bar_text2
-    )
-    console.print(  # testing how to print char to screen
-        x=88, y=71, string=" ** Equipment ** ", fg=color.bar_text3
-    )
-    console.print(
-        x=88, y=72, string=f"Amulets :  {engine.stats.equipment_found['amulet']} ", fg=color.bar_text
-    )
-    console.print(
-        x=88, y=73, string=f"Rings   :  {engine.stats.equipment_found['ring']} ", fg=color.bar_text
-    )
+    console.print(x=96, y=61, string="Inventory / Used", fg=color.bar_text)
+
+    y = 62
+    y = render_consumables_panel(console, engine, 88, y)
+
+    y += 1
+    render_equipment_panel(console, engine, 88, y)
 
     console.print(  # testing how to print char to screen
         x=85, y=76, string=f"Player Moves: {engine.stats.moves_used} "

@@ -17,13 +17,30 @@
   },
 
   {
+    "name": "Orc Captain",
+    "char": "o",
+    "color": [209, 61, 31],
+    "hp": 12,
+    "defense": 2,
+    "power": 4,
+    "xp": 45,
+
+    "spawn_min": 1,
+    "spawn_max": 6,
+    "rarity": 40,
+
+    "group_min": 1,
+    "group_max": 2
+  },
+
+  {
     "name": "Troll",
     "char": "T",
     "color": [0, 127, 0],
     "hp": 16,
     "defense": 2,
     "power": 4,
-    "xp": 100,
+    "xp": 60,
 
     "spawn_min": 3,
     "spawn_max": 12,
@@ -40,7 +57,7 @@
     "hp": 25,
     "defense": 4,
     "power": 6,
-    "xp": 25,
+    "xp": 80,
 
     "spawn_min": 3,
     "spawn_max": 12,
@@ -51,9 +68,9 @@
   },
 
   {
+    "name": "Cathu",
     "char": "C",
     "color": [245, 50, 0],
-    "name": "Cathu",
     "hp": 40,
     "defense": 8,
     "power": 10,
@@ -74,7 +91,7 @@
     "hp": 8,
     "defense": 1,
     "power": 3,
-    "xp": 50,
+    "xp": 35,
 
     "spawn_min": 1,
     "spawn_max": 4,
@@ -91,7 +108,7 @@
     "hp": 6,
     "defense": 2,
     "power": 2,
-    "xp": 25,
+    "xp": 40,
 
     "spawn_min": 2,
     "spawn_max": 8,
@@ -108,7 +125,7 @@
     "hp": 12,
     "defense": 0,
     "power": 4,
-    "xp": 75,
+    "xp": 25,
 
     "spawn_min": 4,
     "spawn_max": 8,
@@ -123,9 +140,9 @@
     "char": "b",
     "color": [127, 0, 127],
     "hp": 5,
-    "defense": 0,
+    "defense": 2,
     "power": 1,
-    "xp": 15,
+    "xp": 35,
 
     "spawn_min": 2,
     "spawn_max": 8,

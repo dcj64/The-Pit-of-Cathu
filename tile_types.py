@@ -59,8 +59,8 @@ ruin_wall = new_tile(
 wall_cracked = new_tile(
     walkable=False,
     transparent=False,
-    dark=(ord("▒"), (70, 70, 70), (0, 0, 0)),
-    light=(ord("▒"), (110, 110, 110), (0, 0, 0)),
+    dark=(ord("#"), (70, 70, 70), (0, 0, 0)),
+    light=(ord("#"), (110, 110, 110), (0, 0, 0)),
 )
 
 wall_mossy = new_tile(
@@ -119,4 +119,10 @@ hole = new_tile(
     light=(ord("░"), (0, 0, 0), (36, 36, 36)),
 )
 
+tree = new_tile(
+    walkable=False,
+    transparent=False,
+    dark=(ord("♣"), (49, 85, 23), (0, 0, 0)),
+    light=(ord("♣"), (60, 120, 60), (0, 0, 0)),
+)
 

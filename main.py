@@ -31,7 +31,7 @@ def main() -> None:
         columns = screen_width,
         rows =screen_height,
         tileset=tileset,
-        title="The Pit of Cathu VS-Code",
+        title="The Pit of Cathu",
         vsync=True,
 
     ) as context:
