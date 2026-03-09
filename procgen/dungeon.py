@@ -13,11 +13,13 @@ if TYPE_CHECKING:
 
 
 class RectangularRoom:
-    def __init__(self, x: int, y: int, width: int, height: int):
+    def __init__(self, x: int, y: int, width: int, height: int, room_type: str = "normal"):
         self.x1 = x
         self.y1 = y
         self.x2 = x + width
         self.y2 = y + height
+        self.room_type = room_type
+        self.visited = False
 
     @property
     def center(self) -> Tuple[int, int]:
@@ -162,6 +164,8 @@ def generate_dungeon(
         x = random.randint(0, dungeon.width - room_width - 1)
         y = random.randint(0, dungeon.height - room_height - 1)
 
+        # Create room type
+        room_type = choose_room_type()
         # "RectangularRoom" class makes rectangles easier to work with
         new_room = RectangularRoom(x, y, room_width, room_height)
 
@@ -174,11 +178,18 @@ def generate_dungeon(
         dungeon.tiles[new_room.inner] = tile_types.floor
 
         room_type = choose_room_type()
-
+        
         decorate_room(room_type, new_room, dungeon)
 
         if len(rooms) == 0:
+            room_type = "normal"
+        else:
+            room_type = choose_room_type()
+            # Create the room
+            new_room = RectangularRoom(x, y, room_width, room_height, room_type)
             # The first room, where the player starts.
+        if len(rooms) == 0:
+        # The first room, where the player starts.
             player.place(*new_room.center, dungeon)
         else:  # All rooms after the first.
             # Dig out a tunnel between this room and the previous one.
@@ -186,8 +197,8 @@ def generate_dungeon(
                 dungeon.tiles[x, y] = tile_types.floor
 
             center_of_last_room = new_room.center
-
-        if len(rooms) != 0:
+            
+            # Spawn monsters and items
             place_entities(new_room, dungeon, engine.game_world.current_floor)
 
             dungeon.tiles[center_of_last_room] = tile_types.down_stairs
@@ -195,6 +206,9 @@ def generate_dungeon(
 
         # Finally, append the new room to the list.
         rooms.append(new_room)
+        
+        # after generation is complete
+        dungeon.rooms = rooms
 
     randomize_walls(dungeon)
 

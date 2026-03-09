@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, Tuple, TYPE_CHECKING
 
+from room_data import ROOM_DESCRIPTIONS
 
 import color
 import exceptions
@@ -57,6 +58,11 @@ class PickupAction(Action):
                 self.engine.game_map.entities.remove(item)
                 item.parent = self.entity.inventory
                 inventory.items.append(item)
+                
+                self.engine.message_log.add_message(
+                    f"You picked up the {item.name}.",
+                    (255, 255, 0),
+                )
 
                 # Track consumables
                 key = getattr(item.consumable, "stat_key", None)
@@ -219,7 +225,22 @@ class MovementAction(ActionWithDirection):
             raise exceptions.Impossible("That way is blocked.")
 
         self.entity.move(self.dx, self.dy)
+        
+        player = self.entity
+        
+        for room in self.engine.game_map.rooms:
 
+            if room.x1 <= player.x <= room.x2 and room.y1 <= player.y <= room.y2:
+
+                if not room.visited:
+
+                    room.visited = True
+
+                    if room.room_type in ROOM_DESCRIPTIONS:
+
+                        self.engine.message_log.add_message(
+                            ROOM_DESCRIPTIONS[room.room_type]
+                        )
 class BumpAction(ActionWithDirection):
     def perform(self) -> None:
         if self.target_actor:

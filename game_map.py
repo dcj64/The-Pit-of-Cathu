@@ -35,6 +35,7 @@ class GameMap:
         )  # Tiles the player can currently see
         self.explored = np.full((width, height), fill_value=False, order="F"
         )  # Tiles the player has seen before
+        self.rooms = []
 
         self.downstairs_location: tuple[int, int] = (0, 0)
 
@@ -103,6 +104,12 @@ class GameMap:
                 console.print(
                     x=entity.x, y=entity.y, string=entity.char, fg=entity.color
                 )
+    
+    def get_room_at_location(self, x, y):
+        for room in self.rooms:
+            if room.x1 <= x <= room.x2 and room.y1 <= y <= room.y2:
+                return room
+        return None
 
 
 class GameWorld:

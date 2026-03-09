@@ -35,7 +35,7 @@ class Equipment(BaseComponent[Actor]):
             bonus += self.armor.equippable.defense_bonus
 
         for ring in (self.ring1, self.ring2):
-            if ring is not None and ring.equippable is not None:
+            if ring and ring.equippable:
                 bonus += ring.equippable.defense_bonus
 
         return bonus
@@ -49,6 +49,10 @@ class Equipment(BaseComponent[Actor]):
 
         if self.armor is not None and self.armor.equippable is not None:
             bonus += self.armor.equippable.power_bonus
+            
+        for ring in (self.ring1, self.ring2):
+            if ring and ring.equippable:
+                bonus += ring.equippable.power_bonus
 
         return bonus
 

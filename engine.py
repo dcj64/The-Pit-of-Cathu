@@ -33,6 +33,7 @@ class Engine:
         self.player = player
         self.context: tcod.context.Context
         self.stats = GameStats()
+        self.last_room = None
 
     def handle_enemy_turns(self) -> None:
         for entity in set(self.game_map.actors) - {self.player}:

@@ -31,9 +31,9 @@ background_image = tcod.image.load("menu_background.png")[:, :, :3]
 
 def create_player() -> Actor:
     fighter = Fighter(
-        hp=30,
-        base_defense=1,
-        base_power=2,
+        hp=50,
+        base_defense=4,
+        base_power=4,
         base_light=2,
     )
 
