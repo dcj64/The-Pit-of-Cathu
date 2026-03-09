@@ -280,8 +280,10 @@ def render_dungeon_level(console: Console, dungeon_level: int, location: Tuple[i
 # Mouse Tooltip
 # -------------------------------------------------
 
-def render_names_at_mouse_location(console: Console, engine: Engine) -> None:
-
+def render_names_at_mouse_location(
+    console: Console,
+    engine: Engine,
+) -> None:
     mouse_x, mouse_y = engine.mouse_location
 
     names = get_names_at_location(
@@ -293,4 +295,58 @@ def render_names_at_mouse_location(console: Console, engine: Engine) -> None:
     if not names:
         return
 
-    console.print(mouse_x, mouse_y, names)
+    # Split names for potential multi-line support
+    lines = names.split(", ")
+    text_width = max(len(line) for line in lines)
+
+    box_width = text_width + 2
+    box_height = len(lines) + 2
+
+    # Position tooltip left or right of hovered tile
+    if mouse_x < console.width // 2:
+        box_x = mouse_x + 1
+    else:
+        box_x = mouse_x - box_width - 1
+
+    box_y = mouse_y
+
+    # Clamp horizontally
+    if box_x < 0:
+        box_x = 0
+    if box_x + box_width > console.width:
+        box_x = console.width - box_width
+
+    # Clamp vertically
+    if box_y + box_height > console.height:
+        box_y = console.height - box_height
+    if box_y < 0:
+        box_y = 0
+
+    # 1 Fill background
+    console.draw_rect(
+        box_x,
+        box_y,
+        box_width,
+        box_height,
+        ch=ord(" "),
+        bg=(20, 20, 20),  # Dark tooltip background
+    )
+
+    # 2 Draw frame
+    console.draw_frame(
+        box_x,
+        box_y,
+        box_width,
+        box_height,
+        fg=(200, 200, 200),
+        bg=None,
+    )
+
+    # 3 Print text
+    for i, line in enumerate(lines):
+        console.print(
+            box_x + 1,
+            box_y + 1 + i,
+            line,
+            fg=(255, 255, 255),
+        )
