@@ -2,15 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Tuple
 import random
-
+import copy
 from game_map import GameMap
-
+from entity import Chest
 from data_loader import ITEMS, MONSTERS
 
 if TYPE_CHECKING:
     from procgen.dungeon import RectangularRoom
-    from entity import Entity
+    from entity import Chest
 
+
+# -------------------------------------------------
+# FLOOR SCALING
+# -------------------------------------------------
 
 max_items_by_floor = [
     (1, 1),
@@ -23,79 +27,88 @@ max_monsters_by_floor = [
     (6, 5),
 ]
 
-item_chances: Dict[int, List[Tuple[Entity, int]]] = {
-    0: [(ITEMS["Health Potion"], 35), (ITEMS["Berserker Scroll"], 30),
-        (ITEMS["Ring of Strength"], 35), (ITEMS["Amulet of Sol"], 35)],
-    2: [(ITEMS["Confusion Scroll"], 10)],
-    4: [(ITEMS["Lightning Scroll"], 25), (ITEMS["Sword"], 5)],
-    6: [(ITEMS["Fireball Scroll"], 25), (ITEMS["Chain Mail"], 15)],
-    8: [(ITEMS["Amulet of Sol"], 30)],
-}
+# -------------------------------------------------
+# FLOOR VALUE HELPER
+# -------------------------------------------------
+
+def get_max_value_for_floor(
+    max_value_by_floor: List[Tuple[int, int]], floor: int
+) -> int:
+
+    value = 0
+
+    for floor_minimum, floor_value in max_value_by_floor:
+        if floor >= floor_minimum:
+            value = floor_value
+
+    return value
 
 
-def get_monsters_for_floor(monsters, floor, count):
+# -------------------------------------------------
+# RANDOM ENTITY SELECTION
+# -------------------------------------------------
+
+def get_items_for_floor(floor: int, count: int, room_type: str):
+
     candidates = []
 
-    for monster in monsters.values():
-        if monster.spawn_min <= floor <= monster.spawn_max:
-            candidates.append((monster, monster.rarity))
+    for item in ITEMS.values():
+
+        if getattr(item, "spawn_min", 0) > floor:
+            continue
+
+        allowed_rooms = getattr(item, "spawn_rooms", None)
+
+        if allowed_rooms and room_type not in allowed_rooms:
+            continue
+
+        weight = getattr(item, "spawn_weight", 1)
+
+        candidates.append((item, weight))
 
     if not candidates:
         return []
 
-    monster_types = [m for m, w in candidates]
-    weights = [w for m, w in candidates]
+    items = [i for i, _ in candidates]
+    weights = [w for _, w in candidates]
+
+    return random.choices(items, weights=weights, k=count)
+
+# -------------------------------------------------
+# MONSTER SPAWN SYSTEM
+# -------------------------------------------------
+
+def get_monsters_for_floor(monsters, floor, count):
+
+    candidates = [
+        (monster, monster.rarity)
+        for monster in monsters.values()
+        if monster.spawn_min <= floor <= monster.spawn_max
+    ]
+
+    if not candidates:
+        return []
+
+    monster_types = [m for m, _ in candidates]
+    weights = [w for _, w in candidates]
 
     chosen = random.choices(monster_types, weights=weights, k=count)
 
-    monsters = []
+    result = []
 
     for monster in chosen:
 
         pack_size = random.randint(monster.group_min, monster.group_max)
 
         for _ in range(pack_size):
-            monsters.append(monster)
+            result.append(monster)
 
-    return monsters
-
-
-def get_max_value_for_floor(max_value_by_floor: List[Tuple[int, int]], floor: int) -> int:
-    current_value = 0
-
-    for floor_minimum, value in max_value_by_floor:
-        if floor_minimum > floor:
-            break
-        else:
-            current_value = value
-
-    return current_value
+    return result
 
 
-def get_entities_at_random(
-    weighted_chances_by_floor: Dict[int, List[Tuple[Entity, int]]],
-    number_of_entities: int,
-    floor: int,
-) -> List[Entity]:
-    entity_weighted_chances = {}
-
-    for key, values in weighted_chances_by_floor.items():
-        if key > floor:
-            break
-        else:
-            for value in values:
-                entity = value[0]
-                weighted_chance = value[1]
-
-                entity_weighted_chances[entity] = weighted_chance
-
-    entities = list(entity_weighted_chances.keys())
-    entity_weighted_chance_values = list(entity_weighted_chances.values())
-
-    chosen_entities = random.choices(entities, weights=entity_weighted_chance_values, k=number_of_entities)
-
-    return chosen_entities
-
+# -------------------------------------------------
+# ENTITY PLACEMENT
+# -------------------------------------------------
 
 def place_entities(room: "RectangularRoom", dungeon: GameMap, floor_number: int) -> None:
 
@@ -106,24 +119,51 @@ def place_entities(room: "RectangularRoom", dungeon: GameMap, floor_number: int)
     number_of_items = random.randint(
         0, get_max_value_for_floor(max_items_by_floor, floor_number)
     )
+        
+# ---------------------------------
+# ROOM TYPE MODIFIERS
+# ---------------------------------
 
-    items: List[Entity] = get_entities_at_random(
-        item_chances, number_of_items, floor_number
+    if room.room_type == "treasure":
+        number_of_items = 0
+        number_of_monsters = max(0, number_of_monsters - 1)
+        
+        print("Treasure room detected")
+
+    elif room.room_type == "nest":
+        number_of_monsters += 2
+
+    elif room.room_type == "collapsed":
+        number_of_monsters = max(0, number_of_monsters - 1)
+
+    # ---------------------------------
+
+    items = get_items_for_floor(
+    floor_number,
+    number_of_items,
+    room.room_type
     )
-
+    
     monsters = get_monsters_for_floor(
         MONSTERS,
         floor_number,
         number_of_monsters
     )
-
+            
     for entity in monsters + items:
+        
+        # Choose a base spawn point
+        while True:
+            base_x = random.randint(room.x1 + 1, room.x2 - 1)
+            base_y = random.randint(room.y1 + 1, room.y2 - 1)
 
-        # choose a base spawn point
-        base_x = random.randint(room.x1 + 1, room.x2 - 1)
-        base_y = random.randint(room.y1 + 1, room.y2 - 1)
+            # Avoid chest tile in treasure rooms
+            if room.room_type == "treasure" and (base_x, base_y) == room.center:
+                continue
 
-        # try nearby tiles first (pack clustering)
+            break
+
+        # Try nearby tiles first (pack clustering)
         for _ in range(10):
 
             x = base_x + random.randint(-2, 2)
@@ -138,6 +178,7 @@ def place_entities(room: "RectangularRoom", dungeon: GameMap, floor_number: int)
             if any(e.x == x and e.y == y for e in dungeon.entities):
                 continue
 
-            entity.spawn(dungeon, x, y)
+            spawn_entity = copy.deepcopy(entity)
+            spawn_entity.spawn(dungeon, x, y)
             break
-
+        

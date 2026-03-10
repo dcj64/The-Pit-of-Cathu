@@ -101,8 +101,12 @@ class GameMap:
         for entity in entities_sorted_for_rendering:
             # Only print entities that are in the FOV
             if self.visible[entity.x, entity.y]:
+                console.print(entity.x, entity.y, text="X", fg=(255,0,0))
                 console.print(
-                    x=entity.x, y=entity.y, string=entity.char, fg=entity.color
+                    x=entity.x,
+                    y=entity.y,
+                    text=entity.char,
+                    fg=entity.color
                 )
     
     def get_room_at_location(self, x, y):
@@ -167,6 +171,10 @@ class GameWorld:
                 map_height=self.map_height,
                 engine=self.engine,
             )
+            self.engine.message_log.add_message(
+            f"You enter the {biome_name} system."
+        )
+
 
         elif generator == "cave":
 
@@ -174,9 +182,9 @@ class GameWorld:
                 map_width=self.map_width,
                 map_height=self.map_height,
                 engine=self.engine,
-                floor_number=self.current_floor,
+                floor_number=self.current_floor,         
             )
 
-        self.engine.message_log.add_message(
-            f"You enter the {biome_name}."
+            self.engine.message_log.add_message(
+            f"You enter the subterranean {biome_name} system."
         )    

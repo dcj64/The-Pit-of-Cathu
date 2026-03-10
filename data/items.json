@@ -2,42 +2,53 @@
   {
     "name": "Health Potion",
     "char": "!",
-    "color": [127, 0, 255],
+    "color": [42, 230, 21],
     "type": "healing",
-    "amount": 4
+    "amount": 4,
+    "spawn_min": 0,
+    "spawn_weight": 40
   },
 
   {
     "name": "Amulet of Sol",
-    "char": "☼",
+    "char": "*",
     "color": [255, 255, 0],
     "type": "amulet",
-    "light_bonus": 2
+    "light_bonus": 2,
+    "spawn_min": 2,
+    "spawn_weight": 30,
+    "spawn_rooms": ["treasure", "shrine"]
   },
 
   {
     "name": "Amulet of Luna",
-    "char": "☽",
-    "color": [255, 255, 255],
+    "char": "*",
+    "color": [135, 135, 135],
     "type": "amulet",
-    "light_bonus": 1
+    "light_bonus": 1,
+    "spawn_min": 0,
+    "spawn_weight": 20
   },
 
   {
     "name": "Amulet of Stars",
-    "char": "✶",
+    "char": "*",
     "color": [255, 255, 255],
     "type": "amulet",
-    "light_bonus": 1
+    "light_bonus": 1,
+    "spawn_min": 0,
+    "spawn_weight": 40
   },
 
   {
     "name": "Lightning Scroll",
     "char": "~",
-    "color": [76, 153, 0],
+    "color": [251, 255, 0],
     "type": "lightning",
     "damage": 15,
-    "range": 5
+    "range": 5,
+    "spawn_min": 2,
+    "spawn_weight": 40
   },
 
   {
@@ -45,16 +56,20 @@
     "char": "~",
     "color": [207, 63, 255],
     "type": "confusion",
-    "turns": 10
+    "turns": 10,
+    "spawn_min": 3,
+    "spawn_weight": 40
   },
 
   {
     "name": "Berserker Scroll",
     "char": "~",
-    "color": [255, 0, 0],
+    "color": [89, 0, 0],
     "type": "berserker",
     "turns": 5,
-    "damage": 12
+    "damage": 12,
+    "spawn_min": 4,
+    "spawn_weight": 40
   },
 
   {
@@ -63,7 +78,9 @@
     "color": [255, 0, 0],
     "type": "fireball",
     "damage": 12,
-    "radius": 3
+    "radius": 3,
+    "spawn_min": 2,
+    "spawn_weight": 30
   },
 
   {
@@ -72,7 +89,9 @@
     "color": [204, 0, 0],
     "type": "genocide",
     "radius": 1,
-    "damage": 40
+    "damage": 40,
+    "spawn_min": 5,
+    "spawn_weight": 40
   },
 
   {
@@ -88,7 +107,9 @@
     "char": "/",
     "color": [0, 127, 255],
     "type": "weapon",
-    "power_bonus": 2
+    "power_bonus": 2,
+    "spawn_min": 2,
+    "spawn_weight": 40
   },
 
   {
@@ -96,7 +117,9 @@
     "char": "/",
     "color": [0, 63, 255],
     "type": "weapon",
-    "power_bonus": 3
+    "power_bonus": 3,
+    "spawn_min": 4,
+    "spawn_weight": 40
   },
 
   {
@@ -104,7 +127,9 @@
     "char": "o",
     "color": [127, 5, 255],
     "type": "ring",
-    "power_bonus": 1
+    "power_bonus": 1,
+    "spawn_min": 0,
+    "spawn_weight": 20
   },
 
   {
@@ -112,30 +137,56 @@
     "char": "o",
     "color": [127, 0, 255],
     "type": "ring",
-    "power_bonus": 1
+    "power_bonus": 1,
+    "spawn_min": 2,
+    "spawn_weight": 20
+  },
+
+  {
+    "name": "Ring of Night Vision",
+    "char": "o",
+    "color": [100, 255, 255],
+    "type": "ring",
+    "light_bonus": 3,
+    "spawn_min": 3,
+    "spawn_weight": 40
+  },
+
+  {
+    "name": "Ring of Regeneration",
+    "char": "o",
+    "color": [0, 200, 0],
+    "type": "ring",
+    "regen": 1,
+    "spawn_min": 4,
+    "spawn_weight": 40
   },
 
   {
     "name": "Leather Armor",
-    "char": "'['",
-    "color": [160, 160, 160],
+    "char": "(",
+    "color": [52, 192, 27],
     "type": "armor",
     "defense_bonus": 1
   },
 
   {
     "name": "Chain Mail",
-    "char": "¥",
-    "color": [96, 96, 96],
+    "char": "[",
+    "color": [179, 23, 23],
     "type": "armor",
-    "defense_bonus": 2
+    "defense_bonus": 2,
+    "spawn_min": 3,
+    "spawn_weight": 30
   },
 
   {
     "name": "Plate Mail",
-    "char": "≡",
-    "color": [64, 64, 64],
+    "char": "[",
+    "color": [143, 20, 20],
     "type": "armor",
-    "defense_bonus": 3
+    "defense_bonus": 3,
+    "spawn_min": 6,
+    "spawn_weight": 20
   }
 ]

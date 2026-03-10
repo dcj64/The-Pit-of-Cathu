@@ -26,3 +26,23 @@ altar tile
 statue tile
 treasure chest tile
 broken pillar tile
+
+##########################################
+Nice Next Step (Very Roguelike)
+
+Since your dungeon now has room types, a fun next feature is:
+
+Shrine rooms blessing or cursing rings
+
+Example:
+
+You kneel at the shrine.
+Your ring glows brightly!
+Ring of Strength +1 → +2
+
+or
+
+The shrine curses your ring...
+Ring of Strength becomes cursed.
+
+This adds a lot of roguelike flavor.

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional, Tuple, TYPE_CHECKING
 
 from room_data import ROOM_DESCRIPTIONS
+from entity import Chest
 
 import color
 import exceptions
@@ -14,7 +15,7 @@ import tile_types
 
 if TYPE_CHECKING:
     from engine import Engine
-    from entity import Actor, Entity, Item
+    from entity import Actor, Entity, Item, Chest
 
 
 class Action:
@@ -215,6 +216,13 @@ class MovementAction(ActionWithDirection):
             game_map.tiles[dest_x, dest_y] = tile_types.door_open
             self.engine.message_log.add_message("You open the door.")
             return  # Opening door takes a turn
+        
+        # Open chest
+        for entity in game_map.entities:
+            if entity.x == dest_x and entity.y == dest_y:
+                if isinstance(entity, Chest):
+                    entity.open(self.engine)
+                    return
 
         # Blocked by tile
         if not game_map.tiles["walkable"][dest_x, dest_y]:
@@ -223,6 +231,17 @@ class MovementAction(ActionWithDirection):
         # Blocked by entity
         if game_map.get_blocking_entity_at_location(dest_x, dest_y):
             raise exceptions.Impossible("That way is blocked.")
+        
+        """ # Open chest
+        for entity in game_map.entities:
+            if entity.x == dest_x and entity.y == dest_y:
+                if isinstance(entity, Chest):
+                    entity.open(self.engine)
+                    return """
+        """ target = game_map.get_blocking_entity_at_location(dest_x, dest_y)
+        if isinstance(target, Chest):
+            target.open(self.engine)
+            return """
 
         self.entity.move(self.dx, self.dy)
         

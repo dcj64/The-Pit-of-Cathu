@@ -28,15 +28,9 @@ class Equipment(BaseComponent[Actor]):
     def defense_bonus(self) -> int:
         bonus = 0
 
-        if self.weapon is not None and self.weapon.equippable is not None:
-            bonus += self.weapon.equippable.defense_bonus
-
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.defense_bonus
-
-        for ring in (self.ring1, self.ring2):
-            if ring and ring.equippable:
-                bonus += ring.equippable.defense_bonus
+        for item in self.all_equipped_items():
+            if item and item.equippable:
+                bonus += item.equippable.defense_bonus
 
         return bonus
 
@@ -44,15 +38,9 @@ class Equipment(BaseComponent[Actor]):
     def power_bonus(self) -> int:
         bonus = 0
 
-        if self.weapon is not None and self.weapon.equippable is not None:
-            bonus += self.weapon.equippable.power_bonus
-
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.power_bonus
-            
-        for ring in (self.ring1, self.ring2):
-            if ring and ring.equippable:
-                bonus += ring.equippable.power_bonus
+        for item in self.all_equipped_items():
+            if item and item.equippable:
+                bonus += item.equippable.power_bonus
 
         return bonus
 
@@ -60,8 +48,9 @@ class Equipment(BaseComponent[Actor]):
     def light_bonus(self) -> int:
         bonus = 0
 
-        if self.amulet is not None and self.amulet.equippable is not None:
-            bonus += self.amulet.equippable.light_bonus
+        for item in self.all_equipped_items():
+            if item and item.equippable:
+                bonus += item.equippable.light_bonus
 
         return bonus
 
@@ -93,7 +82,27 @@ class Equipment(BaseComponent[Actor]):
             items.append(self.ring2)
 
         return items
+    
+    @property
+    def regen_bonus(self) -> int:
+        bonus = 0
 
+        for item in self.all_equipped_items():
+            if item and item.equippable:
+                bonus += getattr(item.equippable, "regen_bonus", 0)
+
+        return bonus
+    
+    def all_equipped_items(self):
+        """Return a list of all equipped items."""
+        return [
+            self.weapon,
+            self.armor,
+            self.amulet,
+            self.ring1,
+            self.ring2,
+        ]
+        
 
     def rings_equipped(self) -> int:
         count = 0

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-import copy
 import math
+import random
+import copy
+
 from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING, Union
 
 from render_order import RenderOrder
+
 
 if TYPE_CHECKING:
     from components.ai import BaseAI
@@ -15,9 +18,8 @@ if TYPE_CHECKING:
     from components.inventory import Inventory
     from components.level import Level
     from game_map import GameMap
-
+    
 T = TypeVar("T", bound="Entity")
-
 
 class Entity:
     """
@@ -182,4 +184,64 @@ class Item(Entity):
 
         if self.equippable:
             self.equippable.parent = self
+  
+  
+def spawn_treasure(engine, x, y):
 
+    from procgen.entities import get_items_for_floor
+
+    floor = engine.game_world.current_floor
+    items = get_items_for_floor(floor, 3, "treasure")
+
+    for item in items:
+
+        for _ in range(20):  # try 20 positions
+            spawn_x = x + random.randint(-2, 2)
+            spawn_y = y + random.randint(-2, 2)
+
+            # Must be inside map
+            if not engine.game_map.in_bounds(spawn_x, spawn_y):
+                continue
+
+            # Must be walkable
+            if not engine.game_map.tiles["walkable"][spawn_x, spawn_y]:
+                continue
+            
+            # Must not be inside the chest
+            if spawn_x == x and spawn_y == y:
+                continue
+
+            # Must not already contain entity
+            if any(e.x == spawn_x and e.y == spawn_y for e in engine.game_map.entities):
+                continue
+
+            spawn_item = copy.deepcopy(item)
+            spawn_item.spawn(engine.game_map, spawn_x, spawn_y)
+            break
+                 
+class Chest(Entity):
+    def __init__(self, x: int, y: int):
+        super().__init__(
+            x=x,
+            y=y,
+            char="C",
+            color=(184, 134, 11),
+            name="Treasure Chest",
+            blocks_movement=True,
+            render_order=RenderOrder.ITEM,   # ← ADD THIS
+        )
+        self.opened = False
+
+    def open(self, engine):
+
+        if self.opened:
+            engine.message_log.add_message("The chest is empty. It has already been looted.")
+            return
+
+        engine.message_log.add_message("You open the treasure chest!")
+
+        spawn_treasure(engine, self.x, self.y)
+
+        self.opened = True
+        self.char = "o"
+        

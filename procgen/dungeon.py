@@ -3,14 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterator, List, Tuple
 import random
 import tcod
-
+from entity import Chest
 from game_map import GameMap
 import tile_types
 
 if TYPE_CHECKING:
     from engine import Engine
-
-
 
 class RectangularRoom:
     def __init__(self, x: int, y: int, width: int, height: int, room_type: str = "normal"):
@@ -60,30 +58,54 @@ def choose_room_type():
 def decorate_room(room_type, room, dungeon):
 
     if room_type == "treasure":
+        import random
+        # Find a random valid tile inside the room
+        while True:
+            cx = random.randint(room.x1 + 1, room.x2 - 1)
+            cy = random.randint(room.y1 + 1, room.y2 - 1)
 
-        cx, cy = room.center
-        dungeon.tiles[cx, cy] = tile_types.floor
+            if not dungeon.tiles["walkable"][cx, cy]:
+                continue
 
-        # spawn items
-        from procgen.entities import place_entities
-        place_entities(room, dungeon, dungeon.engine.game_world.current_floor)
-        
+            # Don't place on another entity
+            if any(e.x == cx and e.y == cy for e in dungeon.entities):
+                continue
+
+            break
+
+        # Ensure tile is floor
+        dungeon.tiles["walkable"][cx, cy] = True
+        dungeon.tiles["transparent"][cx, cy] = True
+        dungeon.tiles["dark"][cx, cy] = tile_types.floor["dark"]
+        dungeon.tiles["light"][cx, cy] = tile_types.floor["light"]
+
+        chest = Chest(cx, cy)
+        chest.spawn(dungeon, cx, cy)
 
     elif room_type == "nest":
+        import random
+        # Add some dirt / organic patches
+        for _ in range(random.randint(3, 6)):
+            rx = random.randint(room.x1 + 1, room.x2 - 1)
+            ry = random.randint(room.y1 + 1, room.y2 - 1)
+
+            dungeon.tiles[rx, ry] = tile_types.floor
 
         from procgen.entities import place_entities
-
-        # spawn extra monsters
-        for _ in range(random.randint(2, 4)):
-            place_entities(room, dungeon, dungeon.engine.game_world.current_floor)
 
     elif room_type == "collapsed":
 
-        for x in range(room.x1 + 1, room.x2 - 1):
-            for y in range(room.y1 + 1, room.y2 - 1):
+        # Scatter rubble across the room
+        import random
+        for _ in range(random.randint(5, 12)):
+            rx = random.randint(room.x1 + 1, room.x2 - 1)
+            ry = random.randint(room.y1 + 1, room.y2 - 1)
 
-                if random.random() < 0.25:
-                    dungeon.tiles[x, y] = tile_types.wall
+            # Don't block the center so the room stays reachable
+            if (rx, ry) == room.center:
+                continue
+
+            dungeon.tiles[rx, ry] = tile_types.wall
 
     elif room_type == "shrine":
 
@@ -178,33 +200,39 @@ def generate_dungeon(
         dungeon.tiles[new_room.inner] = tile_types.floor
 
         room_type = choose_room_type()
-        
-        decorate_room(room_type, new_room, dungeon)
 
         if len(rooms) == 0:
             room_type = "normal"
         else:
             room_type = choose_room_type()
-            # Create the room
-            new_room = RectangularRoom(x, y, room_width, room_height, room_type)
-            # The first room, where the player starts.
+
+        # Create the room
+        new_room = RectangularRoom(x, y, room_width, room_height, room_type)
+        
+
+        # FIRST ROOM
         if len(rooms) == 0:
-        # The first room, where the player starts.
             player.place(*new_room.center, dungeon)
-        else:  # All rooms after the first.
-            # Dig out a tunnel between this room and the previous one.
+
+        # ALL OTHER ROOMS
+        else:
+            # Dig tunnels
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x, y] = tile_types.floor
 
             center_of_last_room = new_room.center
             
+            # NOW decorate the room
+            decorate_room(room_type, new_room, dungeon)
+            
             # Spawn monsters and items
             place_entities(new_room, dungeon, engine.game_world.current_floor)
 
+            # Place stairs
             dungeon.tiles[center_of_last_room] = tile_types.down_stairs
             dungeon.downstairs_location = center_of_last_room
 
-        # Finally, append the new room to the list.
+        # Add room to dungeon
         rooms.append(new_room)
         
         # after generation is complete
