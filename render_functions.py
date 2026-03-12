@@ -178,6 +178,13 @@ def render_bar(console: Console, engine: Engine, current_value: int, maximum_val
     y += 1
     render_equipment_panel(console, engine, panel_x, y)
 
+    console.print(
+    x=4,
+    y=72,
+    text=f"Gold: {engine.player.gold}",
+    fg=(255, 215, 0),
+)
+    
     console.print(x=5, y=77,
                   string=f"Total Monsters killed:{engine.stats.total_monsters_killed}",
                   fg=(204, 0, 0))

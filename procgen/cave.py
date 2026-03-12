@@ -39,13 +39,16 @@ def generate_cave(
     for _ in range(3):
         smooth_map(dungeon)
 
-    # Carve some random square "ruins" into the cave to add some structure and interesting features to break up the randomness of the caves.
-    # The number of ruins decreases as you go deeper, since the later caves are more tightly packed and have less room for large open areas.
+    # Carve some random square "ruins" into the cave to add some structure and interesting
+    # features to break up the randomness of the caves.The number of ruins decreases as you
+    # go deeper, since the later caves are more tightly packed and have less room for
+    # large open areas.
 
     carve_ruins(dungeon, ruin_count=2 + floor_number // 2)
 
-    # Add some random water blobs to the cave for variety. The blobs get larger and more common as you go deeper,
-    # since the later caves are more tightly packed and have less room for narrow corridors.
+    # Add some random water blobs to the cave for variety. The blobs get larger and more
+    # common as you go deeper,since the later caves are more tightly packed and have
+    # less room for narrow corridors.
 
     for _ in range(random.randint(3, 6)):
 
@@ -82,10 +85,11 @@ def generate_cave(
 
     reachable_tiles = get_reachable_tiles(dungeon, px, py)
 
-    # Place stairs far from player in a reachable location. We compute the distance from the player to each reachable tile,
-    # filter to only keep those that are at least 60% of the max distance, and then randomly choose among those far tiles to place the stairs.
-    # This ensures that the stairs are always in a location that the player can reach, but encourages them to explore
-    # the map rather than placing the stairs right next to them.
+    # Place stairs far from player in a reachable location. We compute the distance from the
+    # player to each reachable tile,filter to only keep those that are at least 60% of the max
+    # distance, and then randomly choose among those far tiles to place the stairs.This ensures
+    # that the stairs are always in a location that the player can reach, but encourages them
+    # to explore the map rather than placing the stairs right next to them.
 
     distances = []
     max_distance = 0
@@ -108,8 +112,9 @@ def generate_cave(
 
     return dungeon
 
-# Smooth the cave map using cellular automata rules. This is a simple implementation that counts the number of wall neighbors
-# and decides whether to turn a tile into a wall or floor based on that count.
+# Smooth the cave map using cellular automata rules. This is a simple implementation that
+# counts the number of wall neighborsand decides whether to turn a tile into a wall or
+# floor based on that count.
 
 def smooth_map(dungeon: GameMap) -> None:
     tiles = dungeon.tiles
@@ -147,9 +152,10 @@ def smooth_map(dungeon: GameMap) -> None:
     dungeon.tiles[:, 0] = tile_types.wall
     dungeon.tiles[:, -1] = tile_types.wall
 
-# Grow a blob of water starting from a given location. This is used to create small pools of water in the caves.
-# The blob grows by randomly adding adjacent tiles to the blob, with a certain chance to continue growing at each step.
-# The size parameter controls how large the blob can grow, and the function stops growing once it reaches that size or runs out of adjacent tiles to grow into.
+# Grow a blob of water starting from a given location. This is used to create small pools of water
+# in the caves.The blob grows by randomly adding adjacent tiles to the blob, with a certain chance
+# to continue growing at each step.The size parameter controls how large the blob can grow, and
+# the function stops growing once it reaches that size or runs out of adjacent tiles to grow into.
 
 def grow_blob(dungeon: GameMap, start_x: int, start_y: int, tile, size: int = 60):
     stack = [(start_x, start_y)]
@@ -167,8 +173,8 @@ def grow_blob(dungeon: GameMap, start_x: int, start_y: int, tile, size: int = 60
                 if random.random() < 0.7:
                     stack.append((x+dx, y+dy))
 
-# Create square "ruins" in the dungeon. This is a simple implementation that randomly chooses locations
-# for the ruins and carves out a square area of floor, surrounded by walls.
+# Create square "ruins" in the dungeon. This is a simple implementation that randomly chooses
+# locations for the ruins and carves out a square area of floor, surrounded by walls.
 
 def carve_ruins(dungeon: GameMap, ruin_count: int = 3):
     width, height = dungeon.width, dungeon.height
@@ -196,7 +202,7 @@ def carve_ruins(dungeon: GameMap, ruin_count: int = 3):
 
         # --- Collapse parts of the walls ---
         collapse_chance = 0.2 # + (ruin_count * 0.05)
-        # Increase collapse chance for later ruins, since the later caves 
+        # Increase collapse chance for later ruins, since the later caves
         # are more tightly packed and have less room for large open areas.
 
         for i in range(x, x + w):
@@ -221,7 +227,7 @@ def carve_ruins(dungeon: GameMap, ruin_count: int = 3):
             if random.random() < 0.5:
                 dungeon.tiles[rx, ry] = tile_types.wall
 
-# Add pillars to the cave for variety. The pillars get more common as you go deeper, 
+# Add pillars to the cave for variety. The pillars get more common as you go deeper,
 # since the later caves are more tightly packed and have less room for large open areas.
 
 def add_cave_pillars(dungeon: GameMap, density: float = 0.015):
@@ -296,4 +302,3 @@ def get_reachable_tiles(dungeon: GameMap, start_x: int, start_y: int):
                 stack.append((nx, ny))
 
     return visited
-

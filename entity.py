@@ -119,10 +119,7 @@ class Actor(Entity):
         equipment: Equipment,
         fighter: Fighter,
         inventory: Inventory,
-        level: Level,
-        spawn_min: int = 1,
-        spawn_max: int = 999,
-        rarity: int = 50,
+        level: Level,       
     ):
         super().__init__(
             x=x,
@@ -147,6 +144,8 @@ class Actor(Entity):
 
         self.level = level
         self.level.parent = self
+        
+        self.gold:int = 0
 
     @property
     def is_alive(self) -> bool:
@@ -165,6 +164,12 @@ class Item(Entity):
         name: str = "<Unnamed>",
         consumable: Optional[Consumable] = None,
         equippable: Optional[Equippable] = None,
+        gold_value: int = 0,
+        spawn_min: int = 0,
+        spawn_max: int = 999,
+        spawn_weight: int = 1,
+        spawn_rooms: Optional[list] = None,  # A list of room types this item can spawn in
+        
     ):
         super().__init__(
             x=x,
@@ -175,7 +180,7 @@ class Item(Entity):
             blocks_movement=False,
             render_order=RenderOrder.ITEM,
         )
-
+        
         self.consumable = consumable
         if self.consumable:
             self.consumable.parent = self
@@ -184,8 +189,14 @@ class Item(Entity):
 
         if self.equippable:
             self.equippable.parent = self
-  
-  
+            
+        self.gold_value = gold_value
+        # Add the spawn attributes
+        self.spawn_min = spawn_min
+        self.spawn_max = spawn_max
+        self.spawn_weight = spawn_weight
+        self.spawn_rooms = spawn_rooms or []  # Default to an empty list if not provided
+        
 def spawn_treasure(engine, x, y):
 
     from procgen.entities import get_items_for_floor

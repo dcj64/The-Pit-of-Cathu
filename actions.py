@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional, Tuple, TYPE_CHECKING
 
 from room_data import ROOM_DESCRIPTIONS
-from entity import Chest
+from entity import Chest, Item
 
 import color
 import exceptions
@@ -15,7 +15,7 @@ import tile_types
 
 if TYPE_CHECKING:
     from engine import Engine
-    from entity import Actor, Entity, Item, Chest
+    from entity import Actor, Entity
 
 
 class Action:
@@ -53,6 +53,20 @@ class PickupAction(Action):
 
         for item in self.engine.game_map.items:
             if actor_location_x == item.x and actor_location_y == item.y:
+                
+                 # GOLD HANDLING FIRST
+                if item.gold_value > 0:
+
+                    self.engine.player.gold += item.gold_value
+
+                    self.engine.message_log.add_message(
+                        f"You pick up {item.gold_value} gold."
+                    )
+
+                    self.engine.game_map.entities.discard(item)
+                    return
+                           
+                # Normal items
                 if len(inventory.items) >= inventory.capacity:
                     raise exceptions.Impossible("Your inventory is full.")
 
@@ -64,7 +78,7 @@ class PickupAction(Action):
                     f"You picked up the {item.name}.",
                     (255, 255, 0),
                 )
-
+                
                 # Track consumables
                 key = getattr(item.consumable, "stat_key", None)
                 if key:
@@ -232,21 +246,28 @@ class MovementAction(ActionWithDirection):
         if game_map.get_blocking_entity_at_location(dest_x, dest_y):
             raise exceptions.Impossible("That way is blocked.")
         
-        """ # Open chest
-        for entity in game_map.entities:
-            if entity.x == dest_x and entity.y == dest_y:
-                if isinstance(entity, Chest):
-                    entity.open(self.engine)
-                    return """
-        """ target = game_map.get_blocking_entity_at_location(dest_x, dest_y)
-        if isinstance(target, Chest):
-            target.open(self.engine)
-            return """
 
         self.entity.move(self.dx, self.dy)
         
         player = self.entity
         
+        """ # Auto-pickup gold
+        for entity in list(self.engine.game_map.entities):
+
+            if entity.x == self.entity.x and entity.y == self.entity.y:
+
+                if isinstance(entity, Item) and entity.gold_value > 0:
+
+                    self.engine.player.gold += entity.gold_value
+
+                    self.engine.message_log.add_message(
+                        f"You pick up {entity.gold_value} gold pieces."
+                    )
+
+                    self.engine.game_map.entities.discard(entity) """
+        
+        
+        # Check if room has been entered before, if so do not print room message
         for room in self.engine.game_map.rooms:
 
             if room.x1 <= player.x <= room.x2 and room.y1 <= player.y <= room.y2:

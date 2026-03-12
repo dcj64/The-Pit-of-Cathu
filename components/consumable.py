@@ -6,7 +6,6 @@ import actions
 import color
 import components.ai
 
-from typing import cast
 from components.inventory import Inventory
 from stats_keys import ItemStat
 

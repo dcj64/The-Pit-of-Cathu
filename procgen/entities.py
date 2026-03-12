@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 import random
 import copy
 from game_map import GameMap
-from entity import Chest
 from data_loader import ITEMS, MONSTERS
 
 if TYPE_CHECKING:
     from procgen.dungeon import RectangularRoom
-    from entity import Chest
+
 
 
 # -------------------------------------------------
@@ -17,8 +16,8 @@ if TYPE_CHECKING:
 # -------------------------------------------------
 
 max_items_by_floor = [
-    (1, 1),
-    (4, 2),
+    (1, 4),
+    (4, 6),
 ]
 
 max_monsters_by_floor = [
@@ -47,8 +46,31 @@ def get_max_value_for_floor(
 # -------------------------------------------------
 # RANDOM ENTITY SELECTION
 # -------------------------------------------------
-
 def get_items_for_floor(floor: int, count: int, room_type: str):
+    candidates = []
+
+    for item in ITEMS.values():
+        print(f"Checking item: {item.name}")
+        if getattr(item, "spawn_min", 0) > floor:
+            continue
+
+        if getattr(item, "spawn_rooms", None) and room_type not in getattr(item, "spawn_rooms"):
+            continue
+
+        weight = getattr(item, "spawn_weight", 1)
+        candidates.append((item, weight))
+        print(f"Items selected for floor {floor}: {[item.name for item, _ in candidates]}")
+    if not candidates:
+        return []
+
+    items = [i for i, _ in candidates]
+    weights = [w for _, w in candidates]
+    
+    print("Items to spawn:", [item.name for item in items])
+    print("Items candidates:",[i.name for i, _ in candidates])
+    return random.choices(items, weights=weights, k=count)
+
+""" def get_items_for_floor(floor: int, count: int, room_type: str):
 
     candidates = []
 
@@ -72,7 +94,7 @@ def get_items_for_floor(floor: int, count: int, room_type: str):
     items = [i for i, _ in candidates]
     weights = [w for _, w in candidates]
 
-    return random.choices(items, weights=weights, k=count)
+    return random.choices(items, weights=weights, k=count) """
 
 # -------------------------------------------------
 # MONSTER SPAWN SYSTEM

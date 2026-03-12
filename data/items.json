@@ -17,7 +17,7 @@
     "light_bonus": 2,
     "spawn_min": 2,
     "spawn_weight": 30,
-    "spawn_rooms": ["treasure", "shrine"]
+    "spawn_rooms": ["shrine"]
   },
 
   {
@@ -188,5 +188,17 @@
     "defense_bonus": 3,
     "spawn_min": 6,
     "spawn_weight": 20
+  },
+
+  {
+    "name": "Gold Coin",
+    "char": "$",
+    "color": [255, 255, 0],
+    "type": "gold",
+    "value": 10,
+    "spawn_min": 0,
+    "spawn_max": 99,
+    "spawn_weight": 80,
+    "spawn_rooms": ["treasure", "normal"]
   }
 ]

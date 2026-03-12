@@ -35,16 +35,16 @@ class RectangularRoom:
         """Return True if this room overlaps with another RectangularRoom."""
         return (
                 self.x1 <= other.x2
-                and self.x2 >= other.x1 
-                and self.y1 <= other.y2 
+                and self.x2 >= other.x1
+                and self.y1 <= other.y2
                 and self.y2 >= other.y1
         )
 
 def choose_room_type():
 
     room_types = [
-        ("normal", 60),
-        ("treasure", 10),
+        ("normal", 30),
+        ("treasure", 40),
         ("nest", 10),
         ("collapsed", 10),
         ("shrine", 10),
@@ -91,7 +91,6 @@ def decorate_room(room_type, room, dungeon):
 
             dungeon.tiles[rx, ry] = tile_types.floor
 
-        from procgen.entities import place_entities
 
     elif room_type == "collapsed":
 
@@ -145,7 +144,7 @@ def randomize_walls(dungeon: GameMap):
                     wall_variants,
                     weights=weights,
                     k=1
-                )[0]     
+                )[0]
 
 def generate_dungeon(
     max_rooms: int,
@@ -187,28 +186,17 @@ def generate_dungeon(
         y = random.randint(0, dungeon.height - room_height - 1)
 
         # Create room type
-        room_type = choose_room_type()
-        # "RectangularRoom" class makes rectangles easier to work with
-        new_room = RectangularRoom(x, y, room_width, room_height)
+        # Temporary room for intersection check
+        test_room = RectangularRoom(x, y, room_width, room_height)
 
-        # Run through the other rooms and see if they intersect with this one.
-        if any(new_room.intersects(other_room) for other_room in rooms):
-            continue  # This room intersects, so go to the next attempt.
-        # If there are no intersections then the room is valid.
+        if any(test_room.intersects(other_room) for other_room in rooms):
+            continue
 
-        # Dig out this rooms inner area.
-        dungeon.tiles[new_room.inner] = tile_types.floor
+        room_type = "normal" if len(rooms) == 0 else choose_room_type()
 
-        room_type = choose_room_type()
-
-        if len(rooms) == 0:
-            room_type = "normal"
-        else:
-            room_type = choose_room_type()
-
-        # Create the room
         new_room = RectangularRoom(x, y, room_width, room_height, room_type)
-        
+
+        dungeon.tiles[new_room.inner] = tile_types.floor
 
         # FIRST ROOM
         if len(rooms) == 0:
@@ -227,17 +215,18 @@ def generate_dungeon(
             
             # Spawn monsters and items
             place_entities(new_room, dungeon, engine.game_world.current_floor)
-
-            # Place stairs
-            dungeon.tiles[center_of_last_room] = tile_types.down_stairs
-            dungeon.downstairs_location = center_of_last_room
-
+                       
         # Add room to dungeon
         rooms.append(new_room)
         
         # after generation is complete
         dungeon.rooms = rooms
-
+    # After generation finishes
+    if rooms:
+        # Place stairs
+        dungeon.tiles[center_of_last_room] = tile_types.down_stairs
+        dungeon.downstairs_location = center_of_last_room
+        
     randomize_walls(dungeon)
 
     add_simple_doors(dungeon)

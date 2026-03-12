@@ -90,7 +90,7 @@ def build_item(data):
             radius=data["radius"],
             damage=data["damage"],
         )
-
+        
     # Equipment
     elif item_type == "weapon":
         equippable = Equippable(
@@ -116,16 +116,26 @@ def build_item(data):
             light_bonus=data.get("light_bonus", 0),
         )
 
+    elif item_type == "gold":
+        # Gold is not consumable or equippable
+        pass
+
     else:
         raise ValueError(f"Unknown item type: {item_type}")
 
-    return Item(
+    item = Item(
         char=data["char"],
         color=tuple(data["color"]),
         name=data["name"],
         consumable=consumable,
         equippable=equippable,
-    )
+        gold_value=int(data.get("value", 0)),
+        spawn_min = data.get("spawn_min", 0),
+        spawn_max = data.get("spawn_max", 999),
+        spawn_weight = data.get("spawn_weight", 1),
+        spawn_rooms = data.get("spawn_rooms", [])
+    )    
+    return item
 
 
 # ---------------------------------------------------
