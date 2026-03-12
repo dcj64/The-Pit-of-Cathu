@@ -8,6 +8,7 @@ from entity import Chest, Item
 import color
 import exceptions
 import time
+import random
 
 import numpy as np
 
@@ -239,33 +240,18 @@ class MovementAction(ActionWithDirection):
                     return
 
         # Blocked by tile
-        if not game_map.tiles["walkable"][dest_x, dest_y]:
-            raise exceptions.Impossible("That way is blocked.")
-
-        # Blocked by entity
-        if game_map.get_blocking_entity_at_location(dest_x, dest_y):
-            raise exceptions.Impossible("That way is blocked.")
-        
+        if not tile["walkable"]:
+            bump_pos = (dest_x, dest_y)
+            if self.engine.last_bump != bump_pos:
+                messages = str(tile["bump_text"]).split("|")
+                self.engine.message_log.add_message (random.choice(messages))
+                self.engine.last_bump = bump_pos
+            raise exceptions.Impossible()
 
         self.entity.move(self.dx, self.dy)
+        self.engine.last_bump = None
         
-        player = self.entity
-        
-        """ # Auto-pickup gold
-        for entity in list(self.engine.game_map.entities):
-
-            if entity.x == self.entity.x and entity.y == self.entity.y:
-
-                if isinstance(entity, Item) and entity.gold_value > 0:
-
-                    self.engine.player.gold += entity.gold_value
-
-                    self.engine.message_log.add_message(
-                        f"You pick up {entity.gold_value} gold pieces."
-                    )
-
-                    self.engine.game_map.entities.discard(entity) """
-        
+        player = self.entity      
         
         # Check if room has been entered before, if so do not print room message
         for room in self.engine.game_map.rooms:

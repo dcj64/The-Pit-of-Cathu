@@ -51,7 +51,7 @@ class MessageLog:
         """Return a wrapped text message."""
         for line in string.splitlines():  # Handle newlines in messages.
             yield from textwrap.wrap(
-                line, width, expand_tabs=True,
+                line, width -1, expand_tabs=True, # Width -1, Wrap slightly narrower than the console width.
             )
 
     @classmethod
@@ -69,6 +69,7 @@ class MessageLog:
         backwards.
         """
         y_offset = height - 1
+        print("Message log width:", width)
 
         for message in reversed(messages):
             for line in reversed(list(cls.wrap(message.full_text, width))):

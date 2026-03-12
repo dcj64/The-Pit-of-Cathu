@@ -4,6 +4,7 @@ from typing import Tuple, TYPE_CHECKING
 
 import color
 from tcod import libtcodpy
+from entity import Actor
 
 if TYPE_CHECKING:
     from tcod import Console
@@ -65,14 +66,41 @@ def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
 
     if not game_map.in_bounds(x, y) or not game_map.visible[x, y]:
         return ""
-
-    names = ", ".join(
-        entity.name
-        for entity in game_map.entities
-        if entity.x == x and entity.y == y
+    
+    descriptions = []
+    
+     # Sort so living actors appear before corpses
+    entities = sorted(
+        game_map.entities,
+        key=lambda e: (
+            isinstance(e, Actor) and e.fighter.hp <= 0,
+            not isinstance(e, Actor),
+        )
     )
 
-    return names.capitalize()
+    for entity in entities:
+        if entity.x == x and entity.y == y:
+            
+            if isinstance(entity, Actor):
+                if entity.fighter.hp > 0: # check if creature is alive
+                    descriptions.append(
+                        f"{entity.name}\n"
+                        f"HP  {entity.fighter.hp}/{entity.fighter.max_hp}\n"
+                        f"ATK {entity.fighter.base_power}\n"
+                        f"DEF {entity.fighter.base_defense}"
+                    )
+                else:
+                    descriptions.append(entity.name)
+                    
+            else:
+                descriptions.append(entity.name)
+                
+    # Add tile name
+    if not descriptions:
+        tile = game_map.tiles[x, y]
+        descriptions.append(str(tile["name"]))
+
+    return "\n".join(descriptions).capitalize()
 
 
 # -------------------------------------------------
@@ -303,31 +331,35 @@ def render_names_at_mouse_location(
         return
 
     # Split names for potential multi-line support
-    lines = names.split(", ")
+    lines = names.split("\n")
     text_width = max(len(line) for line in lines)
 
-    box_width = text_width + 2
+    box_width = max(20, text_width + 2)
     box_height = len(lines) + 2
 
-    # Position tooltip left or right of hovered tile
-    if mouse_x < console.width // 2:
-        box_x = mouse_x + 1
-    else:
-        box_x = mouse_x - box_width - 1
+    # Try placing tooltip to the right first
+    box_x = mouse_x + 2
 
-    box_y = mouse_y
-
-    # Clamp horizontally
-    if box_x < 0:
-        box_x = 0
+    # If it would go off-screen, place it on the left
     if box_x + box_width > console.width:
-        box_x = console.width - box_width
+        box_x = mouse_x - box_width - 2
+
+    # Center vertically beside tile
+    box_y = mouse_y - box_height // 2 - 1
 
     # Clamp vertically
-    if box_y + box_height > console.height:
-        box_y = console.height - box_height
     if box_y < 0:
         box_y = 0
+    elif box_y + box_height > console.height:
+        box_y = console.height - box_height
+
+
+    description = get_names_at_location(mouse_x, mouse_y, engine.game_map)
+
+    lines = description.split("\n")
+    
+    box_width = max(len(line) for line in lines) + 4
+    box_height = len(lines) + 2
 
     # 1 Fill background
     console.draw_rect(
@@ -352,7 +384,7 @@ def render_names_at_mouse_location(
     # 3 Print text
     for i, line in enumerate(lines):
         console.print(
-            box_x + 1,
+            box_x + 2,
             box_y + 1 + i,
             line,
             fg=(255, 255, 255),

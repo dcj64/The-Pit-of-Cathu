@@ -14,7 +14,7 @@
   },
 
   "deep": {
-    "floors": [7, 26],
+    "floors": [7, 17],
     "generator": "cave",
     "monster_tags": ["troll", "cathu"],
     "description": "The deep volcanic tunnels"

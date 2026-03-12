@@ -43,8 +43,8 @@ class RectangularRoom:
 def choose_room_type():
 
     room_types = [
-        ("normal", 30),
-        ("treasure", 40),
+        ("normal", 60),
+        ("treasure", 10),
         ("nest", 10),
         ("collapsed", 10),
         ("shrine", 10),
@@ -221,6 +221,7 @@ def generate_dungeon(
         
         # after generation is complete
         dungeon.rooms = rooms
+    
     # After generation finishes
     if rooms:
         # Place stairs
@@ -231,6 +232,8 @@ def generate_dungeon(
 
     add_simple_doors(dungeon)
 
+    
+    
     return dungeon
 
 # Add doors to dungeon rooms. This is a very simple implementation that just adds doors 
