@@ -5,6 +5,7 @@ import random
 import tcod
 from entity import Chest
 from game_map import GameMap
+from data_loader import TRAPS
 import tile_types
 
 if TYPE_CHECKING:
@@ -176,8 +177,6 @@ def generate_dungeon(
 
     rooms: List[RectangularRoom] = []
 
-    center_of_last_room = (0, 0)
-
     for _ in range(max_rooms):
         room_width = random.randint(room_min_size, room_max_size)
         room_height = random.randint(room_min_size, room_max_size)
@@ -207,8 +206,6 @@ def generate_dungeon(
             # Dig tunnels
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x, y] = tile_types.floor
-
-            center_of_last_room = new_room.center
             
             # NOW decorate the room
             decorate_room(room_type, new_room, dungeon)
@@ -218,21 +215,20 @@ def generate_dungeon(
                        
         # Add room to dungeon
         rooms.append(new_room)
-        
-        # after generation is complete
-        dungeon.rooms = rooms
     
     # After generation finishes
     if rooms:
         # Place stairs
-        dungeon.tiles[center_of_last_room] = tile_types.down_stairs
-        dungeon.downstairs_location = center_of_last_room
+        stairs_x, stairs_y = rooms[-1].center
+        dungeon.tiles[stairs_x, stairs_y] = tile_types.down_stairs
+        dungeon.downstairs_location = (stairs_x, stairs_y)
+    
+    # after generation is complete   
+    dungeon.rooms = rooms
         
     randomize_walls(dungeon)
 
     add_simple_doors(dungeon)
-
-    
     
     return dungeon
 

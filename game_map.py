@@ -99,9 +99,11 @@ class GameMap:
         )
 
         for entity in entities_sorted_for_rendering:
+            # Hide traps until revealed
+            if entity.trap and not entity.trap.revealed:
+                continue
             # Only print entities that are in the FOV
             if self.visible[entity.x, entity.y]:
-                console.print(entity.x, entity.y, text="X", fg=(255,0,0))
                 console.print(
                     x=entity.x,
                     y=entity.y,

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Tuple
 import random
 import copy
 from game_map import GameMap
-from data_loader import ITEMS, MONSTERS
+from data_loader import ITEMS, MONSTERS, TRAPS
 
 if TYPE_CHECKING:
     from procgen.dungeon import RectangularRoom
@@ -70,32 +70,6 @@ def get_items_for_floor(floor: int, count: int, room_type: str):
     print("Items candidates:",[i.name for i, _ in candidates])
     return random.choices(items, weights=weights, k=count)
 
-""" def get_items_for_floor(floor: int, count: int, room_type: str):
-
-    candidates = []
-
-    for item in ITEMS.values():
-
-        if getattr(item, "spawn_min", 0) > floor:
-            continue
-
-        allowed_rooms = getattr(item, "spawn_rooms", None)
-
-        if allowed_rooms and room_type not in allowed_rooms:
-            continue
-
-        weight = getattr(item, "spawn_weight", 1)
-
-        candidates.append((item, weight))
-
-    if not candidates:
-        return []
-
-    items = [i for i, _ in candidates]
-    weights = [w for _, w in candidates]
-
-    return random.choices(items, weights=weights, k=count) """
-
 # -------------------------------------------------
 # MONSTER SPAWN SYSTEM
 # -------------------------------------------------
@@ -124,6 +98,7 @@ def get_monsters_for_floor(monsters, floor, count):
 
         for _ in range(pack_size):
             result.append(monster)
+            
 
     return result
 
@@ -141,6 +116,8 @@ def place_entities(room: "RectangularRoom", dungeon: GameMap, floor_number: int)
     number_of_items = random.randint(
         0, get_max_value_for_floor(max_items_by_floor, floor_number)
     )
+    
+    place_traps(room, dungeon, floor_number)
         
 # ---------------------------------
 # ROOM TYPE MODIFIERS
@@ -204,3 +181,40 @@ def place_entities(room: "RectangularRoom", dungeon: GameMap, floor_number: int)
             spawn_entity.spawn(dungeon, x, y)
             break
         
+def get_traps_for_floor(floor):
+    valid = []
+
+    for trap in TRAPS.values():
+        if trap.spawn_min <= floor <= trap.spawn_max:
+            valid.extend([trap] * trap.rarity)
+
+    return valid
+
+def place_traps(room, dungeon, floor):
+    traps = get_traps_for_floor(floor)
+
+    if not traps:
+        return
+    
+    player = dungeon.engine.player
+
+    number_of_traps = random.randint(0, 2)
+
+    for _ in range(number_of_traps):
+
+        x = random.randint(room.x1 + 1, room.x2 - 1)
+        y = random.randint(room.y1 + 1, room.y2 - 1)
+        
+        if any(e.x == x and e.y == y for e in dungeon.entities):
+            continue
+
+        if abs(x - player.x) <= 2 and abs(y - player.y) <= 2:
+            continue
+
+        if (x, y) == dungeon.downstairs_location:
+            continue
+
+        if not any(e.x == x and e.y == y for e in dungeon.entities):
+
+            trap = random.choice(traps)
+            trap.spawn(dungeon, x, y)

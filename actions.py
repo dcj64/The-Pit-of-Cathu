@@ -4,6 +4,7 @@ from typing import Optional, Tuple, TYPE_CHECKING
 
 from room_data import ROOM_DESCRIPTIONS
 from entity import Chest, Item
+from components.trap import Trap
 
 import color
 import exceptions
@@ -238,7 +239,11 @@ class MovementAction(ActionWithDirection):
                 if isinstance(entity, Chest):
                     entity.open(self.engine)
                     return
-
+        # remove traps after triggering
+        for entity in list(self.engine.game_map.entities):
+            if entity.x == dest_x and entity.y == dest_y and entity.trap:
+                entity.trap.trigger(self.entity)
+        
         # Blocked by tile
         if not tile["walkable"]:
             bump_pos = (dest_x, dest_y)

@@ -1,19 +1,53 @@
 [
   {
-    "name": "Orc Captain",
-    "char": "o",
-    "color": [209, 61, 31],
-    "hp": 12,
-    "defense": 2,
-    "power": 4,
-    "xp": 45,
+    "name": "Slime",
+    "char": "s",
+    "color": [21, 209, 32],
+    "hp": 2,
+    "defense": 1,
+    "power": 2,
+    "xp": 15,
 
-    "spawn_min": 2,
+    "spawn_min": 1,
     "spawn_max": 6,
     "rarity": 40,
 
-    "group_min": 1,
-    "group_max": 2
+    "group_min": 3,
+    "group_max": 6
+  },
+
+  {
+    "name": "Spider",
+    "char": "s",
+    "color": [0, 127, 127],
+    "hp": 2,
+    "defense": 1,
+    "power": 2,
+    "xp": 15,
+
+    "spawn_min": 1,
+    "spawn_max": 4,
+    "rarity": 50,
+
+    "group_min": 3,
+    "group_max": 6
+  },
+
+  {
+    "name": "Goblin",
+    "char": "g",
+    "color": [143, 105, 31],
+    "hp": 3,
+    "defense": 1,
+    "power": 2,
+    "xp": 25,
+
+    "spawn_min": 1,
+    "spawn_max": 6,
+    "rarity": 40,
+
+    "group_min": 3,
+    "group_max": 4
   },
 
   {
@@ -34,20 +68,20 @@
   },
 
   {
-    "name": "Goblin",
-    "char": "g",
-    "color": [63, 127, 63],
-    "hp": 3,
-    "defense": 1,
-    "power": 2,
-    "xp": 25,
+    "name": "Orc Captain",
+    "char": "o",
+    "color": [209, 61, 31],
+    "hp": 12,
+    "defense": 2,
+    "power": 4,
+    "xp": 45,
 
-    "spawn_min": 1,
+    "spawn_min": 2,
     "spawn_max": 6,
     "rarity": 40,
 
-    "group_min": 3,
-    "group_max": 4
+    "group_min": 1,
+    "group_max": 2
   },
 
   {
@@ -103,7 +137,7 @@
 
   {
     "name": "Giant Spider",
-    "char": "s",
+    "char": "S",
     "color": [0, 127, 127],
     "hp": 6,
     "defense": 1,
@@ -116,23 +150,6 @@
 
     "group_min": 3,
     "group_max": 6
-  },
-
-  {
-    "name": "Kobold",
-    "char": "k",
-    "color": [127, 127, 0],
-    "hp": 6,
-    "defense": 2,
-    "power": 2,
-    "xp": 40,
-
-    "spawn_min": 2,
-    "spawn_max": 8,
-    "rarity": 30,
-
-    "group_min": 2,
-    "group_max": 4
   },
 
   {
@@ -154,7 +171,7 @@
 
   {
     "name": "Giant Bat",
-    "char": "b",
+    "char": "B",
     "color": [127, 0, 127],
     "hp": 5,
     "defense": 2,

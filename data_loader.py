@@ -19,8 +19,9 @@ from components.equippable import Equippable
 from equipment_types import EquipmentType
 
 from components.level import Level
+from components.trap import Trap
 
-from entity import Actor, Item
+from entity import Actor, Item, Entity
 
 
 DATA_FOLDER = os.path.join(os.path.dirname(__file__), "data")
@@ -182,6 +183,44 @@ def build_monster(data):
 
     return monster
 
+# ---------------------------------------------------
+# TRAP LOADING
+# ---------------------------------------------------
+
+def load_traps():
+    raw_traps = load_json("traps.json")
+
+    traps = {}
+
+    for data in raw_traps:
+        traps[data["name"]] = build_trap(data)
+
+    return traps
+
+
+def build_trap(data):
+
+    trap_component = Trap(
+        damage_min=data["damage_min"],
+        damage_max=data["damage_max"],
+        reveal_chance=data.get("reveal_chance", 0.5),
+        one_time=data.get("one_time", True),
+    )
+
+    trap = Entity(
+        char=data["char"],
+        color=tuple(data["color"]),
+        name=data["name"],
+        blocks_movement=False,
+        trap=trap_component,
+    )
+
+    trap.spawn_min = data.get("spawn_min", 1)
+    trap.spawn_max = data.get("spawn_max", 999)
+    trap.rarity = data.get("rarity", 50)
+
+    return trap
+
 
 def load_biomes():
     path = os.path.join(os.path.dirname(__file__), "data/biomes.json")
@@ -192,4 +231,5 @@ def load_biomes():
 
 ITEMS = load_items()
 MONSTERS = load_monsters()
+TRAPS = load_traps()
 BIOMES = load_biomes()

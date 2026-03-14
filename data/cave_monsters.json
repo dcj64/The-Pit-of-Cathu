@@ -1,0 +1,35 @@
+[
+  {
+    "name": "Cave Crabs",
+    "char": "c",
+    "color": [21, 209, 32],
+    "hp": 3,
+    "defense": 2,
+    "power": 2,
+    "xp": 25,
+
+    "spawn_min": 4,
+    "spawn_max": 6,
+    "rarity": 40,
+
+    "group_min": 3,
+    "group_max": 6
+  },
+
+  {
+    "name": "Kobold",
+    "char": "k",
+    "color": [127, 127, 0],
+    "hp": 6,
+    "defense": 2,
+    "power": 2,
+    "xp": 40,
+
+    "spawn_min": 2,
+    "spawn_max": 8,
+    "rarity": 30,
+
+    "group_min": 2,
+    "group_max": 4
+  }
+]

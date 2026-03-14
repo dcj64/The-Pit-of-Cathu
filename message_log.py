@@ -69,7 +69,6 @@ class MessageLog:
         backwards.
         """
         y_offset = height - 1
-        print("Message log width:", width)
 
         for message in reversed(messages):
             for line in reversed(list(cls.wrap(message.full_text, width))):

@@ -7,7 +7,7 @@ import copy
 from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING, Union
 
 from render_order import RenderOrder
-
+from components.trap import Trap
 
 if TYPE_CHECKING:
     from components.ai import BaseAI
@@ -38,6 +38,7 @@ class Entity:
         name: str = "<Unnamed>",
         blocks_movement: bool = False,
         render_order: RenderOrder = RenderOrder.CORPSE,
+        trap: Trap | None = None
     ):
         self.x = x
         self.y = y
@@ -46,6 +47,9 @@ class Entity:
         self.name = name
         self.blocks_movement = blocks_movement
         self.render_order = render_order
+        self.trap = trap
+        if self.trap:
+            self.trap.parent = self
         if parent:
             # If gamemap isn't provided now then it will be set later.
             self.parent = parent
@@ -255,4 +259,3 @@ class Chest(Entity):
 
         self.opened = True
         self.char = "o"
-        
