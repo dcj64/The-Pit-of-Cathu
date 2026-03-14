@@ -176,6 +176,7 @@ class Item(Entity):
         spawn_max: int = 999,
         spawn_weight: int = 1,
         spawn_rooms: Optional[list] = None,  # A list of room types this item can spawn in
+        stats: Optional[dict] = None,   # Add a stats parameter to the constructor and store it.
         
     ):
         super().__init__(
@@ -196,13 +197,18 @@ class Item(Entity):
 
         if self.equippable:
             self.equippable.parent = self
-            
+          
+        # Value  
         self.gold_value = gold_value
-        # Add the spawn attributes
+        
+        # Add the spawn attributes/settings
         self.spawn_min = spawn_min
         self.spawn_max = spawn_max
         self.spawn_weight = spawn_weight
         self.spawn_rooms = spawn_rooms or []  # Default to an empty list if not provided
+        
+        # Item stat bonus
+        self.stats = stats or {}
         
 def spawn_treasure(engine, x, y):
 

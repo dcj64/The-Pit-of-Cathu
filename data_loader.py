@@ -22,6 +22,7 @@ from components.level import Level
 from components.trap import Trap
 
 from entity import Actor, Item, Entity
+from render_order import RenderOrder
 
 
 DATA_FOLDER = os.path.join(os.path.dirname(__file__), "data")
@@ -128,6 +129,7 @@ def build_item(data):
         char=data["char"],
         color=tuple(data["color"]),
         name=data["name"],
+        stats=data.get("stats", {}),
         consumable=consumable,
         equippable=equippable,
         gold_value=int(data.get("value", 0)),
@@ -213,6 +215,7 @@ def build_trap(data):
         color=tuple(data["color"]),
         name=data["name"],
         blocks_movement=False,
+        render_order=RenderOrder.TRAP,
         trap=trap_component,
         xp=data.get("xp, 5")
     )

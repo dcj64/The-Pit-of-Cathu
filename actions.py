@@ -316,21 +316,28 @@ class DisarmTrapAction(Action):
                     if random.random() < 0.75:
                         
                         xp = entity.xp
-                        player.level.add_xp(xp)
+                        entity.trap.revealed = True
                         engine.message_log.add_message(
                             f"You disarm the {entity.name} and gain {xp} XP."
                         )
-
-                        engine.game_map.entities.remove(entity)
-
+                        entity.char = "-"
+                        entity.color = (150,150,150)
+                        entity.trap = None
+                        entity.name = "Disarmend Trap"
+                        
                     else:
 
                         engine.message_log.add_message(
                             "You fail to disarm the trap!"
                         )
-
+                        
                         entity.trap.trigger(player)
-
+                        
+                        entity.char = "-"
+                        entity.color = (150,150,150)
+                        entity.trap = None
+                        entity.name = "Disarmed Trap"
+                        
                     return
 
         raise exceptions.Impossible("There is no trap nearby.")

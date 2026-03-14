@@ -4,6 +4,7 @@
     "char": "!",
     "color": [42, 230, 21],
     "type": "healing",
+    "health_bonu": 4,
     "amount": 4,
     "spawn_min": 0,
     "spawn_weight": 40
@@ -14,7 +15,7 @@
     "char": "*",
     "color": [255, 255, 0],
     "type": "amulet",
-    "light_bonus": 2,
+    "stats": { "light": 2, "regen": 2 },
     "spawn_min": 2,
     "spawn_weight": 30,
     "spawn_rooms": ["shrine"]
@@ -25,7 +26,7 @@
     "char": "*",
     "color": [135, 135, 135],
     "type": "amulet",
-    "light_bonus": 1,
+    "stats": { "light": 1, "regen": 1 },
     "spawn_min": 0,
     "spawn_weight": 20
   },
@@ -35,7 +36,7 @@
     "char": "*",
     "color": [255, 255, 255],
     "type": "amulet",
-    "light_bonus": 1,
+    "stats": { "light": 1, "regen": 1 },
     "spawn_min": 0,
     "spawn_weight": 40
   },

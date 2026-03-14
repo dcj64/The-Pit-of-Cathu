@@ -4,12 +4,20 @@ from typing import Tuple, TYPE_CHECKING
 
 import color
 from tcod import libtcodpy
-from entity import Actor
+from entity import Actor, Item
 
 if TYPE_CHECKING:
     from tcod import Console
     from engine import Engine
     from game_map import GameMap
+
+
+STAT_NAMES = {
+    "power": "Power",
+    "defense": "Defense",
+    "light": "Light Radius",
+    "regen": "Regeneration",
+}
 
 
 # -------------------------------------------------
@@ -66,10 +74,10 @@ def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
 
     if not game_map.in_bounds(x, y) or not game_map.visible[x, y]:
         return ""
-    
+
     descriptions = []
-    
-     # Sort so living actors appear before corpses
+
+    # Sort so living actors appear before corpses
     entities = sorted(
         game_map.entities,
         key=lambda e: (
@@ -80,9 +88,9 @@ def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
 
     for entity in entities:
         if entity.x == x and entity.y == y:
-            
+
             if isinstance(entity, Actor):
-                if entity.fighter.hp > 0: # check if creature is alive
+                if entity.fighter.hp > 0:
                     descriptions.append(
                         f"{entity.name}\n"
                         f"HP  {entity.fighter.hp}/{entity.fighter.max_hp}\n"
@@ -91,16 +99,32 @@ def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
                     )
                 else:
                     descriptions.append(entity.name)
-                    
+
+            # Item tooltip
+            elif isinstance(entity, Item):
+                if entity.stats:
+                    stat_lines = []
+
+                    for stat, value in entity.stats.items():
+                        name = STAT_NAMES.get(stat, stat.capitalize())
+                        stat_lines.append(f"{name} +{value}")
+
+                    descriptions.append(
+                        f"{entity.name}\n" + "\n".join(stat_lines)
+                    )
+                else:
+                    descriptions.append(entity.name)
+
             else:
                 descriptions.append(entity.name)
-                
+
     # Add tile name
     if not descriptions:
         tile = game_map.tiles[x, y]
         descriptions.append(str(tile["name"]))
 
-    return "\n".join(descriptions).capitalize()
+    return "\n".join(descriptions)
+
 
 
 # -------------------------------------------------

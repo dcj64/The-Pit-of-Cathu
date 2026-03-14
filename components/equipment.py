@@ -25,32 +25,40 @@ class Equipment(BaseComponent[Actor]):
         self.ring2 = ring2
 
     @property
-    def defense_bonus(self) -> int:
-        bonus = 0
+    def power_bonus(self) -> int:
+        return self.stat_bonus("power")
 
-        for item in self.all_equipped_items():
-            if item and item.equippable:
-                bonus += item.equippable.defense_bonus
-
-        return bonus
 
     @property
-    def power_bonus(self) -> int:
-        bonus = 0
+    def defense_bonus(self) -> int:
+        return self.stat_bonus("defense")
 
-        for item in self.all_equipped_items():
-            if item and item.equippable:
-                bonus += item.equippable.power_bonus
-
-        return bonus
 
     @property
     def light_bonus(self) -> int:
+        return self.stat_bonus("light")
+
+
+    @property
+    def regen_bonus(self) -> int:
+        return self.stat_bonus("regen")
+    
+    
+    def stat_bonus(self, stat_name: str) -> int:
+        """Return total bonus for a given stat from all equipped items."""
         bonus = 0
 
         for item in self.all_equipped_items():
-            if item and item.equippable:
-                bonus += item.equippable.light_bonus
+            if not item:
+                continue
+
+            # New JSON stat system
+            if hasattr(item, "stats"):
+                bonus += item.stats.get(stat_name, 0)
+
+            # Old equippable system (for backwards compatibility)
+            if item.equippable:
+                bonus += getattr(item.equippable, f"{stat_name}_bonus", 0)
 
         return bonus
 
@@ -83,15 +91,6 @@ class Equipment(BaseComponent[Actor]):
 
         return items
     
-    @property
-    def regen_bonus(self) -> int:
-        bonus = 0
-
-        for item in self.all_equipped_items():
-            if item and item.equippable:
-                bonus += getattr(item.equippable, "regen_bonus", 0)
-
-        return bonus
     
     def all_equipped_items(self):
         """Return a list of all equipped items."""
