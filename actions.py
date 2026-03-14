@@ -239,10 +239,26 @@ class MovementAction(ActionWithDirection):
                 if isinstance(entity, Chest):
                     entity.open(self.engine)
                     return
-        # remove traps after triggering
-        for entity in list(self.engine.game_map.entities):
-            if entity.x == dest_x and entity.y == dest_y and entity.trap:
-                entity.trap.trigger(self.entity)
+                
+        # remove traps after triggering or randomly revel them if player is close                
+        for entity in self.engine.game_map.entities:
+
+            if not entity.trap:
+                continue
+
+            if entity.trap.revealed:
+                continue
+
+            if abs(entity.x - dest_x) <= 1 and abs(entity.y - dest_y) <= 1:
+
+                if random.random() < 0.35: # remove traps after triggering or randomly 
+                                           # revel them if player is close
+
+                    entity.trap.revealed = True
+
+                    self.engine.message_log.add_message(
+                        f"You notice a {entity.name}!"
+                    )
         
         # Blocked by tile
         if not tile["walkable"]:
@@ -254,6 +270,11 @@ class MovementAction(ActionWithDirection):
             raise exceptions.Impossible()
 
         self.entity.move(self.dx, self.dy)
+        for entity in list(self.engine.game_map.entities):
+            if entity.x == self.entity.x and entity.y == self.entity.y and entity.trap:
+                entity.trap.trigger(self.entity)
+                break
+            
         self.engine.last_bump = None
         
         player = self.entity      
@@ -278,3 +299,38 @@ class BumpAction(ActionWithDirection):
             return MeleeAction(self.entity, self.dx, self.dy).perform()
         else:
             return MovementAction(self.entity, self.dx, self.dy).perform()
+        
+class DisarmTrapAction(Action):
+
+    def perform(self):
+
+        engine = self.engine
+        player = self.entity
+
+        for entity in list(engine.game_map.entities):
+
+            if entity.trap and entity.trap.revealed:
+
+                if abs(entity.x - player.x) <= 1 and abs(entity.y - player.y) <= 1:
+
+                    if random.random() < 0.75:
+                        
+                        xp = entity.xp
+                        player.level.add_xp(xp)
+                        engine.message_log.add_message(
+                            f"You disarm the {entity.name} and gain {xp} XP."
+                        )
+
+                        engine.game_map.entities.remove(entity)
+
+                    else:
+
+                        engine.message_log.add_message(
+                            "You fail to disarm the trap!"
+                        )
+
+                        entity.trap.trigger(player)
+
+                    return
+
+        raise exceptions.Impossible("There is no trap nearby.")

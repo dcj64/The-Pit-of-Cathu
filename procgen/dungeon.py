@@ -230,6 +230,8 @@ def generate_dungeon(
 
     add_simple_doors(dungeon)
     
+    place_corridor_traps(dungeon, engine.game_world.current_floor)
+    
     return dungeon
 
 # Add doors to dungeon rooms. This is a very simple implementation that just adds doors 
@@ -309,4 +311,48 @@ def tunnel_between(start: Tuple[int, int], end: Tuple[int, int]) -> Iterator[Tup
     for x, y in tcod.los.bresenham((corner_x, corner_y), (x2, y2)).tolist():
         yield x, y
 
+def place_corridor_traps(dungeon, floor):
+
+    from data_loader import TRAPS
+    import random
+    import tile_types
+
+    possible_traps = []
+
+    for trap in TRAPS.values():
+        if trap.spawn_min <= floor <= trap.spawn_max:
+            possible_traps.extend([trap] * trap.rarity)
+
+    if not possible_traps:
+        return
+
+    attempts = random.randint(30, 50)
+
+    for _ in range(attempts):
+
+        x = random.randint(1, dungeon.width - 2)
+        y = random.randint(1, dungeon.height - 2)
+
+        if dungeon.tiles[x, y] != tile_types.floor:
+            continue
+
+        if any(e.x == x and e.y == y for e in dungeon.entities):
+            continue
+
+        if (x, y) == dungeon.downstairs_location:
+            continue
+
+        if tile_in_room(x, y, dungeon):
+            continue
+
+        trap = random.choice(possible_traps)
+        trap.spawn(dungeon, x, y)
+            
+def tile_in_room(x, y, dungeon):
+
+    for room in dungeon.rooms:
+        if room.x1 < x < room.x2 and room.y1 < y < room.y2:
+            return True
+
+    return False
 

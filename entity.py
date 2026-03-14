@@ -38,7 +38,9 @@ class Entity:
         name: str = "<Unnamed>",
         blocks_movement: bool = False,
         render_order: RenderOrder = RenderOrder.CORPSE,
-        trap: Trap | None = None
+        trap: Trap | None = None,
+        xp: int = 0,
+        
     ):
         self.x = x
         self.y = y
@@ -48,6 +50,7 @@ class Entity:
         self.blocks_movement = blocks_movement
         self.render_order = render_order
         self.trap = trap
+        self.xp = xp
         if self.trap:
             self.trap.parent = self
         if parent:

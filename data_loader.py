@@ -189,6 +189,7 @@ def build_monster(data):
 
 def load_traps():
     raw_traps = load_json("traps.json")
+    
 
     traps = {}
 
@@ -213,11 +214,15 @@ def build_trap(data):
         name=data["name"],
         blocks_movement=False,
         trap=trap_component,
+        xp=data.get("xp, 5")
     )
 
     trap.spawn_min = data.get("spawn_min", 1)
     trap.spawn_max = data.get("spawn_max", 999)
     trap.rarity = data.get("rarity", 50)
+    
+    # XP reward for disarming
+    trap.xp = data.get("xp", 5)
 
     return trap
 

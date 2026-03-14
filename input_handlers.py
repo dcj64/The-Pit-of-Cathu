@@ -13,6 +13,7 @@ from actions import (
     BumpAction,
     PickupAction,
     WaitAction,
+    DisarmTrapAction
 )
 import color
 import exceptions
@@ -546,6 +547,9 @@ class MainGameEventHandler(EventHandler):
 
         elif key == tcod.event.KeySym.G:
             action = PickupAction(player)
+        
+        elif key == tcod.event.KeySym.T:
+            return DisarmTrapAction(player)
 
         elif key == tcod.event.KeySym.I:
             return InventoryActivateHandler(self.engine)

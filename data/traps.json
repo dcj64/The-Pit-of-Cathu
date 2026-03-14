@@ -4,9 +4,9 @@
     "char": "^",
     "color": [255, 0, 0],
 
-    "damage_min": 3,
-    "damage_max": 8,
-
+    "damage_min": 2,
+    "damage_max": 6,
+    "xp": 5,
     "spawn_min": 1,
     "spawn_max": 999,
     "rarity": 40
@@ -19,9 +19,21 @@
 
     "damage_min": 6,
     "damage_max": 12,
-
+    "xp": 5,
     "spawn_min": 3,
     "spawn_max": 999,
     "rarity": 25
+  },
+
+  {
+    "name": "Poison Trap",
+    "char": "^",
+    "color": [0, 255, 0],
+    "damage_min": 2,
+    "damage_max": 5,
+    "xp": 5,
+    "rarity": 30,
+    "spawn_min": 2,
+    "spawn_max": 999
   }
 ]
