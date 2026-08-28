@@ -584,7 +584,6 @@ CURSOR_Y_KEYS = {
     tcod.event.KeySym.PAGEDOWN: 10,
 }
 
-
 class HistoryViewer(EventHandler):
     """Print the history on a larger window which can be navigated."""
 

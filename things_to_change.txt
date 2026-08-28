@@ -46,3 +46,6 @@ The shrine curses your ring...
 Ring of Strength becomes cursed.
 
 This adds a lot of roguelike flavor.
+
+If you'd like, I can also show you a very clean file structure used in many tcod roguelikes 
+that prevents circular imports almost completely. It makes expanding the project much easier later.
