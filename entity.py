@@ -151,8 +151,13 @@ class Actor(Entity):
 
         self.level = level
         self.level.parent = self
-        
-        self.gold:int = 0
+
+        self.gold: int = 0
+
+        # Temporary status effect used by the Berserker Scroll.
+        self.berserker_damage_bonus: int = 0
+        self.berserker_turns_remaining: int = 0
+        self.berserker_just_applied: bool = False
 
     @property
     def is_alive(self) -> bool:

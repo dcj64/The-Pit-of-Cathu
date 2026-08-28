@@ -44,6 +44,23 @@ class Engine:
                 except exceptions.Impossible:
                     pass  # Ignore impossible action exceptions from AI.
 
+    def advance_status_effects(self) -> None:
+        """Advance temporary player status effects after a completed turn."""
+        player = self.player
+
+        # Do not consume a turn on the same turn the effect was applied.
+        if getattr(player, "berserker_just_applied", False):
+            player.berserker_just_applied = False
+            return
+
+        turns_remaining = getattr(player, "berserker_turns_remaining", 0)
+        if turns_remaining > 0:
+            player.berserker_turns_remaining -= 1
+
+            if player.berserker_turns_remaining == 0:
+                player.berserker_damage_bonus = 0
+                self.message_log.add_message("You are no longer a Berserker.")
+
     def update_fov(self) -> None:
         """Recompute the visible area based on the players point of view."""
         self.game_map.visible[:] = compute_fov(

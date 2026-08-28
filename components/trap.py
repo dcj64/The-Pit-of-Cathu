@@ -38,13 +38,13 @@ class Trap:
                 f"The {target.name} triggers the {self.parent.name}! ({damage} damage)"
             )
             
-        # New flavour message if enemy dies on trap
+        target.fighter.take_damage(damage)
+
+        # Check for death after applying the trap damage.
         if not target.is_alive and target is not engine.player:
             engine.message_log.add_message(
                 f"The {target.name} is impaled by a spike trap!"
             )
-
-        target.fighter.take_damage(damage)
 
         if self.one_time:
             self.parent.char = "-"

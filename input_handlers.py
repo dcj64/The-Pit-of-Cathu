@@ -149,6 +149,7 @@ class EventHandler(BaseEventHandler):
             return False  # Skip enemy turn on exceptions.
 
         self.engine.handle_enemy_turns()
+        self.engine.advance_status_effects()
 
         self.engine.update_fov()
         return True
@@ -536,7 +537,6 @@ class MainGameEventHandler(EventHandler):
         if key in MOVE_KEYS:
             dx, dy = MOVE_KEYS[key]
             action = BumpAction(player, dx, dy)
-            self.engine.stats.moves_used +=1 # count players moves
         elif key in WAIT_KEYS:
             action = WaitAction(player)
 

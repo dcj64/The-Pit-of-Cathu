@@ -34,7 +34,11 @@ class Fighter(BaseComponent[Actor]):
 
     @property
     def power(self) -> int:
-        return self.base_power + self.power_bonus
+        return (
+            self.base_power
+            + self.power_bonus
+            + getattr(self.parent, "berserker_damage_bonus", 0)
+        )
 
     @property
     def light(self) -> int:
@@ -68,7 +72,7 @@ class Fighter(BaseComponent[Actor]):
         else:
             death_message = f"{self.parent.name} is dead!"
             death_message_color = color.enemy_die
-            self.engine.stats.total_monsters_killed += 1
+            self.engine.stats.monster_killed()
 
         self.parent.char = "%"
         self.parent.color = (191, 0, 0)

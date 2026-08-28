@@ -4,8 +4,6 @@ from typing import Optional, Tuple, TYPE_CHECKING
 
 from room_data import ROOM_DESCRIPTIONS
 from entity import Chest, Item
-from components.trap import Trap
-
 import color
 import exceptions
 import time
@@ -251,8 +249,7 @@ class MovementAction(ActionWithDirection):
 
             if abs(entity.x - dest_x) <= 1 and abs(entity.y - dest_y) <= 1:
 
-                if random.random() < 0.35: # remove traps after triggering or randomly 
-                                           # revel them if player is close
+                if random.random() < entity.trap.reveal_chance:
 
                     entity.trap.revealed = True
 
@@ -270,6 +267,11 @@ class MovementAction(ActionWithDirection):
             raise exceptions.Impossible()
 
         self.entity.move(self.dx, self.dy)
+
+        # Count only successful player movement, not attempts into walls/doors.
+        if self.entity is self.engine.player:
+            self.engine.stats.move_used()
+
         for entity in list(self.engine.game_map.entities):
             if entity.x == self.entity.x and entity.y == self.entity.y and entity.trap:
                 entity.trap.trigger(self.entity)
@@ -317,13 +319,14 @@ class DisarmTrapAction(Action):
                         
                         xp = entity.xp
                         entity.trap.revealed = True
+                        engine.player.level.add_xp(xp)
                         engine.message_log.add_message(
                             f"You disarm the {entity.name} and gain {xp} XP."
                         )
                         entity.char = "-"
                         entity.color = (150,150,150)
                         entity.trap = None
-                        entity.name = "Disarmend Trap"
+                        entity.name = "Disarmed Trap"
                         
                     else:
 

@@ -37,9 +37,8 @@ class Consumable(BaseComponent[Item]):
 
         # Update stats
         if self.stat_key:
-            self.engine.stats.items_used[self.stat_key] += 1
+            self.engine.stats.item_used(self.stat_key)
 
-        # Remove the item
         self.consume()
 
     def apply_effect(self, consumer: Actor) -> None:
@@ -78,24 +77,28 @@ class HealingConsumable(Consumable):
 
 class BerserkerDamageConsumable(Consumable):
 
-    stat_key = "berserker_scroll"
+    stat_key = ItemStat.BERSERKER_SCROLL
 
     def __init__(self, turns: int, damage: int):
         self.turns = turns
         self.damage = damage
 
-    def apply_effect(self, consumer: Actor) -> None:
-        for actor in self.engine.game_map.actors:
-            if actor.fighter.base_power > 1:
-                actor.fighter.base_power += self.damage
+    def activate(self, action: actions.ItemAction) -> None:
+        consumer = action.entity
 
-            if self.stat_key:
-                self.engine.stats.items_used[self.stat_key] += 1              
+        consumer.berserker_damage_bonus = self.damage
+        consumer.berserker_turns_remaining = self.turns
+        consumer.berserker_just_applied = True
+
+        if self.stat_key:
+            self.engine.stats.item_used(self.stat_key)
 
         self.engine.message_log.add_message(
             f"You become a Berserker for {self.turns} turns, gaining {self.damage} extra damage!",
             color.red,
         )
+
+        self.consume()
 
 
 # ---------------------------------------------------------------------
@@ -150,7 +153,9 @@ class ConfusionConsumable(TargetConsumable):
         )
 
         if self.stat_key:
-            self.engine.stats.items_used[self.stat_key] += 1
+            self.engine.stats.item_used(self.stat_key)
+
+        self.consume()
 
 class LightningDamageConsumable(Consumable):
 
@@ -185,7 +190,9 @@ class LightningDamageConsumable(Consumable):
             target.fighter.take_damage(self.damage)
 
             if self.stat_key:
-                self.engine.stats.items_used[self.stat_key] += 1
+                self.engine.stats.item_used(self.stat_key)
+
+            self.consume()
 
         else:
             raise Impossible("No enemy is close enough to strike.")
@@ -243,7 +250,9 @@ class FireballDamageConsumable(AreaConsumable):
             raise Impossible("There are no targets in the radius.")
 
         if self.stat_key:
-            self.engine.stats.items_used[self.stat_key] += 1
+            self.engine.stats.item_used(self.stat_key)
+
+        self.consume()
 
 class GenocideDamageConsumable(AreaConsumable):
 
@@ -275,5 +284,6 @@ class GenocideDamageConsumable(AreaConsumable):
             raise Impossible("There are no targets in the radius.")
 
         if self.stat_key:
-            self.engine.stats.items_used[self.stat_key] += 1
-        
+            self.engine.stats.item_used(self.stat_key)
+
+        self.consume()

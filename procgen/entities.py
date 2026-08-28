@@ -51,7 +51,7 @@ def get_items_for_floor(floor: int, count: int, room_type: str):
 
     for item in ITEMS.values():
         print(f"Checking item: {item.name}")
-        if getattr(item, "spawn_min", 0) > floor:
+        if not (getattr(item, "spawn_min", 0) <= floor <= getattr(item, "spawn_max", 999)):
             continue
 
         if getattr(item, "spawn_rooms", None) and room_type not in getattr(item, "spawn_rooms"):

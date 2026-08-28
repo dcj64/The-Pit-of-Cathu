@@ -5,7 +5,6 @@ import random
 import tcod
 from entity import Chest
 from game_map import GameMap
-from data_loader import TRAPS
 import tile_types
 
 if TYPE_CHECKING:

@@ -217,16 +217,13 @@ def build_trap(data):
         blocks_movement=False,
         render_order=RenderOrder.TRAP,
         trap=trap_component,
-        xp=data.get("xp, 5")
+        xp=data.get("xp", 5)
     )
 
     trap.spawn_min = data.get("spawn_min", 1)
     trap.spawn_max = data.get("spawn_max", 999)
     trap.rarity = data.get("rarity", 50)
     
-    # XP reward for disarming
-    trap.xp = data.get("xp", 5)
-
     return trap
 
 
