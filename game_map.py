@@ -7,6 +7,7 @@ from tcod.console import Console
 
 from entity import Actor, Item
 import tile_types
+import color
 
 from data_loader import BIOMES
 
@@ -104,11 +105,22 @@ class GameMap:
                 continue
             # Only print entities that are in the FOV
             if self.visible[entity.x, entity.y]:
+                
+                display_color = entity.color
+
+                # Show the player in red while Berserker is active
+                if (
+                    entity is self.engine.player
+                    and getattr(entity, "berserker_turns_remaining", 0) > 0
+                ):
+                    
+                    display_color = color.red
+                
                 console.print(
                     x=entity.x,
                     y=entity.y,
                     text=entity.char,
-                    fg=entity.color
+                    fg=display_color
                 )
     
     def get_room_at_location(self, x, y):

@@ -69,8 +69,8 @@
     "type": "berserker",
     "turns": 5,
     "damage": 12,
-    "spawn_min": 4,
-    "spawn_weight": 40
+    "spawn_min": 1,
+    "spawn_weight": 1000
   },
 
   {
