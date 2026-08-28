@@ -319,10 +319,10 @@ class DisarmTrapAction(Action):
                         
                         xp = entity.xp
                         entity.trap.revealed = True
-                        engine.player.level.add_xp(xp)
                         engine.message_log.add_message(
-                            f"You disarm the {entity.name} and gain {xp} XP."
+                            f"You disarm the {entity.name}."
                         )
+                        engine.player.level.add_xp(xp)
                         entity.char = "-"
                         entity.color = (150,150,150)
                         entity.trap = None
