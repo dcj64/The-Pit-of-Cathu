@@ -95,28 +95,16 @@ def build_item(data):
         
     # Equipment
     elif item_type == "weapon":
-        equippable = Equippable(
-            equipment_type=EquipmentType.WEAPON,
-            power_bonus=data.get("power_bonus", 0),
-        )
+        equippable = Equippable(equipment_type=EquipmentType.WEAPON)
 
     elif item_type == "armor":
-        equippable = Equippable(
-            equipment_type=EquipmentType.ARMOR,
-            defense_bonus=data.get("defense_bonus", 0),
-        )
+        equippable = Equippable(equipment_type=EquipmentType.ARMOR)
 
     elif item_type == "ring":
-        equippable = Equippable(
-            equipment_type=EquipmentType.RING,
-            power_bonus=data.get("power_bonus", 0),
-        )
+        equippable = Equippable(equipment_type=EquipmentType.RING)
 
     elif item_type == "amulet":
-        equippable = Equippable(
-            equipment_type=EquipmentType.AMULET,
-            light_bonus=data.get("light_bonus", 0),
-        )
+        equippable = Equippable(equipment_type=EquipmentType.AMULET)
 
     elif item_type == "gold":
         # Gold is not consumable or equippable

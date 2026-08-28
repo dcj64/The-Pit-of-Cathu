@@ -45,22 +45,12 @@ class Equipment(BaseComponent[Actor]):
     
     
     def stat_bonus(self, stat_name: str) -> int:
-        """Return total bonus for a given stat from all equipped items."""
-        bonus = 0
-
-        for item in self.all_equipped_items():
-            if not item:
-                continue
-
-            # New JSON stat system
-            if hasattr(item, "stats"):
-                bonus += item.stats.get(stat_name, 0)
-
-            # Old equippable system (for backwards compatibility)
-            if item.equippable:
-                bonus += getattr(item.equippable, f"{stat_name}_bonus", 0)
-
-        return bonus
+        """Return the total bonus for a stat from all equipped items."""
+        return sum(
+            item.stats.get(stat_name, 0)
+            for item in self.all_equipped_items()
+            if item is not None
+        )
 
     def item_is_equipped(self, item: Item) -> bool:
         return (

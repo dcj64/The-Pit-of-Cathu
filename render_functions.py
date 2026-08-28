@@ -45,20 +45,15 @@ def panel_print(console, x, y, text, width=30, align="left", fg=None):
 
 
 def format_equipment(item) -> str:
-
     if not item or not item.equippable:
         return "Empty"
 
     bonuses = []
 
-    if item.equippable.power_bonus:
-        bonuses.append(f"+{item.equippable.power_bonus} power")
-
-    if item.equippable.defense_bonus:
-        bonuses.append(f"+{item.equippable.defense_bonus} defense")
-
-    if item.equippable.light_bonus:
-        bonuses.append(f"+{item.equippable.light_bonus} light")
+    for stat, value in item.stats.items():
+        if value:
+            name = STAT_NAMES.get(stat, stat.capitalize())
+            bonuses.append(f"+{value} {name.lower()}")
 
     if bonuses:
         return f"{item.name} ({', '.join(bonuses)})"

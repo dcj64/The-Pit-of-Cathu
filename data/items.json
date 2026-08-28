@@ -100,7 +100,7 @@
     "char": "/",
     "color": [0, 191, 255],
     "type": "weapon",
-    "power_bonus": 1
+    "stats": { "power": 1 }
   },
 
   {
@@ -108,7 +108,7 @@
     "char": "/",
     "color": [0, 127, 255],
     "type": "weapon",
-    "power_bonus": 2,
+    "stats": { "power": 2 },
     "spawn_min": 2,
     "spawn_weight": 40
   },
@@ -118,7 +118,7 @@
     "char": "/",
     "color": [0, 63, 255],
     "type": "weapon",
-    "power_bonus": 3,
+    "stats": { "power": 3 },
     "spawn_min": 4,
     "spawn_weight": 40
   },
@@ -128,7 +128,7 @@
     "char": "o",
     "color": [127, 5, 255],
     "type": "ring",
-    "power_bonus": 1,
+    "stats": { "power": 1 },
     "spawn_min": 0,
     "spawn_weight": 20
   },
@@ -138,7 +138,7 @@
     "char": "o",
     "color": [127, 0, 255],
     "type": "ring",
-    "power_bonus": 1,
+    "stats": { "power": 1 },
     "spawn_min": 2,
     "spawn_weight": 20
   },
@@ -148,7 +148,7 @@
     "char": "o",
     "color": [100, 255, 255],
     "type": "ring",
-    "light_bonus": 3,
+    "stats": { "light": 3 },
     "spawn_min": 3,
     "spawn_weight": 40
   },
@@ -158,7 +158,7 @@
     "char": "o",
     "color": [0, 200, 0],
     "type": "ring",
-    "regen": 1,
+    "stats": { "regen": 1 },
     "spawn_min": 4,
     "spawn_weight": 40
   },
@@ -168,7 +168,7 @@
     "char": "(",
     "color": [52, 192, 27],
     "type": "armor",
-    "defense_bonus": 1
+    "stats": { "defense": 1 }
   },
 
   {
@@ -176,7 +176,7 @@
     "char": "[",
     "color": [179, 23, 23],
     "type": "armor",
-    "defense_bonus": 2,
+    "stats": { "defense": 2 },
     "spawn_min": 3,
     "spawn_weight": 30
   },
@@ -186,7 +186,7 @@
     "char": "[",
     "color": [143, 20, 20],
     "type": "armor",
-    "defense_bonus": 3,
+    "stats": { "defense": 3 },
     "spawn_min": 6,
     "spawn_weight": 20
   },

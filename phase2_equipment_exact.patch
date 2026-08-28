@@ -1,0 +1,235 @@
+diff --git a/components/equipment.py b/components/equipment.py
+index 7ae805a..d3fe14d 100644
+--- a/components/equipment.py
++++ b/components/equipment.py
+@@ -45,22 +45,12 @@ class Equipment(BaseComponent[Actor]):
+     
+     
+     def stat_bonus(self, stat_name: str) -> int:
+-        """Return total bonus for a given stat from all equipped items."""
+-        bonus = 0
+-
+-        for item in self.all_equipped_items():
+-            if not item:
+-                continue
+-
+-            # New JSON stat system
+-            if hasattr(item, "stats"):
+-                bonus += item.stats.get(stat_name, 0)
+-
+-            # Old equippable system (for backwards compatibility)
+-            if item.equippable:
+-                bonus += getattr(item.equippable, f"{stat_name}_bonus", 0)
+-
+-        return bonus
++        """Return the total bonus for a stat from all equipped items."""
++        return sum(
++            item.stats.get(stat_name, 0)
++            for item in self.all_equipped_items()
++            if item is not None
++        )
+ 
+     def item_is_equipped(self, item: Item) -> bool:
+         return (
+diff --git a/components/equippable.py b/components/equippable.py
+index bff033c..71540f0 100644
+--- a/components/equippable.py
++++ b/components/equippable.py
+@@ -1,30 +1,18 @@
+ from __future__ import annotations
+ 
+-from typing import TYPE_CHECKING
+-
+ from components.base_component import BaseComponent
+ from equipment_types import EquipmentType
+ 
+-if TYPE_CHECKING:
+-    from entity import Item
++from entity import Item
+ 
+ 
+ class Equippable(BaseComponent):
+-    parent: Item
+-
+-    def __init__(
+-        self,
+-        equipment_type: EquipmentType,
+-        power_bonus: int = 0,
+-        defense_bonus: int = 0,
+-        light_bonus: int = 0,
+-        regen_bonus: int = 0,
+-    ):
+-        self.equipment_type = equipment_type
++    """Defines which equipment slot an item occupies.
+ 
+-        self.power_bonus = power_bonus
+-        self.defense_bonus = defense_bonus
+-        self.light_bonus = light_bonus
+-        self.regen_bonus = regen_bonus
++    Numerical bonuses are stored on Item.stats and are handled by Equipment.
++    """
+ 
++    parent: Item
+ 
++    def __init__(self, equipment_type: EquipmentType):
++        self.equipment_type = equipment_type
+diff --git a/data/items.json b/data/items.json
+index 039e570..5056c5d 100644
+--- a/data/items.json
++++ b/data/items.json
+@@ -100,7 +100,7 @@
+     "char": "/",
+     "color": [0, 191, 255],
+     "type": "weapon",
+-    "power_bonus": 1
++    "stats": { "power": 1 }
+   },
+ 
+   {
+@@ -108,7 +108,7 @@
+     "char": "/",
+     "color": [0, 127, 255],
+     "type": "weapon",
+-    "power_bonus": 2,
++    "stats": { "power": 2 },
+     "spawn_min": 2,
+     "spawn_weight": 40
+   },
+@@ -118,7 +118,7 @@
+     "char": "/",
+     "color": [0, 63, 255],
+     "type": "weapon",
+-    "power_bonus": 3,
++    "stats": { "power": 3 },
+     "spawn_min": 4,
+     "spawn_weight": 40
+   },
+@@ -128,7 +128,7 @@
+     "char": "o",
+     "color": [127, 5, 255],
+     "type": "ring",
+-    "power_bonus": 1,
++    "stats": { "power": 1 },
+     "spawn_min": 0,
+     "spawn_weight": 20
+   },
+@@ -138,7 +138,7 @@
+     "char": "o",
+     "color": [127, 0, 255],
+     "type": "ring",
+-    "power_bonus": 1,
++    "stats": { "power": 1 },
+     "spawn_min": 2,
+     "spawn_weight": 20
+   },
+@@ -148,7 +148,7 @@
+     "char": "o",
+     "color": [100, 255, 255],
+     "type": "ring",
+-    "light_bonus": 3,
++    "stats": { "light": 3 },
+     "spawn_min": 3,
+     "spawn_weight": 40
+   },
+@@ -158,7 +158,7 @@
+     "char": "o",
+     "color": [0, 200, 0],
+     "type": "ring",
+-    "regen": 1,
++    "stats": { "regen": 1 },
+     "spawn_min": 4,
+     "spawn_weight": 40
+   },
+@@ -168,7 +168,7 @@
+     "char": "(",
+     "color": [52, 192, 27],
+     "type": "armor",
+-    "defense_bonus": 1
++    "stats": { "defense": 1 }
+   },
+ 
+   {
+@@ -176,7 +176,7 @@
+     "char": "[",
+     "color": [179, 23, 23],
+     "type": "armor",
+-    "defense_bonus": 2,
++    "stats": { "defense": 2 },
+     "spawn_min": 3,
+     "spawn_weight": 30
+   },
+@@ -186,7 +186,7 @@
+     "char": "[",
+     "color": [143, 20, 20],
+     "type": "armor",
+-    "defense_bonus": 3,
++    "stats": { "defense": 3 },
+     "spawn_min": 6,
+     "spawn_weight": 20
+   },
+diff --git a/data_loader.py b/data_loader.py
+index bfb4ba0..e24b8fc 100644
+--- a/data_loader.py
++++ b/data_loader.py
+@@ -95,28 +95,16 @@ def build_item(data):
+         
+     # Equipment
+     elif item_type == "weapon":
+-        equippable = Equippable(
+-            equipment_type=EquipmentType.WEAPON,
+-            power_bonus=data.get("power_bonus", 0),
+-        )
++        equippable = Equippable(equipment_type=EquipmentType.WEAPON)
+ 
+     elif item_type == "armor":
+-        equippable = Equippable(
+-            equipment_type=EquipmentType.ARMOR,
+-            defense_bonus=data.get("defense_bonus", 0),
+-        )
++        equippable = Equippable(equipment_type=EquipmentType.ARMOR)
+ 
+     elif item_type == "ring":
+-        equippable = Equippable(
+-            equipment_type=EquipmentType.RING,
+-            power_bonus=data.get("power_bonus", 0),
+-        )
++        equippable = Equippable(equipment_type=EquipmentType.RING)
+ 
+     elif item_type == "amulet":
+-        equippable = Equippable(
+-            equipment_type=EquipmentType.AMULET,
+-            light_bonus=data.get("light_bonus", 0),
+-        )
++        equippable = Equippable(equipment_type=EquipmentType.AMULET)
+ 
+     elif item_type == "gold":
+         # Gold is not consumable or equippable
+diff --git a/render_functions.py b/render_functions.py
+index 17b9dc5..fb852e2 100644
+--- a/render_functions.py
++++ b/render_functions.py
+@@ -45,20 +45,15 @@ def panel_print(console, x, y, text, width=30, align="left", fg=None):
+ 
+ 
+ def format_equipment(item) -> str:
+-
+     if not item or not item.equippable:
+         return "Empty"
+ 
+     bonuses = []
+ 
+-    if item.equippable.power_bonus:
+-        bonuses.append(f"+{item.equippable.power_bonus} power")
+-
+-    if item.equippable.defense_bonus:
+-        bonuses.append(f"+{item.equippable.defense_bonus} defense")
+-
+-    if item.equippable.light_bonus:
+-        bonuses.append(f"+{item.equippable.light_bonus} light")
++    for stat, value in item.stats.items():
++        if value:
++            name = STAT_NAMES.get(stat, stat.capitalize())
++            bonuses.append(f"+{value} {name.lower()}")
+ 
+     if bonuses:
+         return f"{item.name} ({', '.join(bonuses)})"

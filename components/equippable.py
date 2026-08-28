@@ -1,30 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from components.base_component import BaseComponent
 from equipment_types import EquipmentType
 
-if TYPE_CHECKING:
-    from entity import Item
+from entity import Item
 
 
 class Equippable(BaseComponent):
+    """Defines which equipment slot an item occupies.
+
+    Numerical bonuses are stored on Item.stats and are handled by Equipment.
+    """
+
     parent: Item
 
-    def __init__(
-        self,
-        equipment_type: EquipmentType,
-        power_bonus: int = 0,
-        defense_bonus: int = 0,
-        light_bonus: int = 0,
-        regen_bonus: int = 0,
-    ):
+    def __init__(self, equipment_type: EquipmentType):
         self.equipment_type = equipment_type
-
-        self.power_bonus = power_bonus
-        self.defense_bonus = defense_bonus
-        self.light_bonus = light_bonus
-        self.regen_bonus = regen_bonus
-
-

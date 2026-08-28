@@ -216,11 +216,18 @@ def generate_dungeon(
         rooms.append(new_room)
     
     # After generation finishes
+    print(f"DEBUG: Dungeon generated with {len(rooms)} rooms")
     if rooms:
         # Place stairs
         stairs_x, stairs_y = rooms[-1].center
+        
+        print(f"DEBUG: Placing stairs at ({stairs_x}, {stairs_y})")
+        
         dungeon.tiles[stairs_x, stairs_y] = tile_types.down_stairs
         dungeon.downstairs_location = (stairs_x, stairs_y)
+    
+    else:
+        print("DEBUG: NO ROOMS - STAIRS NOT CREATED")
     
     # after generation is complete   
     dungeon.rooms = rooms
