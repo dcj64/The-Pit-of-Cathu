@@ -46,11 +46,7 @@ class Equipment(BaseComponent[Actor]):
     
     def stat_bonus(self, stat_name: str) -> int:
         """Return the total bonus for a stat from all equipped items."""
-        return sum(
-            item.stats.get(stat_name, 0)
-            for item in self.all_equipped_items()
-            if item is not None
-        )
+        return sum(item.stats.get(stat_name, 0) for item in self.equipped_items())
 
     def item_is_equipped(self, item: Item) -> bool:
         return (
@@ -82,16 +78,6 @@ class Equipment(BaseComponent[Actor]):
         return items
     
     
-    def all_equipped_items(self):
-        """Return a list of all equipped items."""
-        return [
-            self.weapon,
-            self.armor,
-            self.amulet,
-            self.ring1,
-            self.ring2,
-        ]
-        
 
     def rings_equipped(self) -> int:
         count = 0

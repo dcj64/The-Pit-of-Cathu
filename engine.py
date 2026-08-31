@@ -45,21 +45,26 @@ class Engine:
                     pass  # Ignore impossible action exceptions from AI.
 
     def advance_status_effects(self) -> None:
-        """Advance temporary player status effects after a completed turn."""
+        """Advance temporary status effects and apply end-of-turn regeneration."""
         player = self.player
 
-        # Do not consume a turn on the same turn the effect was applied.
+        # Do not consume a Berserker turn on the same turn the effect was applied.
         if getattr(player, "berserker_just_applied", False):
             player.berserker_just_applied = False
-            return
+        else:
+            turns_remaining = getattr(player, "berserker_turns_remaining", 0)
+            if turns_remaining > 0:
+                player.berserker_turns_remaining -= 1
 
-        turns_remaining = getattr(player, "berserker_turns_remaining", 0)
-        if turns_remaining > 0:
-            player.berserker_turns_remaining -= 1
+                if player.berserker_turns_remaining == 0:
+                    player.berserker_damage_bonus = 0
+                    self.message_log.add_message("You are no longer a Berserker.")
 
-            if player.berserker_turns_remaining == 0:
-                player.berserker_damage_bonus = 0
-                self.message_log.add_message("You are no longer a Berserker.")
+        # Apply equipment-based regeneration at the end of each completed turn.
+        # Never allow regeneration to resurrect a dead player.
+        regen = player.equipment.regen_bonus
+        if player.fighter.hp > 0 and regen > 0:
+            player.fighter.heal(regen)
 
     def update_fov(self) -> None:
         """Recompute the visible area based on the players point of view."""

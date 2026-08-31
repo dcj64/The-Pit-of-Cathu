@@ -5,6 +5,8 @@ import random
 import numpy as np
 
 from game_map import GameMap
+from data_loader import CAVE_MONSTERS
+from procgen.entities import place_monsters_on_map
 import tile_types
 
 if TYPE_CHECKING:
@@ -16,7 +18,8 @@ def generate_cave(
     map_height: int,
     engine: Engine,
     floor_number: int,
-    fill_percent: float =0.45
+    fill_percent: float = 0.45,
+    monster_tags=None,
     ) -> GameMap:
 
     dungeon = GameMap(engine, map_width, map_height, entities=[engine.player])
@@ -109,6 +112,15 @@ def generate_cave(
 
     dungeon.tiles[sx, sy] = tile_types.down_stairs
     dungeon.downstairs_location = (sx, sy)
+
+    # Use one monster count for the floor, combining biome-appropriate
+    # regular monsters with cave-only monsters.
+    place_monsters_on_map(
+        dungeon,
+        floor_number,
+        monster_tags=monster_tags,
+        additional_monsters=CAVE_MONSTERS,
+    )
 
     return dungeon
 

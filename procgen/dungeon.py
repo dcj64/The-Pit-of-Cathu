@@ -153,6 +153,7 @@ def generate_dungeon(
     map_width: int,
     map_height: int,
     engine: Engine,
+    monster_tags=None,
 ) -> GameMap:
     """Generate a new dungeon map."""
     from procgen.entities import place_entities
@@ -210,7 +211,7 @@ def generate_dungeon(
             decorate_room(room_type, new_room, dungeon)
             
             # Spawn monsters and items
-            place_entities(new_room, dungeon, engine.game_world.current_floor)
+            place_entities(new_room, dungeon, engine.game_world.current_floor, monster_tags=monster_tags)
                        
         # Add room to dungeon
         rooms.append(new_room)
@@ -225,7 +226,13 @@ def generate_dungeon(
         
         dungeon.tiles[stairs_x, stairs_y] = tile_types.down_stairs
         dungeon.downstairs_location = (stairs_x, stairs_y)
-    
+        
+        dungeon.entities = {
+            entity
+            for entity in dungeon.entities
+            if (entity.x, entity.y) != dungeon.downstairs_location
+        }
+            
     else:
         print("DEBUG: NO ROOMS - STAIRS NOT CREATED")
     
@@ -249,6 +256,10 @@ def add_simple_doors(dungeon: GameMap) -> None:
             if not dungeon.tiles["walkable"][x, y]:
                 continue
 
+            # Never replace the downstairs tile with a door.
+            if (x, y) == dungeon.downstairs_location:
+                continue
+                
             # Neighbours
             left  = dungeon.tiles["walkable"][x - 1, y]
             right = dungeon.tiles["walkable"][x + 1, y]

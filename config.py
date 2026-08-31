@@ -21,9 +21,6 @@ map_height = 57  # 43
 room_max_size = 10
 room_min_size = 6
 max_rooms = 30  # 30
-max_levels = 26  # 26
-new_level = 0
-
 lamp_strength = 2
 
 

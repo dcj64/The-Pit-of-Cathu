@@ -177,6 +177,17 @@ def build_monster(data):
 # TRAP LOADING
 # ---------------------------------------------------
 
+def load_cave_monsters():
+    raw_monsters = load_json("cave_monsters.json")
+
+    monsters = {}
+
+    for data in raw_monsters:
+        monsters[data["name"]] = build_monster(data)
+
+    return monsters
+
+
 def load_traps():
     raw_traps = load_json("traps.json")
     
@@ -225,4 +236,5 @@ def load_biomes():
 ITEMS = load_items()
 MONSTERS = load_monsters()
 TRAPS = load_traps()
+CAVE_MONSTERS = load_cave_monsters()
 BIOMES = load_biomes()

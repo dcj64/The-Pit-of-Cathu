@@ -11,22 +11,11 @@
   },
 
   {
-    "name": "Amulet of Sol",
-    "char": "*",
-    "color": [255, 255, 0],
-    "type": "amulet",
-    "stats": { "light": 2, "regen": 2 },
-    "spawn_min": 2,
-    "spawn_weight": 30,
-    "spawn_rooms": ["shrine"]
-  },
-
-  {
     "name": "Amulet of Luna",
     "char": "*",
     "color": [135, 135, 135],
     "type": "amulet",
-    "stats": { "light": 1, "regen": 1 },
+    "stats": { "light": 1 },
     "spawn_min": 0,
     "spawn_weight": 20
   },
@@ -36,9 +25,30 @@
     "char": "*",
     "color": [255, 255, 255],
     "type": "amulet",
-    "stats": { "light": 1, "regen": 1 },
+    "stats": { "light": 1 },
     "spawn_min": 0,
     "spawn_weight": 40
+  },
+
+  {
+    "name": "Ring of Night Vision",
+    "char": "o",
+    "color": [100, 255, 255],
+    "type": "ring",
+    "stats": { "light": 3, "regen": 1 },
+    "spawn_min": 1,
+    "spawn_weight": 40
+  },
+
+  {
+    "name": "Amulet of Sol",
+    "char": "*",
+    "color": [255, 255, 0],
+    "type": "amulet",
+    "stats": { "light": 2, "regen": 1 },
+    "spawn_min": 2,
+    "spawn_weight": 30,
+    "spawn_rooms": ["shrine"]
   },
 
   {
@@ -69,8 +79,8 @@
     "type": "berserker",
     "turns": 5,
     "damage": 12,
-    "spawn_min": 1,
-    "spawn_weight": 1000
+    "spawn_min": 2,
+    "spawn_weight": 40
   },
 
   {
@@ -144,22 +154,12 @@
   },
 
   {
-    "name": "Ring of Night Vision",
-    "char": "o",
-    "color": [100, 255, 255],
-    "type": "ring",
-    "stats": { "light": 3 },
-    "spawn_min": 3,
-    "spawn_weight": 40
-  },
-
-  {
     "name": "Ring of Regeneration",
     "char": "o",
     "color": [0, 200, 0],
     "type": "ring",
     "stats": { "regen": 1 },
-    "spawn_min": 4,
+    "spawn_min": 3,
     "spawn_weight": 40
   },
 

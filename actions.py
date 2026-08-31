@@ -151,15 +151,11 @@ class TakeStairsAction(Action):
         Take the stairs, if any exist at the entity's location.
         """
         if (self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location:
-            self.engine.game_map.monsters_killed = 0
             self.engine.message_log.add_message(
                 "You cautiously descend the staircase.", color.descend
             )
             self.engine.game_world.generate_floor()
             time.sleep(1.5)
-        #  if ((self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location) \
-            #  and (config.total_monsters != config.monsters_killed):
-            #  raise exceptions.Impossible("The stairs are locked. There are still monsters to kill!")
         else:
             raise exceptions.Impossible("There are no stairs here.")
 

@@ -31,5 +31,22 @@
 
     "group_min": 2,
     "group_max": 4
+  },
+
+  {
+    "name": "Cave Scorpion",
+    "char": "c",
+    "color": [21, 209, 32],
+    "hp": 4,
+    "defense": 3,
+    "power": 3,
+    "xp": 30,
+
+    "spawn_min": 4,
+    "spawn_max": 6,
+    "rarity": 40,
+
+    "group_min": 3,
+    "group_max": 6
   }
 ]
